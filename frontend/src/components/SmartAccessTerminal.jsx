@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scan, Grid3x3, Lock, Shield, Cpu, RefreshCw, Keypad } from 'lucide-react';
+import { Scan, Grid3x3, Lock, Shield, Cpu, RefreshCw } from 'lucide-react';
 
 export default function SmartAccessTerminal() {
     const [time, setTime] = useState(new Date());
