@@ -15,7 +15,7 @@ app = FastAPI(title="Smart Door Biometric API")
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,10 +71,6 @@ async def register_face(
         
         # Get public URL
         image_url = supabase.storage.from_("biometrics").get_public_url(file_path)
-        if not image_url or "http" not in image_url:
-            # Construct manual URL if get_public_url returns just path or fails
-            base_url = supabase.supabase_url.replace(".supabase.co", ".supabase.co/storage/v1/object/public/biometrics")
-            image_url = f"{base_url}/{file_path}"
         
         print(f"🔗 Step 4: Public URL: {image_url}")
 
@@ -85,7 +81,7 @@ async def register_face(
             "email": email,
             "employee_id": employeeId,
             "face_embedding": encoding_list,
-            "image_url": image_url,
+            "image_url": str(image_url),
             "role": "employee",
             "updated_at": datetime.utcnow().isoformat()
         }
@@ -96,7 +92,8 @@ async def register_face(
         return {
             "success": True, 
             "message": "Face registered successfully and photo saved.",
-            "image_url": image_url
+            "image_url": str(image_url),
+            "encoding": encoding_list
         }
 
     except Exception as e:
