@@ -39,7 +39,7 @@ export default function Login() {
                     <p className="text-slate-400 font-bold uppercase tracking-[0.4em] text-[10px] opacity-60">Security Cluster Login</p>
                 </div>
 
-                <div className="card-premium animate-in zoom-in-95 duration-700 delay-200">
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500 animate-in zoom-in-95 duration-700 delay-200">
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Admin Identity</label>
@@ -81,7 +81,7 @@ export default function Login() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full btn-primary !py-6 flex items-center justify-center gap-4 text-sm tracking-[0.2em] uppercase font-black"
+                            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-bold transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 !py-6 flex items-center justify-center gap-4 text-sm tracking-[0.2em] uppercase font-black"
                         >
                             {loading ? (
                                 <>

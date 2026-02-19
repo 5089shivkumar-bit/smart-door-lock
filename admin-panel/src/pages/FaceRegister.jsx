@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, ShieldCheck, AlertCircle, RefreshCw, Upload, Loader2 } from 'lucide-react';
+import { Camera, ShieldCheck, AlertCircle, RefreshCw, Upload, Loader2, Lock, Shield, Activity } from 'lucide-react';
 import { apiService } from '../services/api';
 
 export default function FaceRegister() {
@@ -86,7 +86,7 @@ export default function FaceRegister() {
 
     return (
         <div className="flex items-start justify-center py-4">
-            <div className="card-premium w-full max-w-[1100px] !p-0 overflow-hidden relative group">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-0 w-full max-w-[1100px] overflow-hidden relative group">
                 {/* Visual Accent */}
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-600 to-indigo-600 opacity-50"></div>
 
@@ -124,7 +124,7 @@ export default function FaceRegister() {
                             {!capturedImage ? (
                                 <button
                                     onClick={capturePhoto}
-                                    className="btn-primary !w-full flex items-center justify-center gap-4 py-5"
+                                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-bold transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 !w-full flex items-center justify-center gap-4 py-5"
                                 >
                                     <Camera className="w-5 h-5" />
                                     <span>Capture Digital Frame</span>

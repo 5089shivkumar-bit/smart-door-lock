@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
-import { Search, Trash2, Edit2, ShieldAlert } from 'lucide-react';
+import { Search, Trash2, Edit2, ShieldAlert, Users as UsersIcon } from 'lucide-react';
 
 export default function Users() {
     const [users, setUsers] = useState([]);
@@ -43,7 +43,7 @@ export default function Users() {
                 </div>
             </header>
 
-            <div className="card-premium !p-0 overflow-hidden relative">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-0 hover:border-white/40 transition-all duration-500 overflow-hidden relative">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -68,7 +68,7 @@ export default function Users() {
                                 <tr>
                                     <td colSpan="5" className="px-8 py-20 text-center">
                                         <div className="flex flex-col items-center gap-4 opacity-20">
-                                            <Users className="w-16 h-16" />
+                                            <UsersIcon className="w-16 h-16" />
                                             <p className="font-black uppercase tracking-widest text-xs">No identities found in cluster</p>
                                         </div>
                                     </td>

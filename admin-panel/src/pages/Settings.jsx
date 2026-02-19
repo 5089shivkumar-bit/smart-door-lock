@@ -20,7 +20,7 @@ export default function Settings() {
                     { label: 'Database Cluster', desc: 'Manage Supabase nodes and persistent storage.', icon: Database },
                     { label: 'Alert Center', desc: 'Configure secure identity notifications.', icon: Bell },
                 ].map((item, i) => (
-                    <div key={i} className="card-premium flex items-center justify-between group cursor-pointer">
+                    <div key={i} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500 flex items-center justify-between group cursor-pointer">
                         <div className="flex items-center gap-8">
                             <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center text-slate-500 group-hover:text-blue-500 group-hover:bg-blue-500/10 group-hover:border-blue-500/20 group-hover:scale-110 transition-all duration-500">
                                 <item.icon className="w-7 h-7" />

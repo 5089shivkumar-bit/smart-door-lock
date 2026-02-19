@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
-import { CheckCircle2, XCircle, Clock, Filter } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, Filter, Activity, ShieldCheck, ShieldAlert } from 'lucide-react';
 
 export default function Logs() {
     const [logs, setLogs] = useState([]);
@@ -38,7 +38,7 @@ export default function Logs() {
                 </button>
             </header>
 
-            <div className="card-premium !p-0 overflow-hidden relative">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-0 hover:border-white/40 transition-all duration-500 overflow-hidden relative">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -101,8 +101,8 @@ export default function Logs() {
                                     </td>
                                     <td className="px-8 py-6">
                                         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${log.status === 'success'
-                                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                            : 'bg-red-500/10 text-red-500 border border-red-500/20'
                                             }`}>
                                             {log.status === 'success' ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldAlert className="w-3.5 h-3.5" />}
                                             {log.status === 'success' ? 'Granted' : 'Denied'}

@@ -21,7 +21,7 @@ export default function Dashboard() {
                     </p>
                 </div>
                 <div className="hidden md:block">
-                    <div className="px-6 py-2 rounded-full glass border-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <div className="px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Feb 19, 2026 // 05:11 PM
                     </div>
                 </div>
@@ -29,7 +29,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, i) => (
-                    <div key={i} className="card-premium group cursor-default relative overflow-hidden">
+                    <div key={i} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500 group cursor-default relative overflow-hidden">
                         <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-[40px] rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700`}></div>
 
                         <div className="relative z-10 flex flex-col items-start gap-4">
@@ -47,7 +47,7 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 card-premium">
+                <div className="lg:col-span-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500">
                     <div className="flex items-center justify-between mb-8">
                         <h2 className="text-2xl font-black text-white tracking-tight">Recent Pulse</h2>
                         <button className="text-[10px] font-black text-blue-500 uppercase tracking-widest hover:text-white transition-colors">Export Logs</button>
@@ -70,7 +70,7 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <div className="card-premium flex flex-col items-center justify-center text-center group relative overflow-hidden">
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500 flex flex-col items-center justify-center text-center group relative overflow-hidden">
                     <div className="absolute inset-0 bg-blue-600/5 rotate-45 translate-y-[50%] skew-x-12 group-hover:bg-blue-600/10 transition-colors"></div>
 
                     <div className="relative z-10 w-full">
@@ -81,7 +81,7 @@ export default function Dashboard() {
                         <h2 className="text-2xl font-black text-white mb-3">Threat Monitor</h2>
                         <p className="text-sm text-slate-500 font-semibold px-4 leading-relaxed">System scan complete. No unauthorized access attempts detected in last 24h.</p>
 
-                        <button className="mt-8 btn-primary !w-full">
+                        <button className="mt-8 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-bold transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 !w-full">
                             Full Security Scan
                         </button>
                     </div>

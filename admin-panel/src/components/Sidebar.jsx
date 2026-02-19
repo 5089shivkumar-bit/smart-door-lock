@@ -21,7 +21,7 @@ export default function Sidebar() {
     const user = JSON.parse(localStorage.getItem('aura_user') || '{}');
 
     return (
-        <aside className="fixed left-6 top-6 bottom-6 w-[260px] glass-dark rounded-[2.5rem] flex flex-col z-50 overflow-hidden group">
+        <aside className="fixed left-6 top-6 bottom-6 w-[260px] bg-black/20 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2.5rem] flex flex-col z-50 overflow-hidden group">
             <div className="p-8 mb-4">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
@@ -74,7 +74,7 @@ export default function Sidebar() {
                     </div>
                 </div>
 
-                <div className="card-premium p-5 !bg-blue-600/10 border-blue-500/20">
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-5 hover:border-white/40 transition-all duration-500 !bg-blue-600/10 border-blue-500/20">
                     <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse"></div>
                         <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none pt-0.5">Live Sync active</span>
