@@ -20,6 +20,9 @@ export default {
                 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                 'scan': 'scan 2s linear infinite',
             },
+            backgroundImage: {
+                'mesh': 'radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%)',
+            },
             keyframes: {
                 scan: {
                     '0%': { top: '0%' },
