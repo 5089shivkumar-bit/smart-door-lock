@@ -3,30 +3,36 @@ import { Settings as SettingsIcon, Bell, Lock, Database, Globe } from 'lucide-re
 
 export default function Settings() {
     return (
-        <div className="space-y-8 max-w-4xl">
+        <div className="space-y-12 max-w-4xl">
             <header>
-                <h1 className="text-4xl font-black text-white tracking-tight mb-2">System Settings</h1>
-                <p className="text-slate-500 font-medium">Configure hardware thresholds and connectivity.</p>
+                <h1 className="text-5xl font-black text-white tracking-tighter mb-3 leading-none bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">
+                    System Core
+                </h1>
+                <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">
+                    Configuration Node: <span className="text-blue-500">Global Settings // v1.0.4</span>
+                </p>
             </header>
 
             <div className="grid gap-6">
                 {[
-                    { label: 'Security Protocols', desc: 'Manage encryption and token expiry.', icon: Lock },
-                    { label: 'Notifications', desc: 'Configure email and mobile alerts.', icon: Bell },
-                    { label: 'Database Sync', desc: 'Primary persistence and backup nodes.', icon: Database },
-                    { label: 'Network Info', desc: 'Remote access and API endpoints.', icon: Globe },
+                    { label: 'Security Protocols', desc: 'Manage AES-256 encryption and neural thresholds.', icon: Lock },
+                    { label: 'Aesthetic Interface', desc: 'Configure glassmorphism and motion dynamics.', icon: Globe },
+                    { label: 'Database Cluster', desc: 'Manage Supabase nodes and persistent storage.', icon: Database },
+                    { label: 'Alert Center', desc: 'Configure secure identity notifications.', icon: Bell },
                 ].map((item, i) => (
-                    <div key={i} className="glass p-8 rounded-[2.5rem] flex items-center justify-between hover:border-white/10 transition-all cursor-pointer group">
-                        <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-blue-400 group-hover:bg-blue-400/10 transition-all">
-                                <item.icon className="w-6 h-6" />
+                    <div key={i} className="card-premium flex items-center justify-between group cursor-pointer">
+                        <div className="flex items-center gap-8">
+                            <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center text-slate-500 group-hover:text-blue-500 group-hover:bg-blue-500/10 group-hover:border-blue-500/20 group-hover:scale-110 transition-all duration-500">
+                                <item.icon className="w-7 h-7" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-black text-white mb-0.5">{item.label}</h3>
-                                <p className="text-sm text-slate-500 font-medium">{item.desc}</p>
+                                <h3 className="text-xl font-black text-white mb-1 tracking-tight">{item.label}</h3>
+                                <p className="text-sm text-slate-500 font-bold opacity-60 italic lowercase">{item.desc}</p>
                             </div>
                         </div>
-                        <div className="text-[10px] font-black text-slate-700 uppercase tracking-widest group-hover:text-slate-400 transition-colors">Configure</div>
+                        <div className="px-6 py-2 rounded-full border border-white/5 text-[9px] font-black text-slate-600 uppercase tracking-widest group-hover:border-blue-500/50 group-hover:text-blue-500 transition-all">
+                            Modify Node
+                        </div>
                     </div>
                 ))}
             </div>

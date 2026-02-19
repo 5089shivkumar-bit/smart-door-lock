@@ -6,8 +6,10 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <div className="dark">
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </div>
   </React.StrictMode>,
 )

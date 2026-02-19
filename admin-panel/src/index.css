@@ -4,15 +4,51 @@
 
 @layer base {
   body {
-    @apply bg-[#0f172a] text-slate-200 antialiased;
+    @apply bg-[#05080f] text-slate-200 antialiased selection:bg-blue-500/30;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
-/* Custom transitions and blurs */
-.glass {
-  @apply bg-slate-900/40 backdrop-blur-md border border-white/5 shadow-xl;
+@layer components {
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.37)];
+  }
+
+  .glass-dark {
+    @apply bg-black/20 backdrop-blur-2xl border border-white/5 shadow-2xl;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-bold transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95;
+  }
+
+  .card-premium {
+    @apply glass p-8 rounded-[2.5rem] hover:border-white/20 transition-all duration-500;
+  }
 }
 
-.table-header {
-  @apply bg-slate-950/50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-slate-800;
+/* Custom Gradients */
+.bg-mesh {
+  background-color: #05080f;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }

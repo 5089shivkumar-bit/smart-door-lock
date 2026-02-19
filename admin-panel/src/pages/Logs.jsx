@@ -22,76 +22,97 @@ export default function Logs() {
     };
 
     return (
-        <div className="space-y-8">
-            <header className="flex items-center justify-between">
+        <div className="space-y-10">
+            <header className="flex items-end justify-between">
                 <div>
-                    <h1 className="text-4xl font-black text-white tracking-tight mb-2">Access Audit</h1>
-                    <p className="text-slate-500 font-medium">Real-time log of every attempt and event.</p>
+                    <h1 className="text-5xl font-black text-white tracking-tighter mb-3 leading-none bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">
+                        Security Audit
+                    </h1>
+                    <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">
+                        Access Pipeline: <span className="text-emerald-500">Monitoring Cluster // Live</span>
+                    </p>
                 </div>
-                <button className="glass flex items-center gap-3 px-6 py-4 rounded-2xl text-slate-400 font-bold text-sm hover:text-white transition-all active:scale-95">
-                    <Filter className="w-4 h-4" /> Filter Logs
+
+                <button className="px-6 py-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-3 font-bold text-xs uppercase tracking-widest">
+                    <Filter className="w-4 h-4" /> Filter Stream
                 </button>
             </header>
 
-            <div className="glass rounded-[3rem] overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead className="table-header">
-                        <tr>
-                            <th className="p-8">User / Device</th>
-                            <th className="p-8">Event Type</th>
-                            <th className="p-8">Timestamp</th>
-                            <th className="p-8">Verification</th>
-                            <th className="p-8">Outcome</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                        {loading ? (
-                            Array(5).fill(0).map((_, i) => (
-                                <tr key={i} className="animate-pulse"><td colSpan="5" className="p-10 bg-white/[0.01]"></td></tr>
-                            ))
-                        ) : logs.length === 0 ? (
-                            <tr><td colSpan="5" className="p-16 text-center text-slate-600 font-bold uppercase tracking-widest text-xs">No activity logged yet</td></tr>
-                        ) : (
-                            logs.map((log) => (
-                                <tr key={log._id} className="hover:bg-white/[0.02] transition-colors group">
-                                    <td className="p-8">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center">
-                                                <Clock className="w-4 h-4 text-slate-600" />
-                                            </div>
-                                            <div>
-                                                <div className="font-bold text-white uppercase text-[10px] tracking-widest mb-0.5">{log.name || 'Unknown Subject'}</div>
-                                                <div className="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Node-Terminal-01</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="p-8">
-                                        <span className="px-3 py-1.5 rounded-lg bg-slate-900 text-[10px] text-slate-400 font-black uppercase tracking-widest border border-white/5">
-                                            {log.method || 'System Internal'}
-                                        </span>
-                                    </td>
-                                    <td className="p-8">
-                                        <div className="text-xs font-mono text-slate-400 lowercase italic opacity-80">
-                                            {new Date(log.timestamp).toLocaleString()}
-                                        </div>
-                                    </td>
-                                    <td className="p-8">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${log.verified ? 'bg-blue-500' : 'bg-slate-700'}`}></div>
-                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{log.verified ? 'Matched' : 'Not Validated'}</span>
-                                        </div>
-                                    </td>
-                                    <td className="p-8">
-                                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] ${log.status === 'success' ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'}`}>
-                                            {log.status === 'success' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                                            {log.status || 'Resolved'}
+            <div className="card-premium !p-0 overflow-hidden relative">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-white/[0.02] border-b border-white/5">
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Deployment / Identity</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Event Vector</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Temporal Stamp</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Verification Status</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Audit Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                            {loading ? (
+                                [1, 2, 3, 4].map(i => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td colSpan="5" className="px-8 py-8">
+                                            <div className="h-10 bg-white/5 rounded-2xl w-full"></div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : logs.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="px-8 py-20 text-center">
+                                        <div className="flex flex-col items-center gap-4 opacity-20">
+                                            <Activity className="w-16 h-16" />
+                                            <p className="font-black uppercase tracking-widest text-xs">No activity pulses detected</p>
                                         </div>
                                     </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : logs.map((log) => (
+                                <tr key={log.id} className="group hover:bg-white/[0.02] transition-colors">
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center font-black text-[10px] text-slate-500 group-hover:text-blue-500 transition-colors">
+                                                LOG
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-black text-white">{log.employees?.name || 'Authorized Subject'}</div>
+                                                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{log.device_id || 'Primary Node'}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-slate-400 text-[10px] font-black uppercase tracking-[0.15em]">
+                                            {log.event_type || 'Entry Event'}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <div className="text-[11px] font-mono text-slate-500">
+                                            {new Date(log.created_at).toLocaleString()}
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${log.verified ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]'}`}></div>
+                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                                                {log.verified ? 'Matched' : 'Bypassed'}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${log.status === 'success'
+                                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                                            }`}>
+                                            {log.status === 'success' ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldAlert className="w-3.5 h-3.5" />}
+                                            {log.status === 'success' ? 'Granted' : 'Denied'}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
