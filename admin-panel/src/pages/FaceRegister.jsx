@@ -85,88 +85,89 @@ export default function FaceRegister() {
     };
 
     return (
-        <div className="flex items-center justify-center py-10 min-h-[calc(100vh-160px)]">
-            <div className="w-full max-w-[1000px] glass rounded-[2.5rem] overflow-hidden shadow-2xl bg-[#1e293b] border border-white/5 mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="flex items-start justify-center">
+            <div className="w-full max-w-[1100px] bg-[#1f2937] rounded-[16px] shadow-2xl p-8 border border-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-                    {/* Left Side: Webcam Section */}
-                    <div className="p-8 md:p-12 flex flex-col items-center justify-center bg-slate-900/50 border-r border-white/5">
-                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-slate-950">
+                    {/* LEFT SIDE: WEBCAM */}
+                    <div className="space-y-4">
+                        <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-950 border border-white/10 shadow-inner">
                             {capturedImage ? (
-                                <img src={capturedImage} className="w-full h-full object-cover animate-in fade-in zoom-in duration-500" alt="Captured Subject" />
+                                <img src={capturedImage} className="w-full h-full object-cover" alt="Captured" />
                             ) : (
                                 <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover mirror" style={{ transform: 'scaleX(-1)' }} />
                             )}
 
-                            {/* Visual Scanning Effect */}
-                            {!capturedImage && !status.message && (
-                                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                                    <div className="w-48 h-64 border-2 border-blue-500/20 rounded-3xl relative">
-                                        <div className="absolute top-0 left-0 w-full h-1 bg-blue-500/40 animate-scan"></div>
-                                    </div>
+                            {!capturedImage && (
+                                <div className="absolute inset-0 pointer-events-none border-2 border-blue-500/20 rounded-xl">
+                                    <div className="absolute top-0 left-0 w-full h-0.5 bg-blue-500/30 animate-scan"></div>
                                 </div>
                             )}
 
                             {loading && (
-                                <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center">
-                                    <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+                                <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center">
+                                    <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
                                 </div>
                             )}
                         </div>
 
-                        <div className="mt-8">
-                            {!capturedImage ? (
-                                <button
-                                    onClick={capturePhoto}
-                                    className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3 active:scale-95"
-                                >
-                                    <Camera className="w-5 h-5" /> Capture Photo
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={retake}
-                                    className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 border border-white/10"
-                                >
-                                    <RefreshCw className="w-5 h-5" /> Retake Photo
-                                </button>
-                            )}
-                        </div>
+                        {!capturedImage ? (
+                            <button
+                                onClick={capturePhoto}
+                                className="w-full py-4 bg-[#2563eb] hover:bg-blue-500 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-all duration-200 active:scale-[0.98]"
+                            >
+                                Capture Photo
+                            </button>
+                        ) : (
+                            <button
+                                onClick={retake}
+                                className="w-full py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-all duration-200 active:scale-[0.98]"
+                            >
+                                Retake Photo
+                            </button>
+                        )}
                     </div>
 
-                    {/* Right Side: Form Section */}
-                    <div className="p-8 md:p-12 flex flex-col justify-center bg-[#1e293b]">
-                        <div className="mb-10">
-                            <h2 className="text-3xl font-black text-white tracking-tight mb-2">Register Subject</h2>
-                            <p className="text-slate-400 font-medium">Capture a scan for system access.</p>
+                    {/* RIGHT SIDE: FORM */}
+                    <div className="flex flex-col">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Register Identity</h2>
+                            <p className="text-slate-400 text-sm">Enroll a new person into the biometric database.</p>
                         </div>
 
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] text-slate-500 uppercase font-black tracking-widest ml-1">Full Name</label>
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Full Name</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    placeholder="e.g. Johnathan Doe"
-                                    className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-5 text-white focus:outline-none focus:border-blue-600 transition-all placeholder:text-slate-800 font-bold"
+                                    placeholder="Enter full name"
+                                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-[#2563eb] transition-all duration-200 placeholder:text-slate-700"
                                 />
                             </div>
 
                             <button
                                 onClick={handleRegister}
                                 disabled={loading || !capturedImage || !name}
-                                className="w-full py-5 bg-[#2563eb] hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-3 active:scale-95 mt-4"
+                                className="w-full py-4 bg-[#2563eb] hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl font-bold uppercase tracking-widest text-sm transition-all duration-200 active:scale-[0.98] mt-2"
                             >
-                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
-                                Register Identity
+                                {loading ? "Processing..." : "Complete Registration"}
                             </button>
 
                             {status.message && (
-                                <div className={`mt-6 p-5 rounded-3xl flex items-center gap-3 text-sm font-bold animate-in slide-in-from-bottom duration-300 ${status.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
-                                    {status.type === 'success' ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
-                                    <span>{status.message}</span>
+                                <div className={`mt-4 text-sm font-bold flex items-center gap-2 ${status.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                                    {status.type === 'success' ? <ShieldCheck className="w-5 h-5" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+                                    {status.message}
                                 </div>
                             )}
+                        </div>
+
+                        <div className="mt-auto pt-8 border-t border-white/5">
+                            <ul className="text-[11px] text-slate-500 space-y-2 uppercase font-black tracking-widest opacity-40">
+                                <li>• ENCRYPTED TRANSMISSION</li>
+                                <li>• GDPR COMPLIANT STORAGE</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

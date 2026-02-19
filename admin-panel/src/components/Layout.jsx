@@ -6,8 +6,8 @@ export default function Layout() {
     return (
         <div className="flex min-h-screen bg-[#0f172a]">
             <Sidebar />
-            <main className="flex-1 ml-64 p-8 lg:p-12 overflow-y-auto">
-                <div className="max-w-6xl mx-auto animate-in fade-in duration-700">
+            <main className="flex-1 ml-[240px] p-10 overflow-y-auto">
+                <div className="max-w-[1100px] mx-auto">
                     <Outlet />
                 </div>
             </main>
