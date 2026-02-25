@@ -12,6 +12,7 @@ export default function Terminal() {
     const [activeMethod, setActiveMethod] = useState(null);
     const [camEnabled, setCamEnabled] = useState(false);
     const [camError, setCamError] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(''); // New state for dynamic errors
 
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
@@ -102,16 +103,17 @@ export default function Terminal() {
                 if (response.success) {
                     setUser(response.user);
                     setStatus('success');
-                    setTimeout(() => reset(), 5000);
+                    setTimeout(() => reset(), 3000); // Show success for 3 seconds
                 } else {
-                    // Fail silently and retry unless explicitly denied (based on your preference)
-                    // For now, let's show denied for 2 seconds then reset to idle
+                    setErrorMsg(response.message || 'Face not recognized');
                     setStatus('denied');
-                    setTimeout(() => reset(), 2000);
+                    setTimeout(() => reset(), 2500);
                 }
             } catch (error) {
                 console.error("Verification error:", error);
-                setStatus('idle');
+                setErrorMsg(error.response?.data?.message || 'Verification system error');
+                setStatus('denied');
+                setTimeout(() => reset(), 3000);
             }
         }, 'image/jpeg', 0.8);
     };
@@ -128,6 +130,7 @@ export default function Terminal() {
         setStatus('idle');
         setUser(null);
         setActiveMethod(null);
+        setErrorMsg('');
     };
 
     const formatTime = (date) => date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -270,7 +273,8 @@ export default function Terminal() {
                                     <UserX className="w-20 h-20 text-red-500" />
                                 </div>
                                 <h2 className="text-3xl font-black text-white tracking-tighter mb-2">ACCESS DENIED</h2>
-                                <p className="text-red-400/60 font-medium uppercase tracking-[0.2em] text-xs">Credentials not recognized</p>
+                                <p className="text-red-400 font-bold uppercase tracking-[0.2em] text-xs mb-1">{errorMsg}</p>
+                                <p className="text-red-400/40 font-medium uppercase tracking-[0.1em] text-[10px]">Sorry, Please try again</p>
                                 <button
                                     onClick={reset}
                                     className="mt-10 text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest border-b border-white/10"

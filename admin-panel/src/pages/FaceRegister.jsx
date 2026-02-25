@@ -69,11 +69,13 @@ export default function FaceRegister() {
             const biometricResult = await apiService.registerFace(formData);
 
             if (biometricResult.success) {
+                const finalEmployeeId = biometricResult.employeeId || `EMP-${Date.now().toString().slice(-6)}`;
+
                 // Now save to the actual database
                 await apiService.createEmployee({
-                    employeeId: biometricResult.employeeId || `EMP-${Date.now().toString().slice(-6)}`,
+                    employeeId: finalEmployeeId,
                     name: name,
-                    email: `${name.toLowerCase().replace(/\s+/g, '.')}@internal.com`,
+                    email: `${name.toLowerCase().replace(/\s+/g, '.')}.${finalEmployeeId.toLowerCase()}@internal.com`,
                     role: 'employee',
                     faceEncoding: biometricResult.encoding,
                     image_url: biometricResult.image_url

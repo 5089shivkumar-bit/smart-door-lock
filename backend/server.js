@@ -151,7 +151,12 @@ app.post('/api/users', authenticateToken, async (req, res) => {
             .select()
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error("❌ Supabase Upsert Error:", error);
+            throw error;
+        }
+
+        console.log("✅ User created/updated in Supabase:", newUser.employee_id);
         res.status(201).json(newUser);
     } catch (error) {
         console.error("❌ Create user error:", error);
@@ -215,7 +220,8 @@ app.post('/api/biometrics/face/register', upload.single('file'), async (req, res
             success: true,
             message: "Face registered (Development Mock Mode)",
             encoding: mockEncoding,
-            image_url: imageUrl
+            image_url: imageUrl,
+            employeeId: employeeId // Return the ID so frontend is in sync
         });
     } catch (error) {
         console.error("❌ Biometric fallback error:", error);
@@ -241,30 +247,69 @@ app.post('/api/biometrics/face/verify', upload.single('file'), async (req, res) 
             });
         }
 
-        // --- Smart Sandbox Mode ---
-        // In the absence of a Python AI engine, we verify against the most recent registration
-        // This ensures the USER sees a "Success" state when they test it themselves.
-        const matchedUser = employees[0];
+        // --- Realistic Verification Flow ---
+        // Attempt to call the Python Biometric Engine (Port 8001)
+        try {
+            const { default: axios } = await import('axios');
+            const FormData = (await import('form-data')).default;
 
-        console.log(`✅ Access Granted: Welcome ${matchedUser.name}`);
+            const form = new FormData();
+            form.append('file', req.file.buffer, {
+                filename: 'verify.jpg',
+                contentType: 'image/jpeg'
+            });
 
-        // Log the successful entry
-        await supabase.from('access_logs').insert({
-            employee_id: matchedUser.employee_id,
-            status: 'success',
-            confidence: 0.98,
-            device_id: 'terminal_01'
-        });
+            console.log("📡 Forwarding to Biometric Engine (Port 8001)...");
+            const response = await axios.post('http://localhost:8001/api/biometrics/face/verify', form, {
+                headers: form.getHeaders(),
+                timeout: 5000
+            });
 
-        res.json({
-            success: true,
-            message: `Authorized: Welcome ${matchedUser.name}`,
-            user: {
-                name: matchedUser.name,
-                role: matchedUser.role,
-                employee_id: matchedUser.employee_id
+            if (response.data.success) {
+                const matchedUser = response.data.user;
+                console.log(`✅ Access Granted (Real Match): Welcome ${matchedUser.name}`);
+
+                // Log success
+                await supabase.from('access_logs').insert({
+                    employee_id: matchedUser.employee_id,
+                    status: 'success',
+                    confidence: response.data.confidence || 0.98,
+                    device_id: 'terminal_01'
+                });
+
+                return res.json({
+                    success: true,
+                    message: `Authorized: Welcome ${matchedUser.name}`,
+                    user: matchedUser
+                });
+            } else {
+                console.warn("🚫 Access Denied: Face not recognized by AI engine.");
+                // Log failure
+                await supabase.from('access_logs').insert({
+                    status: 'failed',
+                    device_id: 'terminal_01'
+                });
+
+                return res.status(401).json({
+                    success: false,
+                    message: "Access Denied: Face not recognized."
+                });
             }
-        });
+        } catch (engineError) {
+            console.warn("⚠️ Biometric Engine (Port 8001) is offline. Using strict security mode.");
+
+            // In strict mode, we NEVER auto-grant without the AI engine.
+            // Log the attempt as a system error/denial
+            await supabase.from('access_logs').insert({
+                status: 'failed',
+                device_id: 'terminal_01'
+            });
+
+            return res.status(503).json({
+                success: false,
+                message: "Security Service Temporary Offline. Please try again later."
+            });
+        }
 
     } catch (error) {
         console.error("❌ Verification error:", error);
