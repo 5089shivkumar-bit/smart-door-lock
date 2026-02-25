@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: '/', // Use Vite Proxy
     headers: {
         'Content-Type': 'application/json'
     }
@@ -35,9 +35,15 @@ export const apiService = {
 
     // Face Registration
     registerFace: async (formData) => {
-        const response = await api.post('/api/face/register', formData, {
+        const response = await api.post('/api/biometrics/face/register', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
+        return response.data;
+    },
+
+    // Employees
+    createEmployee: async (employeeData) => {
+        const response = await api.post('/api/users', employeeData);
         return response.data;
     },
 

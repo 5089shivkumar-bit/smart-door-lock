@@ -1,12 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
-    headers: { 'Content-Type': 'application/json' }
-});
-
-const biometricApi = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: '/', // Use Vite Proxy
     headers: { 'Content-Type': 'application/json' }
 });
 
@@ -27,9 +22,7 @@ api.interceptors.response.use(
     (response) => response.data,
     (error) => {
         if (error.response?.status === 401) {
-            // Handle unauthorized (e.g., redirect to login)
-            // localStorage.removeItem('token');
-            // window.location.href = '/login';
+            // Handle unauthorized
         }
         return Promise.reject(error.response?.data || error.message);
     }
@@ -37,7 +30,7 @@ api.interceptors.response.use(
 
 export const apiService = {
     // Dashboard Stats
-    getDashboardStats: () => api.get('/api/dashboard/stats'),
+    getDashboardStats: () => api.get('/api/stats'),
 
     // Logs
     getLogs: (params) => api.get('/api/logs', { params }),
@@ -45,6 +38,7 @@ export const apiService = {
     // Users
     getUsers: () => api.get('/api/users'),
     createUser: (userData) => api.post('/api/users', userData),
+    deleteUser: (id) => api.delete(`/api/users/${id}`),
 
     // Devices
     getDevices: () => api.get('/api/devices'),
@@ -57,8 +51,8 @@ export const apiService = {
         formData.append('employeeId', employeeId);
         formData.append('email', email);
 
-        console.log(`📤 Registering face for ${employeeId} to Biometric API...`);
-        return biometricApi.post('/api/biometrics/face/register', formData, {
+        console.log(`📤 Sending face registration to /api/biometrics...`);
+        return api.post('/api/biometrics/face/register', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
     },
@@ -69,8 +63,8 @@ export const apiService = {
         const formData = new FormData();
         formData.append('file', imageBlob, 'verify.jpg');
 
-        console.log("🔍 Sending live frame to Biometric API for verification...");
-        return biometricApi.post('/api/biometrics/face/verify', formData, {
+        console.log("🔍 Sending face verification to /api/biometrics...");
+        return api.post('/api/biometrics/face/verify', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
     },

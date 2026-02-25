@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
-import { CheckCircle2, XCircle, Clock, Filter, Activity, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Filter, Download, Activity, Calendar } from 'lucide-react';
 
 export default function Logs() {
     const [logs, setLogs] = useState([]);
@@ -22,87 +22,100 @@ export default function Logs() {
     };
 
     return (
-        <div className="space-y-10">
-            <header className="flex items-end justify-between">
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-5xl font-black text-white tracking-tighter mb-3 leading-none bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">
-                        Security Audit
-                    </h1>
-                    <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">
-                        Access Pipeline: <span className="text-emerald-500">Monitoring Cluster // Live</span>
-                    </p>
+                    <h1 className="text-3xl font-bold text-white mb-2">Security Audit</h1>
+                    <p className="text-slate-400 text-sm">Real-time biometric access stream and threat analysis logs.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <button className="btn-secondary flex items-center gap-2 text-xs">
+                        <Calendar className="w-4 h-4" /> Last 24h
+                    </button>
+                    <button className="btn-secondary flex items-center gap-2 text-xs">
+                        <Download className="w-4 h-4" /> Export Report
+                    </button>
+                </div>
+            </div>
+
+            {/* Table Card */}
+            <div className="card !p-0 overflow-hidden relative">
+                <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></div>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widestleading-none">Monitoring Cluster Alpha</span>
+                    </div>
+                    <button className="flex items-center gap-2 text-[11px] font-bold text-blue-500 uppercase tracking-widest hover:text-blue-400 transition-colors">
+                        <Filter className="w-3.5 h-3.5" /> Configure Stream
+                    </button>
                 </div>
 
-                <button className="px-6 py-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-3 font-bold text-xs uppercase tracking-widest">
-                    <Filter className="w-4 h-4" /> Filter Stream
-                </button>
-            </header>
-
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-0 hover:border-white/40 transition-all duration-500 overflow-hidden relative">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-white/[0.02] border-b border-white/5">
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Deployment / Identity</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Event Vector</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Temporal Stamp</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Verification Status</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Audit Outcome</th>
+                            <tr className="bg-slate-900/40 text-slate-500 text-[10px] font-bold uppercase tracking-widest border-b border-white/5">
+                                <th className="px-8 py-4">Subject Identification</th>
+                                <th className="px-8 py-4">Access Vector</th>
+                                <th className="px-8 py-4">Temporal Stamp</th>
+                                <th className="px-8 py-4">Validation</th>
+                                <th className="px-8 py-4 text-right">Audit Result</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {loading ? (
                                 [1, 2, 3, 4].map(i => (
                                     <tr key={i} className="animate-pulse">
-                                        <td colSpan="5" className="px-8 py-8">
-                                            <div className="h-10 bg-white/5 rounded-2xl w-full"></div>
+                                        <td colSpan="5" className="px-8 py-6">
+                                            <div className="h-10 bg-white/5 rounded-lg w-full"></div>
                                         </td>
                                     </tr>
                                 ))
                             ) : logs.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-8 py-20 text-center">
-                                        <div className="flex flex-col items-center gap-4 opacity-20">
-                                            <Activity className="w-16 h-16" />
-                                            <p className="font-black uppercase tracking-widest text-xs">No activity pulses detected</p>
+                                        <div className="flex flex-col items-center gap-4 opacity-30">
+                                            <Activity className="w-12 h-12 text-blue-500 animate-pulse" />
+                                            <p className="font-bold uppercase tracking-widest text-xs">No activity pulses detected in last cycle</p>
                                         </div>
                                     </td>
                                 </tr>
                             ) : logs.map((log) => (
-                                <tr key={log.id} className="group hover:bg-white/[0.02] transition-colors">
-                                    <td className="px-8 py-6">
+                                <tr key={log.id} className="hover:bg-white/[0.01] transition-colors group">
+                                    <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center font-black text-[10px] text-slate-500 group-hover:text-blue-500 transition-colors">
-                                                LOG
+                                            <div className="w-9 h-9 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center font-black text-[10px] text-slate-600 group-hover:text-blue-500 transition-colors">
+                                                ID
                                             </div>
                                             <div>
-                                                <div className="text-sm font-black text-white">{log.employees?.name || 'Authorized Subject'}</div>
-                                                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{log.device_id || 'Primary Node'}</div>
+                                                <div className="text-sm font-bold text-white leading-tight">{log.employees?.name || 'Subject Unknown'}</div>
+                                                <div className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mt-0.5">{log.device_id || 'Entrance Node'}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-slate-400 text-[10px] font-black uppercase tracking-[0.15em]">
-                                            {log.event_type || 'Entry Event'}
+                                    <td className="px-8 py-5">
+                                        <span className="text-[10px] font-bold px-2 py-1 bg-white/5 text-slate-400 rounded-md border border-white/5 uppercase tracking-widest">
+                                            {log.event_type || 'Biometric Access'}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className="text-[11px] font-mono text-slate-500">
+                                    <td className="px-8 py-5">
+                                        <div className="text-[11px] font-mono text-slate-500 flex items-center gap-2">
+                                            <Clock className="w-3 h-3" />
                                             {new Date(log.created_at).toLocaleString()}
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-8 py-5">
                                         <div className="flex items-center gap-2">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${log.verified ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]'}`}></div>
-                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-                                                {log.verified ? 'Matched' : 'Bypassed'}
+                                            <div className={`w-1 h-1 rounded-full ${log.verified ? 'bg-emerald-500' : 'bg-orange-500'}`}></div>
+                                            <span className="text-[11px] font-bold text-slate-500">
+                                                {log.verified ? 'Verified Match' : 'Manual Bypass'}
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${log.status === 'success'
-                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                            : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                                    <td className="px-8 py-5 text-right">
+                                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${log.status === 'success'
+                                                ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/10'
+                                                : 'bg-red-500/5 text-red-500 border-red-500/10'
                                             }`}>
                                             {log.status === 'success' ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldAlert className="w-3.5 h-3.5" />}
                                             {log.status === 'success' ? 'Granted' : 'Denied'}

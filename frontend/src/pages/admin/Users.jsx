@@ -61,7 +61,7 @@ export default function UsersPage() {
             }
         } catch (err) {
             console.error("❌ Face registration network/server error:", err);
-            const errorMsg = err.message || (typeof err === 'string' ? err : "Server unreachable. Ensure Biometric API (Port 8000) is running.");
+            const errorMsg = err.message || (typeof err === 'string' ? err : "Server unreachable. Ensure Biometric API (Port 8001) is running.");
             setError(errorMsg);
             alert(`Face registration error: ${errorMsg}`);
         } finally {
@@ -79,6 +79,17 @@ export default function UsersPage() {
             alert("Fingerprint enrollment failed. Please try again.");
         } finally {
             setBiometricLoading(false);
+        }
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) return;
+
+        try {
+            await apiService.deleteUser(id);
+            loadUsers();
+        } catch (err) {
+            alert(err.message || "Failed to delete user");
         }
     };
 
@@ -190,8 +201,12 @@ export default function UsersPage() {
                                         </span>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <button className="p-3 hover:bg-slate-800 rounded-xl text-slate-500 hover:text-white transition-all active:scale-90">
-                                            <MoreVertical className="w-5 h-5" />
+                                        <button
+                                            onClick={() => handleDeleteUser(user.id)}
+                                            className="p-3 hover:bg-red-500/10 rounded-xl text-slate-500 hover:text-red-400 transition-all active:scale-90"
+                                            title="Delete User"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
                                         </button>
                                     </td>
                                 </tr>

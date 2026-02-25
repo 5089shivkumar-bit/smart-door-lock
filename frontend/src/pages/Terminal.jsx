@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scan, Fingerprint, Lock, Shield, ScanFace, UserCheck, UserX, Loader2 } from 'lucide-react';
+import { Scan, Fingerprint, Lock, Shield, ScanFace, UserCheck, UserX, Loader2, Settings } from 'lucide-react';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import { apiService } from '../services/api.service';
 
 export default function Terminal() {
@@ -156,9 +157,18 @@ export default function Terminal() {
                             <p className="text-blue-400/60 text-[10px] uppercase font-black tracking-widest">Version 2.4.0</p>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="text-2xl font-light text-white tracking-tight">{formatTime(time)}</div>
-                        <p className="text-slate-500 text-[10px] uppercase font-bold">{format(time, 'EEEE, MMM dd')}</p>
+                    <div className="flex items-center gap-6">
+                        <div className="text-right">
+                            <div className="text-2xl font-light text-white tracking-tight">{formatTime(time)}</div>
+                            <p className="text-slate-500 text-[10px] uppercase font-bold">{format(time, 'EEEE, MMM dd')}</p>
+                        </div>
+                        <Link
+                            to="/admin"
+                            className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+                            title="Admin Panel"
+                        >
+                            <Settings className="w-5 h-5" />
+                        </Link>
                     </div>
                 </header>
 

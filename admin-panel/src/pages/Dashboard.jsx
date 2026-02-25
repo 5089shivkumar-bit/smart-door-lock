@@ -1,90 +1,100 @@
 import React from 'react';
-import { Shield, Users, Activity, Clock } from 'lucide-react';
+import { Shield, Activity, Clock, ShieldCheck, ArrowUpRight } from 'lucide-react';
 
 export default function Dashboard() {
     const stats = [
-        { label: 'Network Points', value: '12', icon: Shield, color: 'text-blue-400', bg: 'bg-blue-400/10', trend: '+2 this week' },
-        { label: 'Access Requests', value: '1.2k', icon: Activity, color: 'text-emerald-400', bg: 'bg-emerald-400/10', trend: '99% Success Rate' },
-        { label: 'System Integrity', value: 'A+', icon: Shield, color: 'text-indigo-400', bg: 'bg-indigo-400/10', trend: 'No issues found' },
-        { label: 'Global Uptime', value: '100%', icon: Clock, color: 'text-orange-400', bg: 'bg-orange-400/10', trend: 'Optimized' },
+        { label: 'Active Nodes', value: '12', icon: Shield, trend: '+2' },
+        { label: 'Total Access', value: '1,280', icon: Activity, trend: '+14%' },
+        { label: 'Security Score', value: '98%', icon: ShieldCheck, trend: 'Optimal' },
+        { label: 'Avg Pulse', value: '45ms', icon: Clock, trend: '-2ms' },
     ];
 
     return (
-        <div className="space-y-12">
-            <header className="flex items-end justify-between">
-                <div>
-                    <h1 className="text-5xl font-black text-white tracking-tighter mb-3 leading-none bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">
-                        Command Center
-                    </h1>
-                    <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">
-                        Operational Status: <span className="text-emerald-500">OPTIMAL</span>
-                    </p>
-                </div>
-                <div className="hidden md:block">
-                    <div className="px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Feb 19, 2026 // 05:11 PM
-                    </div>
-                </div>
-            </header>
+        <div className="space-y-8">
+            {/* Header */}
+            <div>
+                <h1 className="text-3xl font-bold text-white mb-2">Overview</h1>
+                <p className="text-slate-400 text-sm">Monitor system health and biometric access activity in real-time.</p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, i) => (
-                    <div key={i} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500 group cursor-default relative overflow-hidden">
-                        <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-[40px] rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700`}></div>
-
-                        <div className="relative z-10 flex flex-col items-start gap-4">
-                            <div className={`w-14 h-14 rounded-[1.25rem] ${stat.bg} flex items-center justify-center transition-transform group-hover:rotate-[15deg] duration-500`}>
-                                <stat.icon className={`w-7 h-7 ${stat.color}`} />
+                    <div key={i} className="card hover:border-white/10 transition-colors">
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-blue-500 border border-white/5">
+                                <stat.icon className="w-5 h-5" />
                             </div>
-                            <div>
-                                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{stat.label}</div>
-                                <div className="text-3xl font-black text-white mb-2">{stat.value}</div>
-                                <div className="text-[10px] font-bold text-slate-600 lowercase italic">{stat.trend}</div>
-                            </div>
+                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${stat.trend.includes('+') ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-400 bg-slate-400/10'
+                                }`}>
+                                {stat.trend}
+                            </span>
                         </div>
+                        <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</div>
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500">
-                    <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-black text-white tracking-tight">Recent Pulse</h2>
-                        <button className="text-[10px] font-black text-blue-500 uppercase tracking-widest hover:text-white transition-colors">Export Logs</button>
+            {/* Main Content Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Recent Activity */}
+                <div className="lg:col-span-2 card">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-lg font-bold text-white">Security Logs</h2>
+                        <button className="text-blue-500 hover:text-blue-400 text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-1">
+                            Full Audit <ArrowUpRight className="w-3 h-3" />
+                        </button>
                     </div>
-                    <div className="space-y-6">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="flex items-center justify-between p-5 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all duration-300 group">
-                                <div className="flex items-center gap-5">
-                                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center font-black text-blue-500 group-hover:scale-110 transition-transform">
-                                        USR
+                    <div className="space-y-4">
+                        {[
+                            { user: 'Subject A-104', location: 'Primary Entry', time: '2m ago', level: 'Verified' },
+                            { user: 'Subject B-202', location: 'Server Node 4', time: '15m ago', level: 'Verified' },
+                            { user: 'Subject C-088', location: 'Service Area', time: '1h ago', level: 'Verified' },
+                        ].map((log, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-[#111827] border border-white/5 hover:border-white/10 transition-all">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/5 flex items-center justify-center font-bold text-slate-400 text-xs">
+                                        ID
                                     </div>
                                     <div>
-                                        <div className="text-md font-black text-white">Access Granted: Subject A-{i}04</div>
-                                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-0.5">Primary Entry Point // Verified</div>
+                                        <div className="text-sm font-bold text-white">{log.user}</div>
+                                        <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">{log.location} // {log.level}</div>
                                     </div>
                                 </div>
-                                <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest">2m ago</div>
+                                <div className="text-xs font-medium text-slate-600">{log.time}</div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-8 hover:border-white/40 transition-all duration-500 flex flex-col items-center justify-center text-center group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-blue-600/5 rotate-45 translate-y-[50%] skew-x-12 group-hover:bg-blue-600/10 transition-colors"></div>
-
-                    <div className="relative z-10 w-full">
-                        <div className="w-32 h-32 rounded-full border-2 border-white/5 flex items-center justify-center mx-auto mb-8 relative">
-                            <div className="absolute inset-2 rounded-full border border-blue-500/20 border-dashed animate-spin-slow"></div>
-                            <Shield className="w-16 h-16 text-white/20 animate-pulse" />
+                {/* Threat Monitor / System Status */}
+                <div className="card space-y-6">
+                    <h2 className="text-lg font-bold text-white">System Integrity</h2>
+                    <div className="p-6 rounded-2xl bg-[#111827] border border-white/5 flex flex-col items-center text-center">
+                        <div className="w-20 h-20 rounded-full border border-emerald-500/20 flex items-center justify-center mb-4 relative">
+                            <div className="absolute inset-0 rounded-full border-t border-emerald-500 animate-spin"></div>
+                            <ShieldCheck className="w-10 h-10 text-emerald-500" />
                         </div>
-                        <h2 className="text-2xl font-black text-white mb-3">Threat Monitor</h2>
-                        <p className="text-sm text-slate-500 font-semibold px-4 leading-relaxed">System scan complete. No unauthorized access attempts detected in last 24h.</p>
-
-                        <button className="mt-8 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-bold transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 !w-full">
-                            Full Security Scan
-                        </button>
+                        <div className="text-xl font-bold text-white mb-2">Secure</div>
+                        <p className="text-xs text-slate-500 font-medium px-2 leading-relaxed">
+                            Internal firewall active and neural identity thresholds maintained.
+                        </p>
                     </div>
+
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
+                            <span>Uptime</span>
+                            <span className="text-white">99.98%</span>
+                        </div>
+                        <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-emerald-500 w-[99%] text-right"></div>
+                        </div>
+                    </div>
+
+                    <button className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-600/10 active:scale-[0.98]">
+                        Run Security Diagnostic
+                    </button>
                 </div>
             </div>
         </div>

@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { apiService } from '../services/api';
 import {
@@ -7,7 +8,8 @@ import {
     ClipboardList,
     Settings,
     Lock,
-    LogOut
+    LogOut,
+    Shield
 } from 'lucide-react';
 
 const menuItems = [
@@ -22,65 +24,56 @@ export default function Sidebar() {
     const user = JSON.parse(localStorage.getItem('aura_user') || '{}');
 
     return (
-        <aside className="fixed left-6 top-6 bottom-6 w-[260px] bg-black/20 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2.5rem] flex flex-col z-50 overflow-hidden group">
-            <div className="p-8 mb-4">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
-                        <Lock className="w-6 h-6 text-white" />
+        <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#111827] border-r border-white/5 flex flex-col z-50">
+            {/* Logo Section */}
+            <div className="p-6 mb-2">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
+                        <Lock className="w-5 h-5 text-white" />
                     </div>
-                    <div>
-                        <h1 className="font-black text-white tracking-tighter text-xl">
-                            AURA
-                        </h1>
-                        <p className="text-[10px] font-bold text-blue-500 tracking-[0.3em] uppercase opacity-80">Security</p>
-                    </div>
+                    <h1 className="font-bold text-white tracking-tight text-xl">
+                        Aura<span className="text-blue-500">Lock</span>
+                    </h1>
                 </div>
             </div>
 
-            <nav className="flex-1 px-4 space-y-2">
+            {/* Navigation */}
+            <nav className="flex-1 px-3 space-y-1">
                 {menuItems.map((item) => (
                     <NavLink
                         key={item.path}
                         to={item.path}
                         className={({ isActive }) => `
-                            flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500 group/item
+                            flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group
                             ${isActive
-                                ? 'bg-white/10 text-white shadow-xl border border-white/10'
+                                ? 'bg-blue-600/10 text-blue-500 border border-blue-500/20'
                                 : 'text-slate-400 hover:bg-white/5 hover:text-white'
                             }
                         `}
                     >
-                        <item.icon className="w-5 h-5 group-hover/item:scale-110 transition-transform" />
-                        <span className="font-bold text-sm tracking-wide">{item.name}</span>
-                        {item.name === 'Face Register' && (
-                            <div className="ml-auto w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                        )}
+                        <item.icon className={`w-5 h-5 ${item.name === 'Face Register' ? 'animate-pulse' : ''}`} />
+                        <span className="font-semibold text-sm">{item.name}</span>
                     </NavLink>
                 ))}
             </nav>
 
-            <div className="p-6 space-y-4">
-                <div className="flex items-center gap-4 px-4 py-2">
-                    <div className="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/20 flex items-center justify-center font-black text-blue-500 text-xs shrink-0">
+            {/* Bottom Section: User Info & Logout */}
+            <div className="p-4 border-t border-white/5 bg-[#0f172a]/50">
+                <div className="flex items-center gap-3 mb-4 px-2">
+                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center font-bold text-slate-400 text-xs">
                         {user.name?.charAt(0) || 'A'}
                     </div>
                     <div className="min-w-0">
-                        <div className="text-[11px] font-black text-white truncate">{user.name || 'Admin'}</div>
-                        <button
-                            onClick={() => apiService.logout()}
-                            className="text-[9px] font-bold text-slate-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-1.5"
-                        >
-                            <LogOut className="w-3 h-3" /> Terminate
-                        </button>
+                        <div className="text-xs font-bold text-white truncate">{user.name || 'Admin'}</div>
+                        <div className="text-[10px] text-slate-500 truncate">System Administrator</div>
                     </div>
                 </div>
-
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-lg p-5 hover:border-white/40 transition-all duration-500 !bg-blue-600/10 border-blue-500/20">
-                    <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse"></div>
-                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none pt-0.5">Live Sync active</span>
-                    </div>
-                </div>
+                <button
+                    onClick={() => apiService.logout()}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xs font-semibold"
+                >
+                    <LogOut className="w-4 h-4" /> Sign Out
+                </button>
             </div>
         </aside>
     );
