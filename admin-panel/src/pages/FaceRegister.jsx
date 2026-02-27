@@ -61,12 +61,10 @@ export default function FaceRegister() {
             const response = await fetch(capturedImage);
             const blob = await response.blob();
 
-            const formData = new FormData();
-            formData.append('file', blob, 'face.jpg'); // Changed 'image' to 'file'
-            formData.append('name', name);
-            formData.append('employeeId', `EMP-${Date.now().toString().slice(-6)}`);
+            const finalEmployeeId = `EMP-${Date.now().toString().slice(-6)}`;
+            const generatedEmail = `${name.toLowerCase().replace(/\s+/g, '.')}.${finalEmployeeId.toLowerCase()}@internal.com`;
 
-            const biometricResult = await apiService.registerFace(formData);
+            const biometricResult = await apiService.registerFace(blob, finalEmployeeId, generatedEmail, name);
 
             if (biometricResult.success) {
                 const finalEmployeeId = biometricResult.employeeId || `EMP-${Date.now().toString().slice(-6)}`;
@@ -89,7 +87,9 @@ export default function FaceRegister() {
                 throw new Error(biometricResult.message || 'Biometric analysis failed');
             }
         } catch (err) {
-            setStatus({ type: 'error', message: err.response?.data?.message || 'Registration failed.' });
+            console.error("Registration error:", err);
+            const errorMsg = err.response?.data?.message || err.message || 'Registration failed.';
+            setStatus({ type: 'error', message: errorMsg });
         } finally {
             setLoading(false);
         }

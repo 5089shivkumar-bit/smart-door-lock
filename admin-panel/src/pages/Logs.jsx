@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
-import { ShieldCheck, ShieldAlert, Filter, Download, Activity, Calendar } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Filter, Download, Activity, Calendar, Clock } from 'lucide-react';
 
 export default function Logs() {
     const [logs, setLogs] = useState([]);
@@ -114,8 +114,8 @@ export default function Logs() {
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${log.status === 'success'
-                                                ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/10'
-                                                : 'bg-red-500/5 text-red-500 border-red-500/10'
+                                            ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/10'
+                                            : 'bg-red-500/5 text-red-500 border-red-500/10'
                                             }`}>
                                             {log.status === 'success' ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldAlert className="w-3.5 h-3.5" />}
                                             {log.status === 'success' ? 'Granted' : 'Denied'}

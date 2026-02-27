@@ -45,11 +45,12 @@ export const apiService = {
     unlockDevice: (deviceId) => api.post(`/api/devices/${deviceId}/unlock`),
 
     // Biometrics
-    registerFace: (imageBlob, employeeId, email) => {
+    registerFace: (imageBlob, employeeId, email, name) => {
         const formData = new FormData();
         formData.append('file', imageBlob, 'capture.jpg');
         formData.append('employeeId', employeeId);
         formData.append('email', email);
+        if (name) formData.append('name', name);
 
         console.log(`📤 Sending face registration to /api/biometrics...`);
         return api.post('/api/biometrics/face/register', formData, {

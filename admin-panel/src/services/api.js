@@ -34,7 +34,14 @@ export const apiService = {
     },
 
     // Face Registration
-    registerFace: async (formData) => {
+    registerFace: async (imageBlob, employeeId, email, name) => {
+        const formData = new FormData();
+        formData.append('file', imageBlob, 'register.jpg');
+        formData.append('employeeId', employeeId);
+        formData.append('email', email);
+        if (name) formData.append('name', name);
+
+        console.log(`📤 Sending face registration for: ${employeeId}`);
         const response = await api.post('/api/biometrics/face/register', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });

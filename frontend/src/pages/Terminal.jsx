@@ -111,7 +111,7 @@ export default function Terminal() {
                 }
             } catch (error) {
                 console.error("Verification error:", error);
-                setErrorMsg(error.response?.data?.message || 'Verification system error');
+                setErrorMsg(error.message || 'Verification system error');
                 setStatus('denied');
                 setTimeout(() => reset(), 3000);
             }

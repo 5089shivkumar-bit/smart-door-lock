@@ -29,6 +29,7 @@ async def health_check():
 async def register_face(
     employeeId: str = Form(...),
     email: str = Form(...),
+    name: str = Form(None),
     file: UploadFile = File(...)
 ):
     """
@@ -77,13 +78,12 @@ async def register_face(
         # 4. Save Metadata to Supabase Database
         print("💾 Step 5: Saving metadata to 'employees' table...")
         user_data = {
-            "name": employeeId, 
+            "name": name if name else employeeId, 
             "email": email,
             "employee_id": employeeId,
             "face_embedding": encoding_list,
             "image_url": str(image_url),
-            "role": "employee",
-            "updated_at": datetime.utcnow().isoformat()
+            "role": "employee"
         }
 
         db_result = supabase.table("employees").upsert(user_data, on_conflict="employee_id").execute()
@@ -101,12 +101,12 @@ async def register_face(
         print(f"❌ Registration Error: {error_msg}")
         
         # Check for specific Supabase errors
-        if "bucket_not_found" in error_msg.lower():
-            return {"success": False, "message": "Supabase Storage bucket 'biometrics' not found. Please create it in your Supabase dashboard."}
+        if "bucket_not_found" in error_msg.lower() or "storage" in error_msg.lower():
+            return {"success": False, "message": "Supabase Storage error. Please check your 'biometrics' bucket."}
         elif "duplicate" in error_msg.lower():
-            return {"success": False, "message": "Employee ID already exists. Try updating instead."}
+            return {"success": False, "message": "Employee ID already exists."}
             
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {error_msg}")
+        return {"success": False, "message": f"Engine Error: {error_msg}"}
 
 @app.post("/api/biometrics/face/verify")
 async def verify_face(file: UploadFile = File(...)):

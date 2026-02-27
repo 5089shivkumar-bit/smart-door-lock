@@ -9,11 +9,11 @@ async function checkSchema() {
     const tables = ['employees', 'access_logs', 'users'];
 
     for (const table of tables) {
-        const { data, error } = await supabase.from(table).select('*', { count: 'exact', head: true });
+        const { count, error } = await supabase.from(table).select('*', { count: 'exact', head: true });
         if (error) {
             console.log(`❌ Table '${table}': ${error.message}`);
         } else {
-            console.log(`✅ Table '${table}': Exists (Found ${data || 0} rows)`);
+            console.log(`✅ Table '${table}': Exists (Found ${count || 0} rows)`);
         }
     }
 }
