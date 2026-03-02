@@ -52,12 +52,41 @@ const authenticateToken = (req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
             console.error("❌ Token Verification Failed:", err.message);
-            return res.status(403).json({ error: "Forbidden: Invalid or expired token" });
+            console.log("🔑 Received Token (Partial):", token.substring(0, 20) + "...");
+            return res.status(403).json({
+                error: "Forbidden",
+                message: `Invalid or expired token: ${err.message}`
+            });
         }
         console.log("🔓 Authenticated User:", user.email);
         req.user = user;
         next();
     });
+};
+
+// --- IoT Utilities ---
+/**
+ * Triggers the door unlock on ESP32
+ */
+const unlockDoor = async () => {
+    const esp32Ip = process.env.ESP32_IP;
+    const secret = process.env.ESP32_SECRET;
+
+    if (!esp32Ip) {
+        console.warn("⚠️ [IoT] ESP32_IP not configured. Skipping unlock.");
+        return;
+    }
+
+    try {
+        console.log(`🔓 [IoT] Sending unlock command to ${esp32Ip}...`);
+        await axios.post(`http://${esp32Ip}/unlock`, {}, {
+            headers: { 'Authorization': `Bearer ${secret}` },
+            timeout: 5000 // 5 second timeout for local network
+        });
+        console.log("✅ [IoT] Door unlocked successfully!");
+    } catch (error) {
+        console.error("❌ [IoT] Unlock command failed:", error.response?.data || error.message);
+    }
 };
 
 // --- Routes ---
@@ -68,7 +97,7 @@ app.post('/auth/login', async (req, res) => {
         const { email, password } = req.body;
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const user = { name: 'Super Admin', email: email, role: 'admin' };
-            const accessToken = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+            const accessToken = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '24h' });
             return res.json({ token: accessToken, user });
         }
         return res.status(401).json({ message: 'Invalid credentials' });
@@ -129,12 +158,24 @@ app.get('/api/logs', authenticateToken, async (req, res) => {
 // Users Endpoints
 app.get('/api/users', authenticateToken, async (req, res) => {
     try {
+        console.log("🔍 [API] Fetching all employees for user:", req.user.email);
         const { data: users, error } = await supabase.from('employees').select('*');
         if (error) throw error;
-        res.json(users);
+
+        console.log(`✅ [API] Found ${users?.length || 0} employees.`);
+        res.json(users || []);
     } catch (error) {
         console.error("❌ Get users error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+
+        // Detect HTML error pages (like Cloudflare 5xx)
+        if (typeof error.message === 'string' && error.message.includes('<!DOCTYPE html>')) {
+            return res.status(503).json({
+                success: false,
+                message: "Supabase service temporarily unavailable (SSL Handshake Error 525). Please retry in a few moments."
+            });
+        }
+
+        res.status(500).json({ error: "Internal Server Error", message: error.message });
     }
 });
 
@@ -164,6 +205,15 @@ app.post('/api/users', authenticateToken, async (req, res) => {
         res.status(201).json(newUser);
     } catch (error) {
         console.error("❌ Create user error:", error);
+
+        // Detect HTML error pages (like Cloudflare 5xx)
+        if (typeof error.message === 'string' && error.message.includes('<!DOCTYPE html>')) {
+            return res.status(503).json({
+                success: false,
+                message: "Supabase service temporarily unavailable (Network/SSL Error). Please retry in a few moments."
+            });
+        }
+
         res.status(400).json({ message: error.message });
     }
 });
@@ -234,7 +284,13 @@ app.post('/api/biometrics/face/register', upload.single('file'), async (req, res
             }
         } catch (engineError) {
             console.warn("⚠️ Biometric Engine offline or failed. Falling back to Mock Mode...");
-            console.error(engineError.response?.data || engineError.message);
+            const errorDetails = engineError.response?.data || engineError.message;
+            console.error(errorDetails);
+
+            // Check if engine is actually offline vs a network error
+            if (engineError.code === 'ECONNREFUSED') {
+                console.info("💡 Tip: The Biometric Engine (Python) appears to be stopped. Start it via 'edge/start_biometric_api.bat'");
+            }
         }
 
         // Optional: Upload image to Supabase if file exists (Mock mode only)
@@ -288,7 +344,16 @@ app.post('/api/biometrics/face/register', upload.single('file'), async (req, res
             employeeId: employeeId
         });
     } catch (error) {
-        console.error("❌ Biometric fallback error:", error);
+        console.error("❌ Biometric fallback/registration error:", error);
+
+        // Detect HTML error pages (like Cloudflare 5xx)
+        if (typeof error.message === 'string' && error.message.includes('<!DOCTYPE html>')) {
+            return res.status(503).json({
+                success: false,
+                message: "Database connection intermittent. Cloudflare reported an SSL Handshake error (525). Registration might have partial success - please check the logs."
+            });
+        }
+
         res.status(500).json({ success: false, message: error.message });
     }
 });
@@ -340,6 +405,9 @@ app.post('/api/biometrics/face/verify', upload.single('file'), async (req, res) 
                     device_id: 'terminal_01'
                 });
 
+                // --- TRIGGER DOOR UNLOCK ---
+                await unlockDoor();
+
                 return res.json({
                     success: true,
                     message: `Authorized: Welcome ${matchedUser.name}`,
@@ -377,6 +445,9 @@ app.post('/api/biometrics/face/verify', upload.single('file'), async (req, res) 
             confidence: 0.95,
             device_id: 'sandbox_terminal'
         });
+
+        // --- TRIGGER DOOR UNLOCK ---
+        await unlockDoor();
 
         res.json({
             success: true,

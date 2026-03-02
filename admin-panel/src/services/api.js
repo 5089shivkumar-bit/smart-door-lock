@@ -16,6 +16,22 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// Auto-logout on token expiration (401/403)
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            // Token expired or invalid
+            localStorage.removeItem('aura_token');
+            localStorage.removeItem('aura_user');
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 export const apiService = {
     // Auth
     login: async (email, password) => {

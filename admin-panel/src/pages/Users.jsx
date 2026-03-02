@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { apiService } from '../services/api';
-import { Search, Trash2, Edit2, UserPlus, Filter, MoreVertical } from 'lucide-react';
+import { Search, Trash2, Edit2, UserPlus, Filter, MoreVertical, AlertCircle } from 'lucide-react';
 
 export default function Users() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
     const fetchUsers = async () => {
+        setLoading(true);
+        setError(null);
         try {
             const data = await apiService.getUsers();
-            setUsers(data);
+            if (Array.isArray(data)) {
+                setUsers(data);
+            } else {
+                console.error('Expected array of users, got:', typeof data);
+                setError('Received invalid data format from server.');
+                setUsers([]);
+            }
         } catch (err) {
-            console.error('Failed to fetch users');
+            console.error('Failed to fetch users:', err);
+            setError(err.response?.data?.message || err.message || 'Failed to connect to security gateway.');
         } finally {
             setLoading(false);
         }
@@ -76,6 +86,16 @@ export default function Users() {
                                         </td>
                                     </tr>
                                 ))
+                            ) : error ? (
+                                <tr>
+                                    <td colSpan="5" className="px-8 py-16 text-center">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <AlertCircle className="w-8 h-8 text-red-500" />
+                                            <div className="text-red-500 font-bold">{error}</div>
+                                            <button onClick={fetchUsers} className="text-xs text-blue-500 hover:underline">Retry Connection</button>
+                                        </div>
+                                    </td>
+                                </tr>
                             ) : users.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-8 py-16 text-center text-slate-500 font-medium">

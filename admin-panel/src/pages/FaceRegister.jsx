@@ -67,18 +67,6 @@ export default function FaceRegister() {
             const biometricResult = await apiService.registerFace(blob, finalEmployeeId, generatedEmail, name);
 
             if (biometricResult.success) {
-                const finalEmployeeId = biometricResult.employeeId || `EMP-${Date.now().toString().slice(-6)}`;
-
-                // Now save to the actual database
-                await apiService.createEmployee({
-                    employeeId: finalEmployeeId,
-                    name: name,
-                    email: `${name.toLowerCase().replace(/\s+/g, '.')}.${finalEmployeeId.toLowerCase()}@internal.com`,
-                    role: 'employee',
-                    faceEncoding: biometricResult.encoding,
-                    image_url: biometricResult.image_url
-                });
-
                 setStatus({ type: 'success', message: 'User Identity Fully Registered!' });
                 setName('');
                 setCapturedImage(null);
