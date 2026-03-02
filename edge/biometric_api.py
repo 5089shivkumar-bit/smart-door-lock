@@ -191,22 +191,56 @@ async def verify_face(file: UploadFile = File(...)):
         if not employees:
             return {"success": False, "message": "No registered users found in system."}
 
+        # 4. Strict Matching Logic (face_distance Based)
         known_encodings = [np.array(e["face_embedding"]) for e in employees]
-        results = face_recognition.compare_faces(known_encodings, live_encoding, tolerance=0.5)
+        face_distances = face_recognition.face_distance(known_encodings, live_encoding)
+        
+        # --- Security Logging ---
+        print("\n📊 [Biometric Info] Face Distance Matrix:")
+        for i, dist in enumerate(face_distances):
+            name = employees[i].get("name", "Unknown")
+            print(f"  - {name:20}: {dist:.4f}")
 
-        match_index = -1
-        for i, matched in enumerate(results):
-            if matched:
-                match_index = i
-                break
+        # Find best match
+        best_match_index = np.argmin(face_distances)
+        min_distance = face_distances[best_match_index]
+        
+        # Security Parameters
+        THRESHOLD = 0.40  # Tightened from 0.5 (Shiv Kumar / Ratnesh fix)
+        AMBIGUITY_THRESHOLD = 0.05 # Reject if two matches are too similar
+        
+        # Sort distances to check for ambiguity
+        sorted_indices = np.argsort(face_distances)
+        
+        print(f"🎯 [Best Match] {employees[best_match_index].get('name')} | Distance: {min_distance:.4f}")
 
-        if match_index != -1:
-            matched_emp = employees[match_index]
+        # Match Validation
+        is_match = False
+        match_message = "Access Denied."
+
+        if min_distance <= THRESHOLD:
+            # Check for Ambiguity (Multiple people within threshold)
+            if len(face_distances) > 1:
+                second_best_dist = face_distances[sorted_indices[1]]
+                diff = second_best_dist - min_distance
+                print(f"📊 [Match Gap] Best: {min_distance:.4f} | 2nd Best: {second_best_dist:.4f} | Gap: {diff:.4f}")
+                
+                if diff < AMBIGUITY_THRESHOLD:
+                    print(f"⚠️ [REJECTED] Biometric Ambiguity! Gap ({diff:.4f}) < Required ({AMBIGUITY_THRESHOLD})")
+                    return {"success": False, "message": "Access Denied: Biometric Ambiguity (Close Match)."}
+            
+            is_match = True
+            matched_emp = employees[best_match_index]
+        else:
+            print(f"🚫 [REJECTED] Match distance ({min_distance:.4f}) exceeded threshold ({THRESHOLD})")
+
+        if is_match:
+            matched_emp = employees[best_match_index]
             
             log_data = {
                 "employee_id": matched_emp.get("id"),
                 "status": "success",
-                "confidence": 0.98,
+                "confidence": round(1.0 - min_distance, 4),
                 "device_id": "terminal_01",
                 "created_at": datetime.utcnow().isoformat()
             }
