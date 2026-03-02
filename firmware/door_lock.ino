@@ -1,9 +1,11 @@
+#include "mbedtls/md.h"
 #include <Adafruit_Fingerprint.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <WebServer.h>
 #include <WiFi.h>
 #include <time.h>
+
 
 // --- Hardware Pins ---
 const int RELAY_PIN = 23;
@@ -27,6 +29,29 @@ unsigned long unlockStartTime = 0;
 bool isUnlocked = false;
 int failedAttempts = 0;
 unsigned long lockoutStartTime = 0;
+
+// --- Security Helpers ---
+String calculateHMAC(String payload, const char *key) {
+  byte hmacResult[32];
+  mbedtls_md_context_t ctx;
+  mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
+
+  mbedtls_md_init(&ctx);
+  mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 1);
+  mbedtls_md_hmac_starts(&ctx, (const unsigned char *)key, strlen(key));
+  mbedtls_md_hmac_update(&ctx, (const unsigned char *)payload.c_str(),
+                         payload.length());
+  mbedtls_md_hmac_finish(&ctx, hmacResult);
+  mbedtls_md_free(&ctx);
+
+  String hash = "";
+  for (int i = 0; i < 32; i++) {
+    char str[3];
+    sprintf(str, "%02x", (int)hmacResult[i]);
+    hash += str;
+  }
+  return hash;
+}
 
 void setup() {
   Serial.begin(115200);
@@ -82,9 +107,37 @@ void handleAutoLock() {
 
 // --- Face/Remote Unlock Path ---
 void handleRemoteUnlock() {
-  // Bearer Check
-  if (server.header("Authorization") != "Bearer " + String(secret_token)) {
-    server.send(403, "application/json", "{\"error\":\"Forbidden\"}");
+  if (server.hasArg("plain") == false) {
+    server.send(400, "application/json", "{\"error\":\"Missing body\"}");
+    return;
+  }
+
+  StaticJsonDocument<200> doc;
+  deserializeJson(doc, server.arg("plain"));
+
+  long timestamp = doc["timestamp"];
+  String signature = doc["signature"];
+
+  // 1. Check Replay Protection (Time Drift)
+  time_t now;
+  time(&now);
+  if (abs(now - timestamp) > 60) {
+    Serial.println("❌ Rejected: Stale timestamp (Replay Attack?)");
+    server.send(403, "application/json", "{\"error\":\"Stale command\"}");
+    return;
+  }
+
+  // 2. Verify HMAC Signature
+  StaticJsonDocument<100> hmacDoc;
+  hmacDoc["timestamp"] = timestamp;
+  String payload;
+  serializeJson(hmacDoc, payload);
+
+  String expectedSignature = calculateHMAC(payload, secret_token);
+
+  if (signature != expectedSignature) {
+    Serial.println("❌ Rejected: Invalid Signature!");
+    server.send(401, "application/json", "{\"error\":\"Invalid integrity\"}");
     return;
   }
 
@@ -132,16 +185,26 @@ void notifyBackend(String method, int id) {
     HTTPClient http;
     http.begin(String(backend_url) + "/api/logs/iot");
     http.addHeader("Content-Type", "application/json");
-    http.addHeader("Authorization", "Bearer " + String(secret_token));
 
-    StaticJsonDocument<200> doc;
+    time_t now;
+    time(&now);
+
+    StaticJsonDocument<300> doc;
     doc["method"] = method;
     doc["id"] = id;
     doc["status"] = "success";
+    doc["timestamp"] = (long)now;
+    doc["message"] = "Unlocked via " + method;
 
-    String json;
-    serializeJson(doc, json);
-    int httpCode = http.POST(json);
+    // --- Sign the log with HMAC ---
+    String payload;
+    serializeJson(doc, payload);
+    doc["signature"] = calculateHMAC(payload, secret_token);
+
+    String finalJson;
+    serializeJson(doc, finalJson);
+
+    int httpCode = http.POST(finalJson);
     http.end();
   }
 }

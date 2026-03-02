@@ -6,10 +6,28 @@ const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
 const multer = require('multer');
 const axios = require('axios');
+const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const app = express();
 const PORT = 8000;
+
+// --- Security: Rate Limiters ---
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // Limit each IP to 10 login attempts per window
+    message: { error: 'Too many login attempts, please try again after 15 minutes.' }
+});
+
+const biometricLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 15, // Limit each IP to 15 face verification scans per minute
+    message: { error: 'Too many scans, please wait a minute.' }
+});
+
+// --- Security: Brute-Force Tracker ---
+const loginFailures = new Map(); // In-memory tracker
 
 // --- Supabase Connection ---
 const supabaseUrl = process.env.SUPABASE_URL || "https://wdtizlzfsijikcejerwq.supabase.co";
@@ -73,22 +91,30 @@ const unlockDoor = async () => {
     const esp32Ip = process.env.ESP32_IP;
     const secret = process.env.ESP32_SECRET;
 
-    if (!esp32Ip) {
-        console.warn("⚠️ [IoT] ESP32_IP not configured. Skipping unlock.");
+    if (!esp32Ip || !secret) {
+        console.warn("⚠️ [IoT] ESP32 configuration missing. Skipping unlock.");
         return;
     }
 
     try {
-        console.log(`🔓 [IoT] Sending secure unlock command to ${esp32Ip}...`);
+        const timestamp = Math.floor(Date.now() / 1000);
+        const payload = JSON.stringify({ timestamp });
+
+        // --- Security: HMAC-SHA256 Signing ---
+        const hmac = crypto.createHmac('sha256', secret);
+        hmac.update(payload);
+        const signature = hmac.digest('hex');
+
+        console.log(`🔓 [IoT] Sending HMAC-signed unlock command to ${esp32Ip}...`);
+
         await axios.post(`http://${esp32Ip}/unlock`, {
-            timestamp: Math.floor(Date.now() / 1000)
+            timestamp: timestamp,
+            signature: signature
         }, {
-            headers: {
-                'Authorization': `Bearer ${secret}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             timeout: 5000
         });
+
         console.log("✅ [IoT] Door unlocked successfully!");
     } catch (error) {
         console.error("❌ [IoT] Unlock command failed:", error.response?.data || error.message);
@@ -98,14 +124,29 @@ const unlockDoor = async () => {
 // --- Routes ---
 
 // Login Endpoint
-app.post('/auth/login', async (req, res) => {
+app.post('/auth/login', authLimiter, async (req, res) => {
+    const { email, password } = req.body;
+    const ip = req.ip;
+
+    // --- Security: Brute-Force Check ---
+    const failures = loginFailures.get(ip) || { count: 0, lastTry: 0 };
+    if (failures.count >= 5 && (Date.now() - failures.lastTry < 300000)) { // 5 min lockout
+        return res.status(429).json({ message: 'IP temporarily locked out. Try later.' });
+    }
+
     try {
-        const { email, password } = req.body;
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            loginFailures.delete(ip); // Reset on success
             const user = { name: 'Super Admin', email: email, role: 'admin' };
             const accessToken = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '24h' });
             return res.json({ token: accessToken, user });
         }
+
+        // Track failures
+        failures.count++;
+        failures.lastTry = Date.now();
+        loginFailures.set(ip, failures);
+
         return res.status(401).json({ message: 'Invalid credentials' });
     } catch (error) {
         console.error("❌ Login error:", error);
@@ -163,13 +204,29 @@ app.get('/api/logs', authenticateToken, async (req, res) => {
 
 // IoT Activity Log Endpoint (Internal)
 app.post('/api/logs/iot', async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    if (authHeader !== `Bearer ${process.env.ESP32_SECRET}`) {
-        return res.sendStatus(403);
+    const { method, id, status, message, signature, timestamp } = req.body;
+    const secret = process.env.ESP32_SECRET;
+
+    // --- Security: HMAC Verification for Device logs ---
+    if (!signature || !timestamp) return res.sendStatus(401);
+
+    // Check drift (60 sec)
+    if (Math.abs(Math.floor(Date.now() / 1000) - timestamp) > 60) {
+        console.warn("⚠️ [IoT Security] Stale log timestamp rejected.");
+        return res.status(403).json({ error: "Stale timestamp" });
+    }
+
+    const payload = JSON.stringify({ method, id, status, message, timestamp });
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(payload);
+    const expectedSignature = hmac.digest('hex');
+
+    if (signature !== expectedSignature) {
+        console.error("❌ [IoT Security] Invalid signature from device!");
+        return res.status(401).json({ error: "Invalid integrity signature" });
     }
 
     try {
-        const { method, id, status, message } = req.body;
         console.log(`🔔 [IoT Event] ${method} unlock by ID #${id}: ${status}`);
 
         // Record in access_logs
@@ -390,7 +447,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), async (req, res
     }
 });
 
-app.post('/api/biometrics/face/verify', upload.single('file'), async (req, res) => {
+app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'), async (req, res) => {
     try {
         console.log("🔍 [Verification] Checking face identity...");
 
