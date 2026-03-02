@@ -160,6 +160,33 @@ app.get('/api/logs', authenticateToken, async (req, res) => {
     }
 });
 
+// IoT Activity Log Endpoint (Internal)
+app.post('/api/logs/iot', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    if (authHeader !== `Bearer ${process.env.ESP32_SECRET}`) {
+        return res.sendStatus(403);
+    }
+
+    try {
+        const { method, id, status, message } = req.body;
+        console.log(`🔔 [IoT Event] ${method} unlock by ID #${id}: ${status}`);
+
+        // Record in access_logs
+        await supabase.from('access_logs').insert({
+            employee_id: id || 'IOT_DEVICE',
+            status: status || 'success',
+            confidence: 1.0,
+            device_id: 'esp32_fingerprint',
+            metadata: { method, message }
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error("❌ IoT Log error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 // Users Endpoints
 app.get('/api/users', authenticateToken, async (req, res) => {
     try {
