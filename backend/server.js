@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
 const multer = require('multer');
+const axios = require('axios');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const app = express();
@@ -281,7 +282,6 @@ app.post('/api/biometrics/face/register', upload.single('file'), async (req, res
         // --- Hybrid Registration Flow ---
         try {
             if (req.file) {
-                const axios = require('axios');
                 const FormData = require('form-data');
 
                 const form = new FormData();
@@ -410,7 +410,6 @@ app.post('/api/biometrics/face/verify', upload.single('file'), async (req, res) 
 
         // --- Hybrid Verification Flow ---
         try {
-            const axios = require('axios');
             const FormData = require('form-data');
 
             const form = new FormData();
