@@ -361,53 +361,86 @@ app.post('/api/users', authenticateToken, validateIdentity, async (req, res) => 
 });
 
 app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
+    let attempts = 0;
+    const cleanedTables = new Set();
+    const maxAttempts = 15;
+
     try {
         const { id } = req.params;
-        console.log(`🗑️ Starting resilient hard-delete for subject: ${id}`);
+        console.log(`🗑️ Initializing recursive purge for subject: ${id}`);
 
         // 1. Resolve Employee ID (needed for linked tables)
         const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         const isUUID = uuidRegex.test(id);
         let employee_id = id;
+
         if (isUUID) {
             const { data: emp } = await supabase.from('employees').select('employee_id').eq('id', id).single();
             if (emp) employee_id = emp.employee_id;
         }
 
-        console.log(`📡 Cleaning up records for identifier: ${employee_id}`);
+        // Recursive deletion helper
+        const recursivePurge = async () => {
+            attempts++;
+            if (attempts > maxAttempts) throw new Error("Maximum purge depth reached. Possible circular reference.");
 
-        // 2. Multi-table Cleanup (Manual cascade for resilience)
-        const tablesToClean = ['access_logs', 'face_encodings', 'fingerprints', 'rfid_tags', 'security_alerts'];
-        for (const table of tablesToClean) {
-            await supabase.from(table).delete().eq('employee_id', employee_id);
-        }
+            const { data, error } = await supabase
+                .from('employees')
+                .delete()
+                .match(isUUID ? { id: id } : { employee_id: id })
+                .select()
+                .single();
 
-        // 3. Final deletion of the employee
-        const { data, error } = await supabase
-            .from('employees')
-            .delete()
-            .match(isUUID ? { id: id } : { employee_id: id })
-            .select()
-            .single();
+            if (error) {
+                console.log(`🔍 Purge Attempt ${attempts} Error:`, JSON.stringify(error));
+                // Check if it's Foreign Key Violation (Postgres Code 23503)
+                if (error.code === '23503' || error.message?.includes('foreign key constraint')) {
+                    // Extract the blockng table (usually the last "on table" in the message)
+                    const matches = [...error.message.matchAll(/on table "([^"]+)"/g)];
+                    const tableName = matches.length > 0 ? matches[matches.length - 1][1] : null;
 
-        if (error) {
-            console.error("❌ Delete operation failed:", error.message);
-            return res.status(500).json({
-                error: "Database deletion failed",
-                details: error.message,
-                hint: "There might be a custom table or constraint still referencing this user."
-            });
-        }
+                    console.log(`🔍 Extracted blocking table: ${tableName}`);
+                    if (tableName && !cleanedTables.has(tableName)) {
+                        console.log(`⚠️ Blocked by table [${tableName}]. Attempting manual cleanup...`);
+                        cleanedTables.add(tableName);
 
-        if (!data) {
+                        // Clean up referencing records in the blocking table
+                        // Coverage: employee_id, id, user_id (most common FK columns)
+                        await supabase.from(tableName).delete().eq('employee_id', employee_id);
+                        if (isUUID) {
+                            await supabase.from(tableName).delete().eq('id', id);
+                            await supabase.from(tableName).delete().eq('user_id', id);
+                        }
+
+                        // Retry deletion
+                        return await recursivePurge();
+                    }
+                }
+                throw error; // If not a fixable FK error, or if we already tried that table
+            }
+            return data;
+        };
+
+        const deletedUser = await recursivePurge();
+
+        if (!deletedUser) {
             return res.status(404).json({ error: "Subject not found in primary cluster." });
         }
 
-        console.log("✅ Subject permanently purged from all subsystems:", data.employee_id);
-        res.json({ success: true, message: "User and all biometric data permanently removed.", target: data.employee_id });
+        console.log(`✅ Success: Subject ${deletedUser.employee_id} and dependencies in [${Array.from(cleanedTables).join(', ')}] purged.`);
+        res.json({
+            success: true,
+            message: "User and all biometric data permanently removed.",
+            purged_subsystems: Array.from(cleanedTables)
+        });
+
     } catch (error) {
-        console.error("❌ Critical Delete Error:", error);
-        res.status(500).json({ error: "Internal Gateway Error", message: error.message });
+        console.error("❌ Recursive Purge Error:", error.message);
+        res.status(500).json({
+            error: "Database deletion failed",
+            details: error.message,
+            hint: "Please ensure all associated biometric hardware is online and syncing."
+        });
     }
 });
 // Biometric Support (Mock Fallback when Python API is offline)
