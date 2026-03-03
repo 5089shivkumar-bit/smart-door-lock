@@ -88,7 +88,7 @@ async def register_face(
     Register a face encoding for a specific employee.
     Uploads photo to Supabase Storage and metadata to Database.
     """
-    print(f"📥 Registering face for: {employeeId}")
+    print(f"[INFO] Registering face for: {employeeId}")
     
     try:
         # 1. Read and process image
@@ -115,6 +115,25 @@ async def register_face(
                 conflict_idx = np.argmin(existing_distances)
                 conflicting_emp = cache[conflict_idx]
                 print(f"[REJECTED] Biometric Conflict! Face already registered to: {conflicting_emp['name']} ({conflicting_emp['employee_id']})")
+                
+                # Log security alert
+                try:
+                    alert_data = {
+                        "alert_type": "biometric_conflict",
+                        "employee_id": employeeId,
+                        "severity": "medium",
+                        "details": {
+                            "attempted_id": employeeId,
+                            "conflicting_id": conflicting_emp['employee_id'],
+                            "conflict_name": conflicting_emp['name'],
+                            "distance": float(min_conflict_dist)
+                        },
+                        "device_id": "face_engine_01"
+                    }
+                    supabase.table("security_alerts").insert(alert_data).execute()
+                except Exception as alert_err:
+                    print(f"[WARNING] Failed to log security alert: {str(alert_err)}")
+
                 return {
                     "success": False, 
                     "message": f"Biometric Conflict: This person is already registered as {conflicting_emp['name']}.",

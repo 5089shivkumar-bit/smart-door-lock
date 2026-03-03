@@ -9,6 +9,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const upload = multer({ storage: multer.memoryStorage() });
+const validateIdentity = require('./middleware/validateIdentity');
 
 const app = express();
 const PORT = 8000;
@@ -282,7 +283,7 @@ app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-app.patch('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
+app.patch('/api/users/:id', authenticateToken, isAdmin, validateIdentity, async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
@@ -302,14 +303,15 @@ app.patch('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-app.post('/api/users', authenticateToken, async (req, res) => {
+app.post('/api/users', authenticateToken, validateIdentity, async (req, res) => {
     try {
-        const { employeeId, name, email, role, faceEncoding, image_url } = req.body;
+        const { employeeId, employee_id, name, email, role, faceEncoding, image_url, rfid, fingerprint_id } = req.body;
+        const finalId = employeeId || employee_id;
 
         const { data: newUser, error } = await supabase
             .from('employees')
             .upsert({
-                employee_id: employeeId,
+                employee_id: finalId,
                 name,
                 email,
                 role: role === 'admin' ? 'admin' : 'employee',
@@ -322,6 +324,23 @@ app.post('/api/users', authenticateToken, async (req, res) => {
         if (error) {
             console.error("❌ Supabase Upsert Error:", error);
             throw error;
+        }
+
+        // --- Persist RFID if provided ---
+        if (rfid) {
+            await supabase.from('rfid_tags').upsert({
+                tag_id: rfid,
+                employee_id: finalId
+            }, { on_conflict: 'tag_id' });
+        }
+
+        // --- Persist Fingerprint if provided ---
+        if (fingerprint_id) {
+            await supabase.from('fingerprints').upsert({
+                id: fingerprint_id,
+                employee_id: finalId,
+                template_data: `MOCK_TEMPLATE_${fingerprint_id}` // Mock for now
+            }, { on_conflict: 'id' });
         }
 
         console.log("✅ User created/updated in Supabase:", newUser.employee_id);
@@ -363,7 +382,7 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // Biometric Support (Mock Fallback when Python API is offline)
-app.post('/api/biometrics/face/register', upload.single('file'), async (req, res) => {
+app.post('/api/biometrics/face/register', upload.single('file'), validateIdentity, async (req, res) => {
     try {
         const { employeeId, email, name } = req.body;
         console.log(`📸 Received biometric registration for: ${employeeId}`);

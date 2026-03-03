@@ -70,7 +70,7 @@ class TestBiometricExpertLogic(unittest.TestCase):
             self.setup_supabase_mock(mock_supabase)
             mock_locations.return_value = [(0, 0, 10, 10)]
             mock_encodings.return_value = [np.array([0.1] * 128)]
-            mock_distance.return_value = np.array([0.38001, 0.40], dtype=float) # Gap slightly > 0.02
+            mock_distance.return_value = np.array([0.38001, 0.40], dtype=float) 
             
             import asyncio
             class MockFile:
@@ -107,6 +107,45 @@ class TestBiometricExpertLogic(unittest.TestCase):
             self.assertFalse(result['success'])
             self.assertEqual(result['error_code'], "NOT_RECOGNIZED")
             print("LOG: [Threshold Check] Correctly blocked unrecognized face.")
+
+    @patch('face_recognition.face_distance')
+    @patch('face_recognition.face_locations')
+    @patch('face_recognition.face_encodings')
+    @patch('biometric_api.load_face_cache')
+    @patch('biometric_api.save_face_cache')
+    def test_biometric_conflict(self, mock_save, mock_load, mock_encodings, mock_locations, mock_distance):
+        """Test rejection when face is already registered (Distance < 0.35)."""
+        from biometric_api import register_face
+        
+        with patch('biometric_api.supabase') as mock_supabase:
+            # Setup: Conflict with EMP-001 (Distance 0.10)
+            mock_load.return_value = self.mock_employees
+            mock_locations.return_value = [(0, 0, 10, 10)]
+            mock_encodings.return_value = [np.array([0.1] * 128)]
+            mock_distance.return_value = np.array([0.10, 0.40], dtype=float)
+            
+            # Setup mock for security_alerts insertion
+            mock_supabase.table.return_value.insert.return_value.execute.return_value = MagicMock()
+
+            import asyncio
+            class MockUploadFile:
+                async def read(self): return b"dummy_image_data"
+            
+            # Pass all arguments correctly to match registration signature
+            result = asyncio.run(register_face(
+                employeeId="EMP-NEW", 
+                email="new@example.com",
+                name="New User",
+                file=MockUploadFile()
+            ))
+            
+            self.assertFalse(result['success'])
+            self.assertIn("Conflict", result['message'])
+            self.assertEqual(result['conflicting_id'], "EMP-001")
+            
+            # Verify security alert was attempted
+            mock_supabase.table.assert_any_call("security_alerts")
+            print("LOG: [Biometric Conflict] Correctly detected and logged alert.")
 
 if __name__ == '__main__':
     unittest.main()
