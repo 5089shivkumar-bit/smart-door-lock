@@ -76,6 +76,16 @@ export const apiService = {
         return response.data;
     },
 
+    updateUser: async (id, userData) => {
+        const response = await api.patch(`/api/users/${id}`, userData);
+        return response.data;
+    },
+
+    deleteUser: async (id) => {
+        const response = await api.delete(`/api/users/${id}`);
+        return response.data;
+    },
+
     // Logs
     getLogs: async () => {
         const response = await api.get('/api/logs');

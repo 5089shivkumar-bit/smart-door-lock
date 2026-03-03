@@ -363,20 +363,32 @@ app.post('/api/users', authenticateToken, validateIdentity, async (req, res) => 
 app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(`🗑️ Processing Hard-Delete for: ${id}`);
 
-        // --- Security: Soft Delete & Purge ---
-        const { error } = await supabase
+        // Handle both UUID and internal employee_id
+        const isUUID = id.includes('-');
+        const query = isUUID ? { id: id } : { employee_id: id };
+
+        const { data, error } = await supabase
             .from('employees')
-            .update({
-                status: 'Deleted',
-                // Note: The database trigger 'tr_purge_biometrics' handles clearing embeddings/rfid/etc.
-            })
-            .eq('id', id);
+            .delete()
+            .match(query)
+            .select()
+            .single();
 
-        if (error) throw error;
-        res.json({ message: 'User soft-deleted and sensitive data purged successfully' });
+        if (error) {
+            console.error("❌ Delete Error:", error);
+            throw error;
+        }
+
+        if (!data) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        console.log("✅ User permanently removed from Supabase:", data.employee_id);
+        res.json({ message: "User deleted successfully", employee_id: data.employee_id });
     } catch (error) {
-        console.error("❌ Delete user error:", error);
+        console.error("❌ Delete worker error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

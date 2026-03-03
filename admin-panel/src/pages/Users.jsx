@@ -32,6 +32,38 @@ export default function Users() {
         }
     };
 
+    const handleDelete = async (user) => {
+        const confirmDelete = window.confirm(`⚠️ CRITICAL: Are you sure you want to PERMANENTLY delete ${user.name} and all their biometric data? This cannot be undone.`);
+
+        if (!confirmDelete) return;
+
+        try {
+            await apiService.deleteUser(user.id);
+            // Optimistic update
+            setUsers(users.filter(u => u.id !== user.id));
+            alert(`✅ ${user.name} has been removed from Supabase.`);
+        } catch (err) {
+            console.error('Delete failed:', err);
+            alert(`❌ Failed to delete user: ${err.response?.data?.error || err.message}`);
+        }
+    };
+
+    const handleEdit = (user) => {
+        const newName = window.prompt(`Edit name for ${user.employee_id}:`, user.name);
+        if (newName && newName !== user.name) {
+            updateUserName(user.id, newName);
+        }
+    };
+
+    const updateUserName = async (id, newName) => {
+        try {
+            await apiService.updateUser(id, { name: newName });
+            setUsers(users.map(u => u.id === id ? { ...u, name: newName } : u));
+        } catch (err) {
+            console.error('Update failed:', err);
+            alert(`❌ Failed to update name: ${err.response?.data?.message || err.message}`);
+        }
+    };
     return (
         <div className="space-y-8">
             {/* Header */}
@@ -133,10 +165,16 @@ export default function Users() {
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-white transition-all">
+                                            <button
+                                                onClick={() => handleEdit(user)}
+                                                className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-white transition-all"
+                                            >
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
-                                            <button className="p-2 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all">
+                                            <button
+                                                onClick={() => handleDelete(user)}
+                                                className="p-2 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all"
+                                            >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>

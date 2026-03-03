@@ -34,12 +34,12 @@ const validateIdentity = async (req, res, next) => {
         if (name) {
             const { data } = await supabase
                 .from('employees')
-                .select('employee_id, name')
+                .select('id, name')
                 .eq('name', name)
                 .single();
 
-            if (data && (!isUpdate || data.employee_id !== targetId)) {
-                await logAlert('duplicate_id_attempt', employee_id || targetId, { field: 'name', conflict_with: data.employee_id });
+            if (data && (!isUpdate || data.id !== targetId)) {
+                await logAlert('duplicate_id_attempt', finalId || targetId, { field: 'name', conflict_with: data.id });
                 return res.status(400).json({ success: false, message: `Name "${name}" is already taken by another employee.` });
             }
         }
