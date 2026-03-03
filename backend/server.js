@@ -521,15 +521,16 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
             });
 
             if (response.data.success) {
-                const matchedUser = response.data.user;
-                console.log(`✅ Access Granted (AI): Welcome ${matchedUser.name}`);
+                const employeeId = response.data.employee_id;
+                console.log(`✅ Face Verified: ${employeeId}`);
 
                 // Log success
                 await supabase.from('access_logs').insert({
-                    employee_id: matchedUser.employee_id,
+                    employee_id: employeeId,
                     status: 'success',
-                    confidence: response.data.confidence || 0.98,
-                    device_id: 'terminal_01'
+                    confidence: response.data.confidence,
+                    device_id: 'terminal_01',
+                    metadata: { method: 'face', confidence: response.data.confidence }
                 });
 
                 // --- TRIGGER DOOR UNLOCK ---
@@ -537,54 +538,39 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
 
                 return res.json({
                     success: true,
-                    message: `Authorized: Welcome ${matchedUser.name}`,
-                    user: matchedUser
+                    message: `Authorized: Welcome ${employeeId}`,
+                    employeeId: employeeId
+                });
+            } else if (response.data.error_code === 'AMBIGUOUS_MATCH') {
+                console.warn(`⚠️ Ambiguous Match for hint: ${response.data.id_hint}. Requesting Fingerprint fallback.`);
+
+                await supabase.from('access_logs').insert({
+                    employee_id: response.data.id_hint,
+                    status: 'ambiguous',
+                    device_id: 'terminal_01',
+                    metadata: { method: 'face', error: 'AMBIGUOUS_MATCH' }
+                });
+
+                return res.status(403).json({
+                    success: false,
+                    error_code: "MFA_REQUIRED",
+                    message: "Ambiguous matching. Please use Fingerprint sensor for secondary verification.",
+                    id_hint: response.data.id_hint
+                });
+            } else {
+                console.log(`🚫 Engine Rejection: ${response.data.message}`);
+                return res.status(401).json({
+                    success: false,
+                    message: response.data.message || "Access Denied."
                 });
             }
         } catch (engineError) {
-            console.warn("⚠️ Biometric Engine offline. Falling back to Smart Sandbox...");
-        }
-
-        // --- Smart Sandbox Fallback ---
-        // If AI is offline, we lookup the database for the most recent registration
-        // This ensures the USER can still test their setup.
-        const { data: fallbackEmployees, error: dbError } = await supabase
-            .from('employees')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-        if (dbError || !fallbackEmployees || fallbackEmployees.length === 0) {
-            console.warn("🚫 Access Denied: No employees found in database.");
-            return res.status(401).json({
+            console.error("❌ Biometric Engine error/offline:", engineError.message);
+            return res.status(503).json({
                 success: false,
-                message: "Access Denied: No identity found. Please register first."
+                message: "Biometric Service Unavailable. Please use manual override or contact admin."
             });
         }
-
-        const matchedUser = fallbackEmployees[0];
-        console.log(`🛡️ [Sandbox Mode] Granting access to: ${matchedUser.name}`);
-
-        // Log sandbox success
-        await supabase.from('access_logs').insert({
-            employee_id: matchedUser.employee_id,
-            status: 'success',
-            confidence: 0.95,
-            device_id: 'sandbox_terminal'
-        });
-
-        // --- TRIGGER DOOR UNLOCK ---
-        await unlockDoor();
-
-        res.json({
-            success: true,
-            message: `Authorized: Welcome ${matchedUser.name} (Sandbox Mode)`,
-            user: {
-                name: matchedUser.name,
-                role: matchedUser.role,
-                employee_id: matchedUser.employee_id
-            }
-        });
 
     } catch (error) {
         console.error("❌ Verification error:", error);
