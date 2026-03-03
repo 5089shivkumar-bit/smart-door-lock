@@ -104,7 +104,24 @@ async def register_face(
         encodings = face_recognition.face_encodings(frame, face_locations)
         encoding_list = encodings[0].tolist()
 
-        # 3. Upload Image to Supabase Storage (Optional but recommended)
+        # 3. Cross-Identity Conflict Guard (Prevent duplicate registration of same person)
+        cache = load_face_cache()
+        if cache:
+            existing_encodings = [np.array(emp["face_embedding"]) for emp in cache]
+            existing_distances = face_recognition.face_distance(existing_encodings, np.array(encoding_list))
+            
+            min_conflict_dist = np.min(existing_distances)
+            if min_conflict_dist < 0.35:
+                conflict_idx = np.argmin(existing_distances)
+                conflicting_emp = cache[conflict_idx]
+                print(f"🚫 [REJECTED] Biometric Conflict! Face already registered to: {conflicting_emp['name']} ({conflicting_emp['employee_id']})")
+                return {
+                    "success": False, 
+                    "message": f"Biometric Conflict: This person is already registered as {conflicting_emp['name']}.",
+                    "conflicting_id": conflicting_emp['employee_id']
+                }
+
+        # 4. Upload Image to Supabase Storage
         file_path = f"faces/{employeeId}_{uuid.uuid4().hex[:8]}.jpg"
         image_url = ""
         
