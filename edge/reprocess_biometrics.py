@@ -19,7 +19,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 load_dotenv()
 
 MODEL_NAME = "Facenet"
-DETECTOR_BACKEND = "opencv"
+DETECTOR_BACKEND = "retinaface"
 
 def reprocess_user(employee_id):
     """
@@ -60,7 +60,8 @@ def reprocess_user(employee_id):
                 model_name = MODEL_NAME,
                 detector_backend = DETECTOR_BACKEND,
                 enforce_detection = True,
-                align = True
+                align = True,
+                normalization = 'Facenet'
             )
             real_encoding = objs[0]["embedding"]
         except Exception as e:

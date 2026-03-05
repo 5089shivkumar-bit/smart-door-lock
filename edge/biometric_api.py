@@ -29,7 +29,7 @@ app.add_middleware(
 CACHE_FILE = "face_cache.json"
 PENDING_LOGS_FILE = "pending_logs.json"
 MODEL_NAME = "Facenet" # 128-dimensional embedding for compatibility
-DETECTOR_BACKEND = "opencv"
+DETECTOR_BACKEND = "retinaface" # More accurate than opencv
 
 def load_face_cache():
     if os.path.exists(CACHE_FILE):
@@ -115,7 +115,8 @@ async def register_face(
                 model_name = MODEL_NAME,
                 detector_backend = DETECTOR_BACKEND,
                 enforce_detection = True,
-                align = True
+                align = True,
+                normalization = 'Facenet'
             )
             encoding_list = objs[0]["embedding"]
         except ValueError:
@@ -243,7 +244,8 @@ async def verify_face(file: UploadFile = File(...)):
                 model_name = MODEL_NAME,
                 detector_backend = DETECTOR_BACKEND,
                 enforce_detection = True,
-                align = True
+                align = True,
+                normalization = 'Facenet'
             )
             live_encoding = np.array(objs[0]["embedding"])
         except ValueError:
@@ -288,11 +290,16 @@ async def verify_face(file: UploadFile = File(...)):
         best_idx = np.argmin(face_distances)
         min_distance = face_distances[best_idx]
         
-        # Facenet Thresholds: 0.40 (Strict) - 0.60 (Normal)
-        STRICT_THRESHOLD = 0.55 
+        # Facenet Thresholds: 0.40 (Strict) - 0.80 (Resilient for RetinaFace)
+        STRICT_THRESHOLD = 0.80 
         GAP_THRESHOLD = 0.10
         
         print(f"\n[INFO] [DeepFace Analysis] Best Match Distance: {min_distance:.4f}")
+
+        # Persistent log for remote debugging
+        with open("match_debug.log", "a") as f:
+            log_entry = f"{datetime.utcnow().isoformat()} | Dist: {min_distance:.4f} | Result: {'OK' if min_distance <= STRICT_THRESHOLD else 'FAIL'} | ID: {valid_employees[best_idx]['employee_id']}\n"
+            f.write(log_entry)
 
         # Rejection: Above Threshold
         if min_distance > STRICT_THRESHOLD:
