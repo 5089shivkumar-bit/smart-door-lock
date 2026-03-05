@@ -455,7 +455,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
 
         let imageUrl = null;
 
-        // --- Hybrid Registration Flow ---
+        // --- Hybrid Registration Flow (Hardened) ---
         try {
             if (req.file) {
                 const FormData = require('form-data');
@@ -472,7 +472,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
                 console.log("📡 Forwarding to Biometric Engine (Port 8001)...");
                 const response = await axios.post('http://localhost:8001/api/biometrics/face/register', form, {
                     headers: form.getHeaders(),
-                    timeout: 8000 // A bit longer for processing/uploading
+                    timeout: 8000
                 });
 
                 if (response.data.success) {
@@ -482,7 +482,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
                         message: response.data.message,
                         encoding: response.data.encoding,
                         image_url: response.data.image_url,
-                        employeeId: employeeId // Return the ID so frontend is in sync
+                        employeeId: employeeId
                     });
                 } else {
                     throw new Error(response.data.message || "Engine rejected registration");
@@ -491,78 +491,30 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
                 throw new Error("No image file provided");
             }
         } catch (engineError) {
-            console.warn("⚠️ Biometric Engine offline or failed. Falling back to Mock Mode...");
-            const errorDetails = engineError.response?.data || engineError.message;
-            console.error(errorDetails);
+            console.error("❌ Biometric Engine error:", engineError.message);
 
-            // Check if engine is actually offline vs a network error
             if (engineError.code === 'ECONNREFUSED') {
-                console.info("💡 Tip: The Biometric Engine (Python) appears to be stopped. Start it via 'edge/start_biometric_api.bat'");
-            }
-        }
-
-        // Optional: Upload image to Supabase if file exists (Mock mode only)
-        if (req.file) {
-            const fileName = `faces/${employeeId}_${Date.now()}.jpg`;
-            const { data, error: uploadError } = await supabase.storage
-                .from('biometrics')
-                .upload(fileName, req.file.buffer, {
-                    contentType: 'image/jpeg',
-                    upsert: true
+                return res.status(503).json({
+                    success: false,
+                    message: "Biometric Engine is currently offline. Please start it via 'edge/start_biometric_api.bat' or contact systems admin."
                 });
-
-            if (!uploadError) {
-                const { data: { publicUrl } } = supabase.storage
-                    .from('biometrics')
-                    .getPublicUrl(fileName);
-                imageUrl = publicUrl;
-                console.log(`✅ Image uploaded to Supabase: ${imageUrl}`);
-            } else {
-                console.warn("⚠️ Supabase image upload failed:", uploadError.message);
             }
+
+            throw engineError; // Re-throw for generic catch logic
         }
-
-        // Generate a 128-dimension mock encoding (random for development)
-        const mockEncoding = Array.from({ length: 128 }, () => (Math.random() * 0.2) - 0.1);
-
-        console.log("💾 [Mock Mode] Saving metadata to 'employees' table...");
-        const { data: mockUser, error: dbError } = await supabase
-            .from('employees')
-            .upsert({
-                employee_id: employeeId,
-                name: name || employeeId,
-                email: email || `${employeeId}@internal.com`,
-                role: 'employee',
-                face_embedding: mockEncoding,
-                image_url: imageUrl
-            }, { on_conflict: 'employee_id' })
-            .select()
-            .single();
-
-        if (dbError) {
-            console.error("❌ Mock database error:", dbError.message);
-            throw dbError;
-        }
-
-        res.json({
-            success: true,
-            message: "Face registered (Development Mock Mode)",
-            encoding: mockEncoding,
-            image_url: imageUrl,
-            employeeId: employeeId
-        });
     } catch (error) {
-        console.error("❌ Biometric fallback/registration error:", error);
-
-        // Detect HTML error pages (like Cloudflare 5xx)
-        if (typeof error.message === 'string' && error.message.includes('<!DOCTYPE html>')) {
-            return res.status(503).json({
-                success: false,
-                message: "Database connection intermittent. Cloudflare reported an SSL Handshake error (525). Registration might have partial success - please check the logs."
-            });
-        }
-
+        console.error("❌ Registration error:", error.message);
         res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// Biometric Health Proxy
+app.get('/api/biometrics/health', async (req, res) => {
+    try {
+        const response = await axios.get('http://localhost:8001/health', { timeout: 2000 });
+        res.json({ status: "online", engine: response.data });
+    } catch (err) {
+        res.status(503).json({ status: "offline", message: "Biometric Engine unreachable" });
     }
 });
 

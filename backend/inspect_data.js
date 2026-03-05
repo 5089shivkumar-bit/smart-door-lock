@@ -4,20 +4,35 @@ require('dotenv').config();
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 async function inspectData() {
-    console.log("📊 [INSPECTION] Checking Employee Data...");
-
     const { data, error } = await supabase
         .from('employees')
-        .select('id, employee_id, name, status, created_at')
-        .order('created_at', { ascending: false })
-        .limit(10);
+        .select('face_embedding')
+        .eq('employee_id', 'EMP-961231')
+        .single();
 
     if (error) {
-        console.error("❌ Error fetching employees:", error.message);
+        console.error('Error:', error.message);
         return;
     }
 
-    console.table(data);
+    console.log('Type of face_embedding:', typeof data.face_embedding);
+
+    let embedding = data.face_embedding;
+    if (typeof embedding === 'string') {
+        try {
+            embedding = JSON.parse(embedding);
+            console.log('✅ Parsed successfully from String to Array');
+        } catch (e) {
+            console.error('❌ JSON Parse failed:', e.message);
+        }
+    }
+
+    if (Array.isArray(embedding)) {
+        console.log('Array Length:', embedding.length);
+        console.log('First 3 elements:', embedding.slice(0, 3));
+    } else {
+        console.error('❌ Data is NOT an array after parsing');
+    }
 }
 
 inspectData();

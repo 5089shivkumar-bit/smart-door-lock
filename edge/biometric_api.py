@@ -4,13 +4,16 @@ import numpy as np
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
-import face_recognition
+from deepface import DeepFace
 from supabase_client import supabase
 from datetime import datetime
 import json
 import uuid
 
 import os
+
+# Disable TensorFlow logging for cleaner output
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 app = FastAPI(title="Smart Door Biometric API")
 
@@ -25,6 +28,8 @@ app.add_middleware(
 
 CACHE_FILE = "face_cache.json"
 PENDING_LOGS_FILE = "pending_logs.json"
+MODEL_NAME = "Facenet" # 128-dimensional embedding for compatibility
+DETECTOR_BACKEND = "opencv"
 
 def load_face_cache():
     if os.path.exists(CACHE_FILE):
@@ -71,11 +76,18 @@ async def sync_task():
 
 @app.on_event("startup")
 async def startup_event():
+    # Warm up the model
+    print(f"[STARTUP] Initializing AI Models ({MODEL_NAME})...")
+    try:
+        DeepFace.build_model(MODEL_NAME)
+        print("[SUCCESS] AI Models Ready.")
+    except Exception as e:
+        print(f"[ERROR] Model Init Failed: {str(e)}")
     asyncio.create_task(sync_task())
 
 @app.get("/health")
 async def health_check():
-    return {"status": "online", "timestamp": datetime.utcnow()}
+    return {"status": "online", "engine": "DeepFace", "model": MODEL_NAME, "timestamp": datetime.utcnow()}
 
 @app.post("/api/biometrics/face/register")
 async def register_face(
@@ -91,54 +103,72 @@ async def register_face(
     print(f"[INFO] Registering face for: {employeeId}")
     
     try:
-        # 1. Read and process image
+        # 1. Read image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents)).convert("RGB")
         frame = np.array(image)
 
-        # 2. Detect and encode
-        face_locations = face_recognition.face_locations(frame)
-        if not face_locations:
+        # 2. Detect and encode using DeepFace
+        try:
+            objs = DeepFace.represent(
+                img_path = frame,
+                model_name = MODEL_NAME,
+                detector_backend = DETECTOR_BACKEND,
+                enforce_detection = True,
+                align = True
+            )
+            encoding_list = objs[0]["embedding"]
+        except ValueError:
             return {"success": False, "message": "No face detected.", "error_code": "NO_FACE"}
-        
-        encodings = face_recognition.face_encodings(frame, face_locations)
-        encoding_list = encodings[0].tolist()
 
-        # 3. Cross-Identity Conflict Guard (Prevent duplicate registration of same person)
+        # 3. Cross-Identity Conflict Guard
         cache = load_face_cache()
         if cache:
-            existing_encodings = [np.array(emp["face_embedding"]) for emp in cache]
-            existing_distances = face_recognition.face_distance(existing_encodings, np.array(encoding_list))
-            
-            min_conflict_dist = np.min(existing_distances)
-            if min_conflict_dist < 0.35:
-                conflict_idx = np.argmin(existing_distances)
-                conflicting_emp = cache[conflict_idx]
-                print(f"[REJECTED] Biometric Conflict! Face already registered to: {conflicting_emp['name']} ({conflicting_emp['employee_id']})")
-                
-                # Log security alert
-                try:
-                    alert_data = {
-                        "alert_type": "biometric_conflict",
-                        "employee_id": employeeId,
-                        "severity": "medium",
-                        "details": {
-                            "attempted_id": employeeId,
-                            "conflicting_id": conflicting_emp['employee_id'],
-                            "conflict_name": conflicting_emp['name'],
-                            "distance": float(min_conflict_dist)
-                        },
-                        "device_id": "face_engine_01"
-                    }
-                    supabase.table("security_alerts").insert(alert_data).execute()
-                except Exception as alert_err:
-                    print(f"[WARNING] Failed to log security alert: {str(alert_err)}")
+            valid_cached = []
+            for emp in cache:
+                emb = emp.get("face_embedding")
+                if isinstance(emb, str):
+                    try: emb = json.loads(emb)
+                    except: continue
+                if emb and isinstance(emb, list) and len(emb) == 128:
+                    emp["face_embedding"] = emb
+                    valid_cached.append(emp)
 
-                return {
-                    "success": False, 
-                    "message": f"Biometric Conflict: This person is already registered as {conflicting_emp['name']}.",
-                    "conflicting_id": conflicting_emp['employee_id']
-                }
+            if valid_cached:
+                existing_encodings = [np.array(emp["face_embedding"]) for emp in valid_cached]
+                # Calculate Euclidean distances
+                target = np.array(encoding_list)
+                existing_distances = [np.linalg.norm(target - exp) for exp in existing_encodings]
+                
+                min_conflict_dist = np.min(existing_distances)
+                if min_conflict_dist < 0.40: # DeepFace/Facenet threshold is different, usually 0.4-0.6
+                    conflict_idx = np.argmin(existing_distances)
+                    conflicting_emp = valid_cached[conflict_idx]
+                    print(f"[REJECTED] Biometric Conflict! Face already registered to: {conflicting_emp['name']}")
+                    
+                    # Log security alert
+                    try:
+                        alert_data = {
+                            "alert_type": "biometric_conflict",
+                            "employee_id": employeeId,
+                            "severity": "medium",
+                            "details": {
+                                "attempted_id": employeeId,
+                                "conflicting_id": conflicting_emp['employee_id'],
+                                "conflict_name": conflicting_emp['name'],
+                                "distance": float(min_conflict_dist)
+                            },
+                            "device_id": "face_engine_01"
+                        }
+                        supabase.table("security_alerts").insert(alert_data).execute()
+                    except Exception as alert_err:
+                        print(f"[WARNING] Failed to log security alert: {str(alert_err)}")
+
+                    return {
+                        "success": False, 
+                        "message": f"Biometric Conflict: This person is already registered as {conflicting_emp['name']}.",
+                        "conflicting_id": conflicting_emp['employee_id']
+                    }
 
         # 4. Upload Image to Supabase Storage
         file_path = f"faces/{employeeId}_{uuid.uuid4().hex[:8]}.jpg"
@@ -154,7 +184,7 @@ async def register_face(
         except Exception as upload_err:
             print(f"[WARNING] Storage Upload Failed (Offline?): {str(upload_err)}")
         
-        # 4. Save Metadata to Supabase Database
+        # 5. Save Metadata to Supabase Database
         user_data = {
             "name": name if name else employeeId, 
             "email": email,
@@ -170,7 +200,7 @@ async def register_face(
         except Exception as db_err:
             print(f"[WARNING] Cloud Registration Failed: {str(db_err)}")
 
-        # 5. Always Update Local Cache
+        # 6. Always Update Local Cache
         cache = load_face_cache()
         # Update or append
         updated = False
@@ -206,19 +236,26 @@ async def verify_face(file: UploadFile = File(...)):
         image = Image.open(io.BytesIO(contents)).convert("RGB")
         frame = np.array(image)
 
-        face_locations = face_recognition.face_locations(frame)
-        if not face_locations:
+        # 1. Generate live encoding
+        try:
+            objs = DeepFace.represent(
+                img_path = frame,
+                model_name = MODEL_NAME,
+                detector_backend = DETECTOR_BACKEND,
+                enforce_detection = True,
+                align = True
+            )
+            live_encoding = np.array(objs[0]["embedding"])
+        except ValueError:
             return {"success": False, "message": "No face detected."}
-        
-        live_encoding = face_recognition.face_encodings(frame, face_locations)[0]
 
-        # 3. Fetch from Supabase with Fallback
+        # 2. Fetch from cache/Supabase
         employees = []
         mode = "online"
         try:
-            response = supabase.table("employees").select("id, name, employee_id, face_embedding, role").not_.is_("face_embedding", "null").execute()
-            employees = response.data
-            save_face_cache(employees) # Update cache on success
+            response = supabase.table("employees").select("id, name, employee_id, face_embedding, role, status").not_.is_("face_embedding", "null").execute()
+            employees = [e for e in response.data if e.get('status', 'Active') == 'Active']
+            save_face_cache(employees)
         except Exception as e:
             print(f"[WARNING] Supabase Offline, using local cache: {str(e)}")
             employees = load_face_cache()
@@ -227,20 +264,35 @@ async def verify_face(file: UploadFile = File(...)):
         if not employees:
             return {"success": False, "message": "No registered users found in system."}
 
-        # 4. Expert Matching Logic (face_distance Based)
-        known_encodings = [np.array(e["face_embedding"]) for e in employees]
-        face_distances = face_recognition.face_distance(known_encodings, live_encoding)
+        # 3. Expert Matching Logic (Euclidean Distance for Facenet)
+        # Filter for compatible encodings (128 dims)
+        valid_employees = []
+        for e in employees:
+            embedding = e.get("face_embedding")
+            if isinstance(embedding, str):
+                try:
+                    embedding = json.loads(embedding)
+                except:
+                    continue
+            
+            if embedding and isinstance(embedding, list) and len(embedding) == 128:
+                e["face_embedding"] = embedding
+                valid_employees.append(e)
+
+        if not valid_employees:
+            return {"success": False, "message": "No valid biometric records found."}
+
+        known_encodings = [np.array(e["face_embedding"]) for e in valid_employees]
+        face_distances = [np.linalg.norm(live_encoding - exp) for exp in known_encodings]
         
-        # Sort distances to find best and runner-up
-        sorted_indices = np.argsort(face_distances)
-        best_idx = sorted_indices[0]
+        best_idx = np.argmin(face_distances)
         min_distance = face_distances[best_idx]
         
-        # Security Thresholds
-        STRICT_THRESHOLD = 0.40
-        GAP_THRESHOLD = 0.05
+        # Facenet Thresholds: 0.40 (Strict) - 0.60 (Normal)
+        STRICT_THRESHOLD = 0.55 
+        GAP_THRESHOLD = 0.10
         
-        print(f"\n[INFO] [Biometric Match Analysis] Best Match Distance: {min_distance:.4f}")
+        print(f"\n[INFO] [DeepFace Analysis] Best Match Distance: {min_distance:.4f}")
 
         # Rejection: Above Threshold
         if min_distance > STRICT_THRESHOLD:
@@ -253,9 +305,9 @@ async def verify_face(file: UploadFile = File(...)):
 
         # Rejection: Ambiguous (Gap Check)
         if len(face_distances) > 1:
-            second_best_dist = face_distances[sorted_indices[1]]
-            gap = second_best_dist - min_distance
-            print(f"[INFO] [Gap Check] Best: {min_distance:.4f} | 2nd Best: {second_best_dist:.4f} | Gap: {gap:.4f}")
+            sorted_dist = sorted(face_distances)
+            gap = sorted_dist[1] - min_distance
+            print(f"[INFO] [Gap Check] Best: {min_distance:.4f} | 2nd Best: {sorted_dist[1]:.4f} | Gap: {gap:.4f}")
             
             if gap < GAP_THRESHOLD:
                 print(f"[REJECTED] Ambiguity Detected! Gap {gap:.4f} < {GAP_THRESHOLD}")
@@ -263,28 +315,26 @@ async def verify_face(file: UploadFile = File(...)):
                     "success": False, 
                     "message": "Ambiguous Match: Multiple users similar.", 
                     "error_code": "AMBIGUOUS_MATCH",
-                    "id_hint": employees[best_idx]["employee_id"] # Internal hint for backend
+                    "id_hint": valid_employees[best_idx]["employee_id"] # Internal hint for backend
                 }
 
         # Success: Best Match Confirmed
-        matched_emp = employees[best_idx]
-        print(f"[VERIFIED] Best match confirmed: {matched_emp['employee_id']}")
+        matched_emp = valid_employees[best_idx]
+        print(f"[VERIFIED] Match: {matched_emp['employee_id']}")
 
         # Log to Database
         log_data = {
             "employee_id": matched_emp["employee_id"],
             "status": "success",
-            "confidence": round(1.0 - min_distance, 4),
+            "confidence": round(1.0 - (min_distance / 2), 4), # Normalized confidence
             "device_id": "terminal_01",
-            "metadata": {"mode": mode, "distance": float(min_distance)},
+            "metadata": {"mode": mode, "engine": "DeepFace", "distance": float(min_distance)},
             "created_at": datetime.utcnow().isoformat()
         }
-
+        
         try:
-            if mode == "online":
-                supabase.table("access_logs").insert(log_data).execute()
-            else:
-                queue_pending_log(log_data)
+            if mode == "online": supabase.table("access_logs").insert(log_data).execute()
+            else: queue_pending_log(log_data)
         except Exception as log_err:
             print(f"[WARNING] Log save error: {str(log_err)}")
             queue_pending_log(log_data)
@@ -293,7 +343,7 @@ async def verify_face(file: UploadFile = File(...)):
             "success": True, 
             "message": f"Verified ({mode})", 
             "employee_id": matched_emp["employee_id"],
-            "confidence": round(1.0 - min_distance, 4)
+            "confidence": log_data["confidence"]
         }
 
     except Exception as e:

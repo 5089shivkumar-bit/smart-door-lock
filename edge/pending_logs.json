@@ -1,0 +1,1 @@
+[{"employee_id": "EMP-961231", "status": "success", "confidence": 1.0, "device_id": "terminal_01", "metadata": {"mode": "online", "engine": "DeepFace", "distance": 2.0308202689818083e-07}, "created_at": "2026-03-05T05:07:52.371864"}]
