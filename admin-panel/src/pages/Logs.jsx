@@ -12,8 +12,8 @@ export default function Logs() {
 
     const fetchLogs = async () => {
         try {
-            const data = await apiService.getLogs();
-            setLogs(data);
+            const res = await apiService.getLogs();
+            setLogs(res.logs || res || []);
         } catch (err) {
             console.error('Failed to fetch logs');
         } finally {
@@ -88,7 +88,7 @@ export default function Logs() {
                                                 ID
                                             </div>
                                             <div>
-                                                <div className="text-sm font-bold text-white leading-tight">{log.employees?.name || 'Subject Unknown'}</div>
+                                                <div className="text-sm font-bold text-white leading-tight">{log.employees?.name || log.name || 'Subject Unknown'}</div>
                                                 <div className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mt-0.5">{log.device_id || 'Entrance Node'}</div>
                                             </div>
                                         </div>
@@ -106,9 +106,9 @@ export default function Logs() {
                                     </td>
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-2">
-                                            <div className={`w-1 h-1 rounded-full ${log.verified ? 'bg-emerald-500' : 'bg-orange-500'}`}></div>
+                                            <div className={`w-1 h-1 rounded-full ${log.status === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
                                             <span className="text-[11px] font-bold text-slate-500">
-                                                {log.verified ? 'Verified Match' : 'Manual Bypass'}
+                                                {log.status === 'success' ? 'Verified Match' : 'Unrecognized'}
                                             </span>
                                         </div>
                                     </td>

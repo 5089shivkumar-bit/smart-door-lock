@@ -257,10 +257,7 @@ export default function Terminal() {
                                     <UserCheck className="w-24 h-24 text-emerald-500" />
                                 </div>
                                 <h2 className="text-3xl font-black text-white tracking-tighter mb-2">ACCESS GRANTED</h2>
-                                <div className="bg-emerald-500/10 px-6 py-2 rounded-full border border-emerald-500/20">
-                                    <p className="text-emerald-400 font-bold tracking-wider uppercase">{user?.name || 'Authorized User'}</p>
-                                </div>
-                                <p className="text-slate-500 text-xs mt-6 tracking-[0.3em] uppercase">Welcome Back</p>
+                                <p className="text-slate-500 text-xs mt-6 tracking-[0.3em] uppercase">Welcome Back, {user?.name || 'Authorized User'}</p>
                             </motion.div>
                         ) : (
                             <motion.div
