@@ -38,3 +38,8 @@ env/
 .vscode/
 .idea/
 *.swp
+
+# Biometric Engine
+edge/face_cache.json
+edge/match_debug.log
+edge/pending_logs.json

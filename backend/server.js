@@ -75,17 +75,29 @@ const authenticateToken = (req, res, next) => {
             return res.status(403).json({ error: "Forbidden", message: "Invalid or expired token" });
         }
 
-        // --- Security Check: Account Status ---
-        if (user.role !== 'admin') {
-            const { data: dbUser } = await supabase.from('employees').select('status').eq('email', user.email).single();
-            if (dbUser && dbUser.status !== 'Active') {
-                return res.status(403).json({ error: "Access Denied", message: "Account is disabled or deleted" });
-            }
-        }
+        try {
+            // --- Security Check: Account Status ---
+            if (user.role !== 'admin') {
+                const { data: dbUser, error: dbError } = await supabase.from('employees').select('status').eq('email', user.email).single();
 
-        console.log("🔓 Authenticated User:", user.email);
-        req.user = user;
-        next();
+                if (dbError) {
+                    console.error("❌ Database Status Check Error:", dbError.message);
+                    // If user not found, that's fine, but other errors should be logged
+                }
+
+                if (dbUser && dbUser.status !== 'Active') {
+                    return res.status(403).json({ error: "Access Denied", message: "Account is disabled or deleted" });
+                }
+            }
+
+            console.log("🔓 Authenticated User:", user.email);
+            req.user = user;
+            next();
+        } catch (statusError) {
+            console.error("❌ Critical Auth Middleware Error:", statusError.message);
+            // Don't crash the server, but deny access if we can't verify status
+            return res.status(500).json({ error: "Internal Server Error", message: "Authentication validation failed" });
+        }
     });
 };
 
@@ -550,7 +562,7 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
             console.log("📡 Attempting Biometric Engine (Port 8001)...");
             const response = await axios.post('http://localhost:8001/api/biometrics/face/verify', form, {
                 headers: form.getHeaders(),
-                timeout: 3000 // Fast timeout
+                timeout: 8000 // Increased timeout for DeepFace processing
             });
 
             if (response.data.success) {
@@ -558,13 +570,17 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
                 console.log(`✅ Face Verified: ${employeeId}`);
 
                 // Log success
-                await supabase.from('access_logs').insert({
-                    employee_id: employeeId,
-                    status: 'success',
-                    confidence: response.data.confidence,
-                    device_id: 'terminal_01',
-                    metadata: { method: 'face', confidence: response.data.confidence }
-                });
+                try {
+                    await supabase.from('access_logs').insert({
+                        employee_id: employeeId,
+                        status: 'success',
+                        confidence: response.data.confidence,
+                        device_id: 'terminal_01',
+                        metadata: { method: 'face', confidence: response.data.confidence }
+                    });
+                } catch (logError) {
+                    console.error("⚠️ Failed to record access log (likely schema mismatch):", logError.message);
+                }
 
                 // --- TRIGGER DOOR UNLOCK ---
                 await unlockDoor();
@@ -577,12 +593,16 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
             } else if (response.data.error_code === 'AMBIGUOUS_MATCH') {
                 console.warn(`⚠️ Ambiguous Match for hint: ${response.data.id_hint}. Requesting Fingerprint fallback.`);
 
-                await supabase.from('access_logs').insert({
-                    employee_id: response.data.id_hint,
-                    status: 'ambiguous',
-                    device_id: 'terminal_01',
-                    metadata: { method: 'face', error: 'AMBIGUOUS_MATCH' }
-                });
+                try {
+                    await supabase.from('access_logs').insert({
+                        employee_id: response.data.id_hint,
+                        status: 'ambiguous',
+                        device_id: 'terminal_01',
+                        metadata: { method: 'face', error: 'AMBIGUOUS_MATCH' }
+                    });
+                } catch (logError) {
+                    console.error("⚠️ Failed to record ambiguous access log:", logError.message);
+                }
 
                 return res.status(403).json({
                     success: false,

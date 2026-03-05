@@ -29,7 +29,7 @@ app.add_middleware(
 CACHE_FILE = "face_cache.json"
 PENDING_LOGS_FILE = "pending_logs.json"
 MODEL_NAME = "Facenet" # 128-dimensional embedding for compatibility
-DETECTOR_BACKEND = "retinaface" # More accurate than opencv
+DETECTOR_BACKEND = "opencv" # Faster for real-time door lock response
 
 def load_face_cache():
     if os.path.exists(CACHE_FILE):
@@ -80,7 +80,9 @@ async def startup_event():
     print(f"[STARTUP] Initializing AI Models ({MODEL_NAME})...")
     try:
         DeepFace.build_model(MODEL_NAME)
-        print("[SUCCESS] AI Models Ready.")
+        # Pre-load detector by running it on a tiny black image
+        DeepFace.represent(img_path=np.zeros((100, 100, 3), dtype=np.uint8), model_name=MODEL_NAME, detector_backend=DETECTOR_BACKEND, enforce_detection=False)
+        print("[SUCCESS] AI Models & Detector Ready.")
     except Exception as e:
         print(f"[ERROR] Model Init Failed: {str(e)}")
     asyncio.create_task(sync_task())
@@ -119,6 +121,9 @@ async def register_face(
                 normalization = 'Facenet'
             )
             encoding_list = objs[0]["embedding"]
+            # L2 Normalize before storing
+            encoding_vec = np.array(encoding_list)
+            encoding_list = (encoding_vec / np.linalg.norm(encoding_vec)).tolist()
         except ValueError:
             return {"success": False, "message": "No face detected.", "error_code": "NO_FACE"}
 
@@ -248,6 +253,8 @@ async def verify_face(file: UploadFile = File(...)):
                 normalization = 'Facenet'
             )
             live_encoding = np.array(objs[0]["embedding"])
+            # L2 Normalize for consistent Euclidean distance thresholding
+            live_encoding = live_encoding / np.linalg.norm(live_encoding)
         except ValueError:
             return {"success": False, "message": "No face detected."}
 
@@ -284,7 +291,12 @@ async def verify_face(file: UploadFile = File(...)):
         if not valid_employees:
             return {"success": False, "message": "No valid biometric records found."}
 
-        known_encodings = [np.array(e["face_embedding"]) for e in valid_employees]
+        known_encodings = []
+        for e in valid_employees:
+            vec = np.array(e["face_embedding"])
+            # Normalize stored vectors in case they were saved unnormalized
+            known_encodings.append(vec / np.linalg.norm(vec))
+            
         face_distances = [np.linalg.norm(live_encoding - exp) for exp in known_encodings]
         
         best_idx = np.argmin(face_distances)
@@ -340,8 +352,15 @@ async def verify_face(file: UploadFile = File(...)):
         }
         
         try:
-            if mode == "online": supabase.table("access_logs").insert(log_data).execute()
-            else: queue_pending_log(log_data)
+            if mode == "online": 
+                # Attempt insert; if it fails (e.g. missing column), fallback to queue
+                try:
+                    supabase.table("access_logs").insert(log_data).execute()
+                except Exception as db_err:
+                    print(f"[WARNING] Database Insert Failed (Check Schema/Columns): {str(db_err)}")
+                    queue_pending_log(log_data)
+            else: 
+                queue_pending_log(log_data)
         except Exception as log_err:
             print(f"[WARNING] Log save error: {str(log_err)}")
             queue_pending_log(log_data)
