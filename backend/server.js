@@ -587,8 +587,12 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
 
                 return res.json({
                     success: true,
-                    message: `Authorized: Welcome ${employeeId}`,
-                    employeeId: employeeId
+                    message: `Authorized: Welcome ${response.data.name || employeeId}`,
+                    employeeId: employeeId,
+                    user: {
+                        name: response.data.name,
+                        employee_id: employeeId
+                    }
                 });
             } else if (response.data.error_code === 'AMBIGUOUS_MATCH') {
                 console.warn(`⚠️ Ambiguous Match for hint: ${response.data.id_hint}. Requesting Fingerprint fallback.`);

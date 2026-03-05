@@ -369,6 +369,7 @@ async def verify_face(file: UploadFile = File(...)):
             "success": True, 
             "message": f"Verified ({mode})", 
             "employee_id": matched_emp["employee_id"],
+            "name": matched_emp["name"],
             "confidence": log_data["confidence"]
         }
 
