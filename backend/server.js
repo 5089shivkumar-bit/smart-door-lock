@@ -1461,6 +1461,31 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
             return res.status(404).json({ error: "Subject not found in primary cluster." });
         }
 
+        // ── Biometric Cache Eviction (non-blocking) ──────────────────────────
+        // Remove deleted employee's face from the Python engine's local cache
+        // so the same person can re-enroll without a 'Biometric Conflict' error.
+        const evictionEmployeeId = deletedUser.employee_id || employee_id;
+        console.log(`🧹 Evicting biometric cache for: ${evictionEmployeeId}`);
+
+        try {
+            // 1. Evict specific entry from face_cache.json
+            await axios.delete(
+                `http://localhost:8001/api/biometrics/face/${encodeURIComponent(evictionEmployeeId)}`,
+                { timeout: 5000 }
+            );
+            console.log(`✅ Biometric cache evicted for ${evictionEmployeeId}`);
+        } catch (cacheErr) {
+            console.warn(`⚠️ Biometric engine offline — cache will sync on next restart: ${cacheErr.message}`);
+        }
+
+        try {
+            // 2. Trigger full cache rebuild to ensure consistency
+            await axios.post('http://localhost:8001/api/biometrics/cache/rebuild', {}, { timeout: 5000 });
+            console.log('✅ Biometric cache rebuilt after employee deletion');
+        } catch (rebuildErr) {
+            console.warn(`⚠️ Cache rebuild skipped (engine offline): ${rebuildErr.message}`);
+        }
+
         console.log(`✅ Success: Subject ${deletedUser.employee_id} and dependencies in [${Array.from(cleanedTables).join(', ')}] purged.`);
         res.json({
             success: true,

@@ -407,6 +407,75 @@ async def verify_face(file: UploadFile = File(...)):
         print(f"[ERROR] Verification Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# ── Biometric Cache Management ─────────────────────────────────────────────────
+
+@app.delete("/api/biometrics/face/{employee_id}")
+async def delete_face(employee_id: str):
+    """
+    Remove a specific employee's face embedding from the local cache.
+    Called automatically when an employee is deleted from the admin panel.
+    """
+    print(f"[DELETE] Evicting face cache for: {employee_id}")
+    cache = load_face_cache()
+    original_length = len(cache)
+
+    # Remove ALL entries matching this employee_id
+    new_cache = [emp for emp in cache if emp.get("employee_id") != employee_id]
+    removed   = original_length - len(new_cache)
+
+    save_face_cache(new_cache)
+
+    # Also null out face_embedding in Supabase (belt + suspenders)
+    try:
+        supabase.table("employees").update({"face_embedding": None}).eq("employee_id", employee_id).execute()
+        print(f"[DELETE] Nulled face_embedding in Supabase for {employee_id}")
+    except Exception as e:
+        print(f"[WARNING] Could not null embedding in Supabase (may already be deleted): {str(e)}")
+
+    print(f"[DELETE] Removed {removed} cache entry/entries for {employee_id}. Cache size: {len(new_cache)}")
+    return {
+        "success": True,
+        "message": f"Face data evicted for {employee_id}",
+        "entries_removed": removed,
+        "cache_size": len(new_cache)
+    }
+
+
+@app.post("/api/biometrics/cache/rebuild")
+async def rebuild_cache():
+    """
+    Force a full rebuild of face_cache.json from Supabase.
+    Called after employee deletion to ensure consistency.
+    """
+    print("[CACHE] Forcing full cache rebuild from Supabase...")
+    try:
+        response = supabase.table("employees") \
+            .select("id, name, employee_id, face_embedding, role") \
+            .not_.is_("face_embedding", "null") \
+            .execute()
+        save_face_cache(response.data)
+        print(f"[CACHE] Rebuilt: {len(response.data)} enrolled employees")
+        return {
+            "success": True,
+            "message": "Cache rebuilt from Supabase",
+            "enrolled_count": len(response.data)
+        }
+    except Exception as e:
+        print(f"[ERROR] Cache rebuild failed: {str(e)}")
+        return {"success": False, "message": f"Rebuild failed: {str(e)}"}
+
+
+@app.get("/api/biometrics/cache/status")
+async def cache_status():
+    """Return current cache contents summary for diagnostics."""
+    cache = load_face_cache()
+    return {
+        "cached_employees": len(cache),
+        "entries": [{"employee_id": e.get("employee_id"), "name": e.get("name")} for e in cache]
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
