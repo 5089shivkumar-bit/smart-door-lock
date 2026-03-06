@@ -1301,39 +1301,83 @@ app.post('/api/logs/iot', async (req, res) => {
 app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { includeDeleted = 'false' } = req.query;
-        let query = supabase.from('employees').select('*');
+
+        // Select only real DB columns — face_embedding is fetched to derive
+        // face_registered status but is stripped before sending to frontend.
+        let query = supabase.from('employees').select(
+            'id, employee_id, name, email, role, department, status, ' +
+            'image_url, created_at, updated_at, is_deleted, face_embedding'
+        );
 
         if (includeDeleted !== 'true') {
             query = query.neq('status', 'Deleted');
         }
 
         const { data: users, error } = await query;
-        if (error) throw error;
 
-        res.json(users || []);
+        if (error) {
+            console.error("❌ Get users Supabase error:", error.message, error.code, error.details);
+            throw error;
+        }
+
+        // Transform: strip raw face_embedding vector, replace with boolean status
+        const safeUsers = (users || []).map(u => ({
+            ...u,
+            face_embedding: undefined,   // remove — never expose raw vectors to frontend
+            face_registered: !!u.face_embedding,
+            fingerprint_registered: false        // future field; default false for now
+        }));
+
+        res.json(safeUsers);
     } catch (error) {
-        console.error("❌ Get users error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("❌ Get users error:", error.message || error);
+        res.status(500).json({
+            error: "Internal Server Error",
+            message: error.message || "Failed to fetch employees",
+            hint: "Check backend logs and Supabase connectivity"
+        });
     }
 });
 
 app.patch('/api/users/:id', authenticateToken, isAdmin, validateIdentity, async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body;
+        const rawUpdates = req.body;
+
+        // Whitelist: only allow columns that actually exist in the employees table.
+        // Silently drop any frontend-only fields (face_registered, fingerprint_registered, etc.)
+        // to prevent Supabase "column does not exist" errors → 500.
+        const ALLOWED_COLUMNS = new Set([
+            'name', 'email', 'role', 'department', 'status',
+            'employee_id', 'image_url', 'is_deleted', 'face_embedding'
+        ]);
+        const updates = Object.fromEntries(
+            Object.entries(rawUpdates).filter(([k]) => ALLOWED_COLUMNS.has(k))
+        );
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ error: "No valid fields to update.", received: Object.keys(rawUpdates) });
+        }
 
         const { data: updatedUser, error } = await supabase
             .from('employees')
             .update(updates)
             .eq('id', id)
-            .select()
+            .select('id, employee_id, name, email, role, department, status, image_url, created_at, updated_at, is_deleted, face_embedding')
             .single();
 
         if (error) throw error;
-        res.json(updatedUser);
+
+        // Same transformation as GET: strip raw vector, return booleans
+        res.json({
+            ...updatedUser,
+            face_embedding: undefined,
+            face_registered: !!updatedUser.face_embedding,
+            fingerprint_registered: false
+        });
     } catch (error) {
-        console.error("❌ Update user error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("❌ Update user error:", error.message || error);
+        res.status(500).json({ error: "Internal Server Error", message: error.message });
     }
 });
 
