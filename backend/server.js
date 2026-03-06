@@ -309,66 +309,112 @@ app.post('/auth/login', authLimiter, async (req, res) => {
 // Dashboard Stats Endpoint
 app.get('/api/stats', async (req, res) => {
     try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // ── Timezone-correct "today" date string ─────────────────────────────
+        // CRITICAL: Node runs in UTC. toISOString().split('T')[0] gives the UTC
+        // date which is 5h30m behind IST. After IST midnight, setHours(0,0,0,0)
+        // + toISOString() = YESTERDAY in UTC → query misses today's records.
+        // Fix: use Intl.DateTimeFormat to get the IST calendar date directly.
+        const todayIST = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Kolkata'
+        }).format(new Date()); // → "2026-03-06"
 
-        // Parallel execution for expert performance
+        // IST midnight as a UTC moment (for access_logs timestamp comparisons)
+        // IST = UTC+5:30, so IST midnight = UTC 18:30 of previous day
+        const istMidnightUTC = new Date(`${todayIST}T00:00:00+05:30`).toISOString();
+
+        // ── Parallel DB queries ───────────────────────────────────────────────
         const [
-            { count: userCount },
+            { count: activeEmployeeCount },
             { count: faceCount },
             { count: fingerCount },
             { count: rfidCount },
             { count: todayGranted },
-            { count: todayDenied },
             { data: attendanceToday },
             { count: scansToday }
         ] = await Promise.all([
-            supabase.from('employees').select('*', { count: 'exact', head: true }).neq('status', 'Deleted'),
-            supabase.from('employees').select('*', { count: 'exact', head: true }).not('face_embedding', 'is', null).neq('status', 'Deleted'),
-            supabase.from('fingerprints').select('*', { count: 'exact', head: true }),
-            supabase.from('rfid_tags').select('*', { count: 'exact', head: true }),
-            supabase.from('access_logs').select('*', { count: 'exact', head: true }).eq('status', 'success').gte('created_at', today.toISOString()),
-            supabase.from('access_logs').select('*', { count: 'exact', head: true }).in('status', ['failed', 'denied', 'unrecognized']).gte('created_at', today.toISOString()),
-            supabase.from('attendance').select('check_in').eq('date', today.toISOString().split('T')[0]),
-            supabase.from('access_logs').select('*', { count: 'exact', head: true }).gte('created_at', today.toISOString())
+            // Total active employees
+            supabase.from('employees')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'Active'),
+
+            // Face-enrolled employees
+            supabase.from('employees')
+                .select('*', { count: 'exact', head: true })
+                .not('face_embedding', 'is', null)
+                .eq('status', 'Active'),
+
+            // Fingerprint records
+            supabase.from('fingerprints')
+                .select('*', { count: 'exact', head: true }),
+
+            // RFID tags
+            supabase.from('rfid_tags')
+                .select('*', { count: 'exact', head: true }),
+
+            // Successful access grants today
+            supabase.from('access_logs')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'success')
+                .gte('created_at', istMidnightUTC),
+
+            // Today's attendance records (IST date column is a plain DATE string)
+            supabase.from('attendance')
+                .select('employee_id, check_in, status')
+                .eq('date', todayIST)
+                .not('check_in', 'is', null),
+
+            // Total scans (all statuses) today
+            supabase.from('access_logs')
+                .select('*', { count: 'exact', head: true })
+                .gte('created_at', istMidnightUTC)
         ]);
 
-        const totalUsers = userCount || 0;
-        const isPresent = attendanceToday?.length || 0;
-        const absentToday = Math.max(0, totalUsers - isPresent);
+        const totalEmployees = activeEmployeeCount || 0;
+        const presentToday = attendanceToday?.length || 0;
+        const absentToday = Math.max(0, totalEmployees - presentToday);
 
-        // Late threshold: 09:00 AM
-        const LATE_THRESHOLD = "09:00:00";
-        const lateCount = attendanceToday?.filter(a => {
+        // ── Late arrivals: check_in IST time > 09:15 ─────────────────────────
+        // check_in is stored as a UTC ISO timestamp; convert to IST before comparing.
+        const LATE_HOUR = 9, LATE_MIN = 15; // 09:15 IST
+        const lateToday = (attendanceToday || []).filter(a => {
             if (!a.check_in) return false;
-            const checkInTime = new Date(a.check_in).toTimeString().split(' ')[0];
-            return checkInTime > LATE_THRESHOLD;
-        }).length || 0;
+            const checkInIST = new Date(a.check_in).toLocaleTimeString('en-US', {
+                timeZone: 'Asia/Kolkata',
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            }); // → "09:22"
+            const [h, m] = checkInIST.split(':').map(Number);
+            return (h * 60 + m) > (LATE_HOUR * 60 + LATE_MIN);
+        }).length;
+
+        console.log(`📊 [Stats] todayIST=${todayIST} | employees=${totalEmployees} | present=${presentToday} | late=${lateToday} | scans=${scansToday}`);
 
         res.json({
-            // ── 5 Primary KPI fields (snake_case spec)
-            total_employees: totalUsers,
-            present_today: isPresent,
+            // ── Primary KPI fields (snake_case)
+            total_employees: totalEmployees,
+            present_today: presentToday,
             absent_today: absentToday,
-            late_today: lateCount,
+            late_today: lateToday,
             total_scans_today: scansToday || 0,
             // ── Legacy camelCase aliases (backwards compat)
-            totalUsers,
+            totalUsers: totalEmployees,
             faceProfiles: faceCount || 0,
             fingerprints: fingerCount || 0,
             rfidCards: rfidCount || 0,
             todayEntries: todayGranted || 0,
-            failedAttempts: todayDenied || 0,
-            isPresent,
+            failedAttempts: 0,
+            isPresent: presentToday,
             absentToday,
-            lateToday: lateCount,
+            lateToday: lateToday,
             trends: {
-                users: '+2', faces: '+1', fingerprints: '0', rfid: '+1', entries: '+12%', failures: '-5%'
+                users: '+2', faces: '+1', fingerprints: '0', rfid: '+1',
+                entries: '+12%', failures: '-5%'
             }
         });
     } catch (error) {
-        console.error("❌ Stats error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("❌ Stats error:", error.message || error);
+        res.status(500).json({ error: "Internal Server Error", message: error.message });
     }
 });
 
