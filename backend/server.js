@@ -10,6 +10,9 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const upload = multer({ storage: multer.memoryStorage() });
 const validateIdentity = require('./middleware/validateIdentity');
+const validateDevice = require('./middleware/validateDevice');
+const ExcelJS = require('exceljs');
+const PDFDocument = require('pdfkit-table');
 
 const app = express();
 const PORT = 8000;
@@ -109,6 +112,129 @@ const isAdmin = (req, res, next) => {
     }
 };
 
+// --- Attendance Logic ---
+/**
+ * Records check-in or check-out for an employee.
+ * Returns an object with status message and attendance detail.
+ */
+const recordAttendance = async (employeeId, method, deviceId = 'server') => {
+    try {
+        // Map common synonyms to DB-allowed values
+        let mappedMethod = method;
+        const normalizedMethod = (method || 'face').toLowerCase();
+        if (['facial_recognition', 'face_recognition', 'face'].includes(normalizedMethod)) mappedMethod = 'face';
+        else if (['phone_fingerprint', 'mobile_biometric', 'fingerprint'].includes(normalizedMethod)) mappedMethod = 'fingerprint';
+        else mappedMethod = 'face';
+
+        const today = new Date().toISOString().split('T')[0];
+        console.log(`🕒 [Attendance Debug] Checking for ${employeeId} on ${today} with method: ${mappedMethod}`);
+
+        // Check for existing record for today
+        const { data: existing, error: fetchError } = await supabase
+            .from('attendance')
+            .select('*')
+            .eq('employee_id', employeeId)
+            .eq('date', today)
+            .single();
+
+        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = not found
+            console.error("❌ Attendance Fetch Error:", fetchError.message, fetchError.code);
+            throw new Error(`Database error fetching attendance: ${fetchError.message}`);
+        }
+
+        if (!existing) {
+            // ── Check-in ──
+            console.log(`🕒 [Attendance] Checking IN employee: ${employeeId}`);
+            const checkInTime = new Date();
+            const checkInIso = checkInTime.toISOString();
+
+            // Late arrival detection
+            // Office start = 09:00, grace period = 15 minutes → threshold 09:15
+            const OFFICE_START_HOUR = 9;
+            const GRACE_PERIOD_MINUTES = 15;
+            const lateThresholdMins = OFFICE_START_HOUR * 60 + GRACE_PERIOD_MINUTES; // 555 mins from midnight
+            const checkInMins = checkInTime.getHours() * 60 + checkInTime.getMinutes();
+            const arrivalStatus = checkInMins > lateThresholdMins ? 'LATE' : 'ON_TIME';
+            console.log(`🕒 [Attendance] Arrival status: ${arrivalStatus} (check-in at ${checkInTime.toTimeString().slice(0, 5)})`);
+
+            const { error: insError } = await supabase.from('attendance').insert({
+                employee_id: employeeId,
+                date: today,
+                check_in: checkInIso,
+                method: mappedMethod,
+                device_id: deviceId,
+                status: arrivalStatus
+            });
+            if (insError) {
+                console.error("❌ Attendance Insert Error:", insError.message);
+                throw new Error(`Insert failed: ${insError.message}`);
+            }
+            return {
+                message: "Check-in recorded",
+                check_in: checkInIso,
+                check_out: null,
+                working_hours: null,
+                status: arrivalStatus
+            };
+
+        } else {
+            // Security: Throttle duplicate scans (2-minute guard)
+            const lastActivity = new Date(existing.check_out || existing.check_in);
+            const diffSeconds = (new Date() - lastActivity) / 1000;
+
+            if (diffSeconds < 120) {
+                console.log(`🕒 [Attendance] Ignoring duplicate scan for ${employeeId} (${Math.round(diffSeconds)}s since last activity)`);
+                return {
+                    message: "Duplicate scan ignored",
+                    check_in: existing.check_in,
+                    check_out: existing.check_out,
+                    working_hours: existing.working_hours || null,
+                    status: existing.status || null
+                };
+            }
+
+            if (!existing.check_out) {
+                // ── Check-out ──
+                console.log(`🕒 [Attendance] Checking OUT employee: ${employeeId}`);
+                const checkOutTime = new Date();
+                const workingHours = parseFloat(
+                    ((checkOutTime - new Date(existing.check_in)) / (1000 * 60 * 60)).toFixed(2)
+                );
+
+                const { error: updError } = await supabase.from('attendance').update({
+                    check_out: checkOutTime.toISOString(),
+                    working_hours: workingHours
+                }).eq('id', existing.id);
+
+                if (updError) {
+                    console.error("❌ Attendance Update Error:", updError.message);
+                    throw new Error(`Update failed: ${updError.message}`);
+                }
+                return {
+                    message: "Check-out recorded",
+                    check_in: existing.check_in,
+                    check_out: checkOutTime.toISOString(),
+                    working_hours: workingHours,
+                    status: existing.status || null
+                };
+            } else {
+                // ── Already completed ──
+                console.log(`🕒 [Attendance] Employee ${employeeId} already completed attendance for today.`);
+                return {
+                    message: "Attendance already completed today",
+                    check_in: existing.check_in,
+                    check_out: existing.check_out,
+                    working_hours: existing.working_hours || null,
+                    status: existing.status || null
+                };
+            }
+        }
+    } catch (error) {
+        console.error("❌ Critical Attendance Error:", error.message);
+        throw error;
+    }
+};
+
 // --- IoT Utilities ---
 /**
  * Triggers the door unlock on ESP32
@@ -183,15 +309,62 @@ app.post('/auth/login', authLimiter, async (req, res) => {
 // Dashboard Stats Endpoint
 app.get('/api/stats', async (req, res) => {
     try {
-        const { count: userCount } = await supabase.from('employees').select('*', { count: 'exact', head: true });
-        const { count: grantedCount } = await supabase.from('access_logs').select('*', { count: 'exact', head: true }).eq('status', 'success');
-        const { count: deniedCount } = await supabase.from('access_logs').select('*', { count: 'exact', head: true }).eq('status', 'failed');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Parallel execution for expert performance
+        const [
+            { count: userCount },
+            { count: faceCount },
+            { count: fingerCount },
+            { count: rfidCount },
+            { count: todayGranted },
+            { count: todayDenied },
+            { data: attendanceToday },
+            { count: scansToday }
+        ] = await Promise.all([
+            supabase.from('employees').select('*', { count: 'exact', head: true }).neq('status', 'Deleted'),
+            supabase.from('employees').select('*', { count: 'exact', head: true }).not('face_embedding', 'is', null).neq('status', 'Deleted'),
+            supabase.from('fingerprints').select('*', { count: 'exact', head: true }),
+            supabase.from('rfid_tags').select('*', { count: 'exact', head: true }),
+            supabase.from('access_logs').select('*', { count: 'exact', head: true }).eq('status', 'success').gte('created_at', today.toISOString()),
+            supabase.from('access_logs').select('*', { count: 'exact', head: true }).in('status', ['failed', 'denied', 'unrecognized']).gte('created_at', today.toISOString()),
+            supabase.from('attendance').select('check_in').eq('date', today.toISOString().split('T')[0]),
+            supabase.from('access_logs').select('*', { count: 'exact', head: true }).gte('created_at', today.toISOString())
+        ]);
+
+        const totalUsers = userCount || 0;
+        const isPresent = attendanceToday?.length || 0;
+        const absentToday = Math.max(0, totalUsers - isPresent);
+
+        // Late threshold: 09:00 AM
+        const LATE_THRESHOLD = "09:00:00";
+        const lateCount = attendanceToday?.filter(a => {
+            if (!a.check_in) return false;
+            const checkInTime = new Date(a.check_in).toTimeString().split(' ')[0];
+            return checkInTime > LATE_THRESHOLD;
+        }).length || 0;
 
         res.json({
-            totalUsers: userCount || 0,
-            activeDevices: 1,
-            todayEntries: grantedCount || 0,
-            failedAttempts: deniedCount || 0
+            // ── 5 Primary KPI fields (snake_case spec)
+            total_employees: totalUsers,
+            present_today: isPresent,
+            absent_today: absentToday,
+            late_today: lateCount,
+            total_scans_today: scansToday || 0,
+            // ── Legacy camelCase aliases (backwards compat)
+            totalUsers,
+            faceProfiles: faceCount || 0,
+            fingerprints: fingerCount || 0,
+            rfidCards: rfidCount || 0,
+            todayEntries: todayGranted || 0,
+            failedAttempts: todayDenied || 0,
+            isPresent,
+            absentToday,
+            lateToday: lateCount,
+            trends: {
+                users: '+2', faces: '+1', fingerprints: '0', rfid: '+1', entries: '+12%', failures: '-5%'
+            }
         });
     } catch (error) {
         console.error("❌ Stats error:", error);
@@ -199,32 +372,881 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// Logs Endpoint
-app.get('/api/logs', authenticateToken, async (req, res) => {
+// ─── Attendance Listing Endpoint ────────────────────────────────────────────
+// Supports: date range, employee_id, department, name search, pagination, sorting
+app.get('/api/attendance', authenticateToken, async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
-        const from = (page - 1) * limit;
-        const to = from + limit - 1;
+        const {
+            startDate: sd,
+            endDate: ed,
+            date,
+            employee_id,
+            department,
+            search,
+            page = 1,
+            pageSize = 10,
+            sortBy = 'date',
+            sortDir = 'desc',
+        } = req.query;
 
-        const { data: logs, count, error } = await supabase
-            .from('access_logs')
-            .select(`*, employees(name, email)`, { count: 'exact' })
-            .order('created_at', { ascending: false })
-            .range(from, to);
+        const today = new Date().toISOString().split('T')[0];
+        const fromDate = sd || date || today;
+        const toDate = ed || date || today;
+        const limit = parseInt(pageSize, 10) || 10;
+        const offset = (parseInt(page, 10) - 1) * limit;
+
+        // Whitelist sort columns
+        const allowedCols = ['date', 'check_in', 'check_out', 'working_hours', 'status'];
+        const col = allowedCols.includes(sortBy) ? sortBy : 'date';
+        const asc = sortDir === 'asc';
+
+        // Build base query
+        const buildQuery = (head = false) => {
+            let q = supabase
+                .from('attendance')
+                .select('*, employees!inner(name, employee_id, image_url, department)', head ? { count: 'exact', head: true } : { count: 'exact' })
+                .gte('date', fromDate)
+                .lte('date', toDate);
+
+            if (employee_id) q = q.eq('employee_id', employee_id);
+            if (department) q = q.eq('employees.department', department);
+            if (search) q = q.ilike('employees.name', `%${search}%`);
+            return q;
+        };
+
+        // Count + data in parallel
+        const [{ count }, { data, error }] = await Promise.all([
+            buildQuery(true),
+            buildQuery(false).order(col, { ascending: asc }).range(offset, offset + limit - 1),
+        ]);
 
         if (error) throw error;
 
+        res.json({ data: data || [], total: count || 0 });
+    } catch (error) {
+        console.error('❌ Get attendance error:', error);
+        res.status(500).json({ error: 'Internal Server Error', details: error.message });
+    }
+});
+
+// ─── Excel Export Endpoint ───────────────────────────────────────────────────
+app.get('/api/attendance/export/excel', authenticateToken, async (req, res) => {
+    try {
+        const { month, year, employee_id, department, startDate: sd, endDate: ed } = req.query;
+        const now = new Date();
+
+        // ── Resolve date range ──
+        let fromDate, toDate;
+        if (month && year) {
+            fromDate = `${year}-${String(month).padStart(2, '0')}-01`;
+            const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
+            toDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+        } else {
+            fromDate = sd || now.toISOString().split('T')[0];
+            toDate = ed || now.toISOString().split('T')[0];
+        }
+
+        // ── Fetch data ──
+        let q = supabase
+            .from('attendance')
+            .select('*, employees!inner(name, employee_id, department, image_url)')
+            .gte('date', fromDate)
+            .lte('date', toDate)
+            .order('date', { ascending: false });
+
+        if (employee_id) q = q.eq('employee_id', employee_id);
+        if (department) q = q.eq('employees.department', department);
+
+        const { data: records, error } = await q;
+        if (error) throw error;
+
+        // ── Build workbook ──
+        const ExcelJS = require('exceljs');
+        const wb = new ExcelJS.Workbook();
+        wb.creator = 'AuraLock Admin';
+        wb.lastModifiedBy = 'AuraLock';
+        wb.created = now;
+        wb.modified = now;
+
+        const ws = wb.addWorksheet('Attendance Registry', {
+            pageSetup: { fitToPage: true, fitToWidth: 1, orientation: 'landscape' },
+        });
+
+        // Title row
+        ws.mergeCells('A1:H1');
+        const titleCell = ws.getCell('A1');
+        titleCell.value = `Attendance Registry  |  ${fromDate}  →  ${toDate}`;
+        titleCell.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E293B' } };
+        titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws.getRow(1).height = 32;
+
+        // Subtitle row
+        ws.mergeCells('A2:H2');
+        const sub = ws.getCell('A2');
+        sub.value = `Generated: ${now.toLocaleString('en-IN')}  |  Department: ${department || 'All'}`;
+        sub.font = { name: 'Calibri', size: 9, italic: true, color: { argb: 'FF94A3B8' } };
+        sub.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        sub.alignment = { horizontal: 'center' };
+        ws.getRow(2).height = 18;
+
+        // Blank spacer
+        ws.getRow(3).height = 6;
+
+        // ── Header row (row 4) ──
+        const HEADERS = [
+            { header: 'Employee Name', key: 'name', width: 24 },
+            { header: 'Department', key: 'department', width: 16 },
+            { header: 'Date', key: 'date', width: 14 },
+            { header: 'Check In', key: 'check_in', width: 14 },
+            { header: 'Check Out', key: 'check_out', width: 14 },
+            { header: 'Working Hours', key: 'working_hours', width: 16 },
+            { header: 'Status', key: 'status', width: 12 },
+            { header: 'Method', key: 'method', width: 14 },
+        ];
+
+        ws.columns = HEADERS.map(h => ({ key: h.key, width: h.width }));
+
+        const headerRow = ws.getRow(4);
+        HEADERS.forEach((h, i) => {
+            const cell = headerRow.getCell(i + 1);
+            cell.value = h.header;
+            cell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF334155' } };
+            cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: false };
+            cell.border = {
+                bottom: { style: 'medium', color: { argb: 'FF3B82F6' } },
+            };
+        });
+        headerRow.height = 22;
+
+        // ── Helper: format timestamp ──
+        const fmtTs = (iso) => {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+        };
+
+        const fmtWH = (rec) => {
+            if (rec.working_hours != null) {
+                const h = Math.floor(rec.working_hours);
+                const m = Math.round((rec.working_hours - h) * 60);
+                return `${h}h ${String(m).padStart(2, '0')}m`;
+            }
+            if (!rec.check_in || !rec.check_out) return '—';
+            const mins = Math.round((new Date(rec.check_out) - new Date(rec.check_in)) / 60000);
+            return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+        };
+
+        // ── Data rows ──
+        (records || []).forEach((rec, idx) => {
+            const rowNum = 5 + idx;
+            const row = ws.getRow(rowNum);
+            const isEven = idx % 2 === 0;
+
+            const values = [
+                rec.employees?.name || '—',
+                rec.employees?.department || 'General',
+                rec.date || '—',
+                fmtTs(rec.check_in),
+                fmtTs(rec.check_out),
+                fmtWH(rec),
+                rec.status || '—',
+                (rec.method || '—').toUpperCase(),
+            ];
+
+            // Row background: LATE = amber tint, ON_TIME = green tint, else alternating
+            let rowBg = isEven ? 'FFFFFFFF' : 'FFF8FAFC';
+            if (rec.status === 'LATE') rowBg = 'FFFFF7ED'; // amber-50
+            if (rec.status === 'ON_TIME') rowBg = 'FFF0FDF4'; // green-50
+
+            values.forEach((val, ci) => {
+                const cell = row.getCell(ci + 1);
+                cell.value = val;
+                cell.font = { name: 'Calibri', size: 10 };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+                cell.alignment = { vertical: 'middle', horizontal: ci === 0 ? 'left' : 'center' };
+
+                // Status cell colour override
+                if (ci === 6) {
+                    if (val === 'LATE') { cell.font = { ...cell.font, bold: true, color: { argb: 'FFD97706' } }; }
+                    if (val === 'ON_TIME') { cell.font = { ...cell.font, bold: true, color: { argb: 'FF059669' } }; }
+                }
+            });
+
+            row.height = 18;
+        });
+
+        // ── Summary footer ──
+        const footerRow = ws.getRow(5 + (records || []).length);
+        const totalLate = (records || []).filter(r => r.status === 'LATE').length;
+        const totalOnTime = (records || []).filter(r => r.status === 'ON_TIME').length;
+        ws.mergeCells(`A${footerRow.number}:H${footerRow.number}`);
+        const footerCell = footerRow.getCell(1);
+        footerCell.value = `Total: ${(records || []).length} records  •  On Time: ${totalOnTime}  •  Late: ${totalLate}`;
+        footerCell.font = { name: 'Calibri', size: 9, italic: true, color: { argb: 'FF64748B' } };
+        footerCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
+        footerCell.alignment = { horizontal: 'center' };
+        footerRow.height = 16;
+
+        // ── Stream response ──
+        const filename = `attendance_${fromDate}_to_${toDate}.xlsx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        await wb.xlsx.write(res);
+        res.end();
+
+    } catch (error) {
+        console.error('❌ Excel export error:', error);
+        res.status(500).json({ error: 'Excel export failed', details: error.message });
+    }
+});
+
+// ─── PDF Export Endpoint ──────────────────────────────────────────────────────
+app.get('/api/attendance/export/pdf', authenticateToken, async (req, res) => {
+    try {
+        const { month, year, employee_id, department, startDate: sd, endDate: ed } = req.query;
+        const now = new Date();
+
+        // ── Date range ──
+        let fromDate, toDate;
+        if (month && year) {
+            fromDate = `${year}-${String(month).padStart(2, '0')}-01`;
+            const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
+            toDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+        } else {
+            fromDate = sd || now.toISOString().split('T')[0];
+            toDate = ed || now.toISOString().split('T')[0];
+        }
+
+        // ── Fetch records ──
+        let q = supabase
+            .from('attendance')
+            .select('*, employees!inner(name, employee_id, department)')
+            .gte('date', fromDate)
+            .lte('date', toDate)
+            .order('date', { ascending: false });
+
+        if (employee_id) q = q.eq('employee_id', employee_id);
+        if (department) q = q.eq('employees.department', department);
+
+        const { data: records, error } = await q;
+        if (error) throw error;
+
+        // ── Colour helpers (PDFKit uses RGB 0-255) ──
+        const C = {
+            navy: [15, 23, 42],
+            slate: [30, 41, 59],
+            mid: [71, 85, 105],
+            muted: [148, 163, 184],
+            white: [255, 255, 255],
+            blue: [59, 130, 246],
+            emerald: [16, 185, 129],
+            amber: [245, 158, 11],
+            rowEven: [248, 250, 252],
+            rowOdd: [255, 255, 255],
+            rowLate: [255, 251, 235],
+            rowOT: [240, 253, 244],
+        };
+
+        // ── Time formatters ──
+        const fmtTs = iso => {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        };
+
+        const fmtWH = rec => {
+            if (rec.working_hours != null) {
+                const h = Math.floor(rec.working_hours);
+                const m = Math.round((rec.working_hours - h) * 60);
+                return `${h}h ${String(m).padStart(2, '0')}m`;
+            }
+            if (!rec.check_in || !rec.check_out) return '—';
+            const mins = Math.round((new Date(rec.check_out) - new Date(rec.check_in)) / 60000);
+            return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+        };
+
+        // ── Build PDF ──
+        const PDFDocument = require('pdfkit');
+        const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 36, autoFirstPage: true });
+
+        // Stream straight to response
+        const filename = `attendance_${fromDate}_to_${toDate}.pdf`;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        doc.pipe(res);
+
+        const PAGE_W = doc.page.width - 72;  // usable width
+        const PAGE_H = doc.page.height;
+        const L = 36;                     // left margin
+
+        // ── HEADER BANNER ──────────────────────────────────────────────────
+        doc.rect(0, 0, doc.page.width, 72).fill(C.navy);
+
+        // Company name
+        doc.fillColor(C.white).font('Helvetica-Bold').fontSize(20)
+            .text('AuraLock', L, 16);
+        doc.fillColor(C.blue).font('Helvetica').fontSize(9)
+            .text('SMART BIOMETRIC ACCESS CONTROL', L, 40);
+
+        // Report title (right-aligned)
+        doc.fillColor(C.white).font('Helvetica-Bold').fontSize(14)
+            .text('ATTENDANCE REPORT', 0, 22, { align: 'right', width: doc.page.width - L });
+
+        // ── SUBHEADER ─────────────────────────────────────────────────────
+        doc.rect(0, 72, doc.page.width, 24).fill(C.slate);
+        doc.fillColor(C.muted).font('Helvetica').fontSize(8)
+            .text(`Period: ${fromDate}  →  ${toDate}   |   Department: ${department || 'All'}   |   Generated: ${now.toLocaleString('en-IN')}`,
+                L, 80, { width: PAGE_W });
+
+        doc.moveDown(0);
+
+        // ── SUMMARY PILLS ─────────────────────────────────────────────────
+        const totalRecs = records.length;
+        const lateCount = records.filter(r => r.status === 'LATE').length;
+        const onTimeCount = records.filter(r => r.status === 'ON_TIME').length;
+        const totalMinutes = records.reduce((sum, r) => {
+            if (r.working_hours) return sum + r.working_hours * 60;
+            if (r.check_in && r.check_out)
+                return sum + (new Date(r.check_out) - new Date(r.check_in)) / 60000;
+            return sum;
+        }, 0);
+        const totalHrs = `${Math.floor(totalMinutes / 60)}h ${Math.round(totalMinutes % 60)}m`;
+
+        const pills = [
+            { label: 'TOTAL RECORDS', val: totalRecs, color: C.blue },
+            { label: 'ON TIME', val: onTimeCount, color: C.emerald },
+            { label: 'LATE', val: lateCount, color: C.amber },
+            { label: 'TOTAL WORK HRS', val: totalHrs, color: C.blue },
+        ];
+        const pillW = 120, pillH = 36, pillY = 108, pillGap = 16;
+        let pillX = L;
+        pills.forEach(p => {
+            doc.roundedRect(pillX, pillY, pillW, pillH, 6).fill([...p.color.map(v => v / 255 * 20 + 235)].map(Math.round));
+            doc.fillColor(p.color).font('Helvetica-Bold').fontSize(14).text(String(p.val), pillX + 8, pillY + 4, { width: pillW - 16, align: 'center' });
+            doc.fillColor(C.mid).font('Helvetica').fontSize(7).text(p.label, pillX + 4, pillY + 22, { width: pillW - 8, align: 'center' });
+            pillX += pillW + pillGap;
+        });
+
+        // ── TABLE HEADER ──────────────────────────────────────────────────
+        const tableY = pillY + pillH + 14;
+        const COLS = [
+            { label: 'Employee', w: 130 },
+            { label: 'Dept', w: 72 },
+            { label: 'Date', w: 68 },
+            { label: 'In', w: 42 },
+            { label: 'Out', w: 42 },
+            { label: 'Work Hrs', w: 54 },
+            { label: 'Status', w: 52 },
+            { label: 'Method', w: 50 },
+        ];
+
+        let cx = L;
+        doc.rect(L, tableY, PAGE_W, 18).fill(C.slate);
+        COLS.forEach(col => {
+            doc.fillColor(C.white).font('Helvetica-Bold').fontSize(7.5)
+                .text(col.label, cx + 4, tableY + 5, { width: col.w - 6 });
+            cx += col.w;
+        });
+
+        // ── TABLE ROWS ────────────────────────────────────────────────────
+        const ROW_H = 17;
+        let curY = tableY + 18;
+        let pageN = 1;
+
+        const drawRowSeparator = () => {
+            doc.moveTo(L, curY).lineTo(L + PAGE_W, curY).strokeColor(C.muted).lineWidth(0.3).stroke();
+        };
+
+        const checkPageBreak = () => {
+            if (curY + ROW_H > PAGE_H - 50) {
+                doc.addPage();
+                // Repeat mini-header on new page
+                doc.rect(0, 0, doc.page.width, 22).fill(C.navy);
+                doc.fillColor(C.white).font('Helvetica').fontSize(8)
+                    .text(`AuraLock Attendance Report • ${fromDate} → ${toDate}  (continued)`, L, 7);
+                cx = L;
+                doc.rect(L, 28, PAGE_W, 16).fill(C.slate);
+                COLS.forEach(col => {
+                    doc.fillColor(C.white).font('Helvetica-Bold').fontSize(7)
+                        .text(col.label, cx + 4, 32, { width: col.w - 6 });
+                    cx += col.w;
+                });
+                curY = 44;
+                pageN++;
+            }
+        };
+
+        records.forEach((rec, idx) => {
+            checkPageBreak();
+
+            // Row background
+            let bg = idx % 2 === 0 ? C.rowEven : C.rowOdd;
+            if (rec.status === 'LATE') bg = C.rowLate;
+            if (rec.status === 'ON_TIME') bg = C.rowOT;
+            doc.rect(L, curY, PAGE_W, ROW_H).fill(bg);
+
+            const rowVals = [
+                rec.employees?.name || '—',
+                rec.employees?.department || '—',
+                rec.date || '—',
+                fmtTs(rec.check_in),
+                fmtTs(rec.check_out),
+                fmtWH(rec),
+                rec.status === 'LATE' ? 'LATE' : rec.status === 'ON_TIME' ? 'ON TIME' : '—',
+                (rec.method || '—').toUpperCase(),
+            ];
+
+            cx = L;
+            rowVals.forEach((val, ci) => {
+                let textColor = C.slate;
+                if (ci === 6 && rec.status === 'LATE') textColor = [180, 83, 9];   // amber-700
+                if (ci === 6 && rec.status === 'ON_TIME') textColor = [4, 120, 87];  // emerald-700
+
+                const font = (ci === 6 && rec.status) ? 'Helvetica-Bold' : 'Helvetica';
+                doc.fillColor(textColor).font(font).fontSize(7.5)
+                    .text(val, cx + 4, curY + 4, { width: COLS[ci].w - 6, ellipsis: true, lineBreak: false });
+                cx += COLS[ci].w;
+            });
+
+            curY += ROW_H;
+            drawRowSeparator();
+        });
+
+        // ── DEPARTMENT SUMMARY ────────────────────────────────────────────
+        checkPageBreak();
+        curY += 12;
+        doc.rect(L, curY, PAGE_W, 18).fill(C.navy);
+        doc.fillColor(C.white).font('Helvetica-Bold').fontSize(8).text('DEPARTMENT WORKING HOURS SUMMARY', L + 4, curY + 5);
+        curY += 18;
+
+        const deptMap = {};
+        records.forEach(r => {
+            const dept = r.employees?.department || 'General';
+            if (!deptMap[dept]) deptMap[dept] = { count: 0, totalMins: 0, late: 0 };
+            deptMap[dept].count++;
+            if (r.working_hours) deptMap[dept].totalMins += r.working_hours * 60;
+            else if (r.check_in && r.check_out)
+                deptMap[dept].totalMins += (new Date(r.check_out) - new Date(r.check_in)) / 60000;
+            if (r.status === 'LATE') deptMap[dept].late++;
+        });
+
+        // dept summary header
+        const DS = [{ label: 'Department', w: 160 }, { label: 'Records', w: 70 }, { label: 'Late', w: 60 }, { label: 'Total Hrs', w: 90 }, { label: 'Avg Hrs/Day', w: 90 }];
+        cx = L;
+        doc.rect(L, curY, PAGE_W, 15).fill(C.slate);
+        DS.forEach(c => {
+            doc.fillColor(C.white).font('Helvetica-Bold').fontSize(7).text(c.label, cx + 4, curY + 4, { width: c.w - 6 });
+            cx += c.w;
+        });
+        curY += 15;
+
+        Object.entries(deptMap).forEach(([dept, s], idx) => {
+            checkPageBreak();
+            doc.rect(L, curY, PAGE_W, 15).fill(idx % 2 === 0 ? C.rowEven : C.rowOdd);
+            const totalH = Math.floor(s.totalMins / 60);
+            const totalM = Math.round(s.totalMins % 60);
+            const avgMins = s.count ? s.totalMins / s.count : 0;
+            const row = [dept, s.count, s.late, `${totalH}h ${totalM}m`, `${Math.floor(avgMins / 60)}h ${Math.round(avgMins % 60)}m`];
+            cx = L;
+            row.forEach((v, ci) => {
+                doc.fillColor(C.slate).font('Helvetica').fontSize(7.5)
+                    .text(String(v), cx + 4, curY + 3, { width: DS[ci].w - 6 });
+                cx += DS[ci].w;
+            });
+            curY += 15;
+        });
+
+        // ── FOOTER ────────────────────────────────────────────────────────
+        const pageRange = doc.bufferedPageRange();
+        for (let i = pageRange.start; i < pageRange.start + pageRange.count; i++) {
+            doc.switchToPage(i);
+            doc.rect(0, PAGE_H - 22, doc.page.width, 22).fill(C.navy);
+            doc.fillColor(C.muted).font('Helvetica').fontSize(7)
+                .text(`AuraLock Smart Door Lock System  •  Confidential  •  Page ${i - pageRange.start + 1} of ${pageRange.count}`,
+                    L, PAGE_H - 14, { align: 'center', width: PAGE_W });
+        }
+
+        doc.end();
+
+    } catch (error) {
+        console.error('❌ PDF export error:', error);
+        if (!res.headersSent)
+            res.status(500).json({ error: 'PDF export failed', details: error.message });
+    }
+});
+
+// Attendance Report Endpoint (Last 7 Days)
+app.get('/api/attendance/report', async (req, res) => {
+    try {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 6);
+        startDate.setHours(0, 0, 0, 0);
+
+        const { data: reportData, error } = await supabase
+            .from('attendance')
+            .select('date, check_in')
+            .gte('date', startDate.toISOString().split('T')[0])
+            .lte('date', endDate.toISOString().split('T')[0]);
+
+        if (error) throw error;
+
+        // Group by date
+        const countsByDate = {};
+        const LATE_THRESHOLD = "09:00:00";
+
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(startDate);
+            d.setDate(d.getDate() + i);
+            const dateStr = d.toISOString().split('T')[0];
+            countsByDate[dateStr] = { date: dateStr, present: 0, late: 0 };
+        }
+
+        if (reportData) {
+            reportData.forEach(row => {
+                if (countsByDate[row.date]) {
+                    countsByDate[row.date].present++;
+                    if (row.check_in) {
+                        const checkInTime = new Date(row.check_in).toTimeString().split(' ')[0];
+                        if (checkInTime > LATE_THRESHOLD) {
+                            countsByDate[row.date].late++;
+                        }
+                    }
+                }
+            });
+        }
+
+        res.json(Object.values(countsByDate));
+    } catch (error) {
+        console.error("❌ Report error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Monthly Attendance Report Endpoint
+app.get('/api/attendance/monthly-report', authenticateToken, async (req, res) => {
+    try {
+        const { month, year } = req.query;
+        if (!month || !year) {
+            return res.status(400).json({ error: "Month and Year are required" });
+        }
+
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0); // Last day of month
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+
+        // 1. Fetch all active employees
+        const { data: employees, error: empError } = await supabase
+            .from('employees')
+            .select('id, name, employee_id, department')
+            .neq('status', 'Deleted');
+
+        if (empError) throw empError;
+
+        // 2. Fetch all attendance for the month
+        const { data: attendanceData, error: attError } = await supabase
+            .from('attendance')
+            .select('employee_id, date, check_in, check_out')
+            .gte('date', startDateStr)
+            .lte('date', endDateStr);
+
+        if (attError) throw attError;
+
+        // 3. Calculate working days (exclude weekends)
+        let workingDaysCount = 0;
+        const tempDate = new Date(startDate);
+        while (tempDate <= endDate) {
+            const day = tempDate.getDay();
+            if (day !== 0 && day !== 6) { // Not Sunday or Saturday
+                workingDaysCount++;
+            }
+            tempDate.setDate(tempDate.getDate() + 1);
+        }
+
+        // 4. Aggregate data
+        const LATE_THRESHOLD = "09:00:00";
+        const report = employees.map(emp => {
+            const empAtt = attendanceData.filter(a => a.employee_id === emp.id);
+            const presentDays = new Set(empAtt.map(a => a.date)).size;
+            const absentDays = Math.max(0, workingDaysCount - presentDays);
+
+            let lateDays = 0;
+            let totalMins = 0;
+
+            empAtt.forEach(a => {
+                if (a.check_in) {
+                    const checkInTime = new Date(a.check_in).toTimeString().split(' ')[0];
+                    if (checkInTime > LATE_THRESHOLD) lateDays++;
+
+                    if (a.check_out) {
+                        const mins = (new Date(a.check_out) - new Date(a.check_in)) / (1000 * 60);
+                        if (mins > 0) totalMins += mins;
+                    }
+                }
+            });
+
+            return {
+                id: emp.id,
+                name: emp.name,
+                employee_id: emp.employee_id,
+                department: emp.department || 'General',
+                presentDays,
+                absentDays,
+                lateDays,
+                totalWorkHours: (totalMins / 60).toFixed(1)
+            };
+        });
+
         res.json({
-            logs,
+            month: parseInt(month),
+            year: parseInt(year),
+            workingDaysInMonth: workingDaysCount,
+            data: report
+        });
+    } catch (error) {
+        console.error("❌ Monthly report error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Attendance Analytics Endpoint
+app.get('/api/stats/attendance-analytics', authenticateToken, async (req, res) => {
+    try {
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+        const LATE_THRESHOLD = '09:00:00';
+
+        // --- Daily Trend: last 15 days ---
+        const fifteenDaysAgo = new Date(now);
+        fifteenDaysAgo.setDate(now.getDate() - 14);
+        const dailyStart = fifteenDaysAgo.toISOString().split('T')[0];
+
+        // --- Monthly ranges ---
+        const currMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().split('T')[0];
+        const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0).toISOString().split('T')[0];
+
+        // Run all three queries in parallel for minimal latency
+        const [
+            { data: dailyAtt, error: dailyErr },
+            { data: currMonAtt, error: currMonErr },
+            { data: prevMonAtt, error: prevMonErr },
+            { data: employees, error: empErr },
+            { data: sixMonthAtt, error: sixMonErr },
+        ] = await Promise.all([
+            supabase.from('attendance')
+                .select('date, check_in, employee_id')
+                .gte('date', dailyStart).lte('date', today),
+            supabase.from('attendance')
+                .select('employee_id')
+                .gte('date', currMonthStart).lte('date', today),
+            supabase.from('attendance')
+                .select('employee_id')
+                .gte('date', prevMonthStart).lte('date', prevMonthEnd),
+            supabase.from('employees')
+                .select('id, department')
+                .neq('status', 'Deleted'),
+            // Last 6 months for monthly rate chart
+            supabase.from('attendance')
+                .select('date, employee_id')
+                .gte('date', new Date(now.getFullYear(), now.getMonth() - 5, 1).toISOString().split('T')[0])
+                .lte('date', today),
+        ]);
+
+        if (dailyErr) throw dailyErr;
+        if (currMonErr) throw currMonErr;
+        if (prevMonErr) throw prevMonErr;
+        if (empErr) throw empErr;
+        if (sixMonErr) throw sixMonErr;
+
+        // 1. Build daily trend (last 15 days)
+        const dailyMap = {};
+        for (let i = 14; i >= 0; i--) {
+            const d = new Date(now);
+            d.setDate(now.getDate() - i);
+            const key = d.toISOString().split('T')[0];
+            dailyMap[key] = { date: key, present: 0, late: 0 };
+        }
+        (dailyAtt || []).forEach(a => {
+            if (!dailyMap[a.date]) return;
+            // Count unique employees per day as present (deduplicated inside the map)
+            dailyMap[a.date].present++;
+            if (a.check_in) {
+                const t = new Date(a.check_in).toTimeString().split(' ')[0];
+                if (t > LATE_THRESHOLD) dailyMap[a.date].late++;
+            }
+        });
+        const dailyTrend = Object.values(dailyMap);
+
+        // 2. Monthly comparison
+        const currMonthPresent = new Set((currMonAtt || []).map(a => a.employee_id)).size;
+        const prevMonthPresent = new Set((prevMonAtt || []).map(a => a.employee_id)).size;
+        const monthlyGrowth = prevMonthPresent === 0
+            ? 0
+            : Math.round(((currMonthPresent - prevMonthPresent) / prevMonthPresent) * 100);
+
+        // 3. Department breakdown
+        const deptHeadcountMap = {};
+        (employees || []).forEach(emp => {
+            const dept = emp.department || 'General';
+            deptHeadcountMap[dept] = (deptHeadcountMap[dept] || 0) + 1;
+        });
+
+        const todayAttEmpIds = new Set(
+            (dailyAtt || []).filter(a => a.date === today).map(a => a.employee_id)
+        );
+        const deptPresentMap = {};
+        (employees || []).forEach(emp => {
+            const dept = emp.department || 'General';
+            if (todayAttEmpIds.has(emp.id)) {
+                deptPresentMap[dept] = (deptPresentMap[dept] || 0) + 1;
+            }
+        });
+
+        const departmentComparison = Object.entries(deptHeadcountMap).map(([dept, total]) => ({
+            department: dept,
+            total,
+            present: deptPresentMap[dept] || 0,
+            absent: total - (deptPresentMap[dept] || 0),
+        }));
+
+        // 4. Monthly attendance rate (last 6 months)
+        const totalEmployees = (employees || []).length || 1; // avoid division by zero
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyRateMap = {};
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            monthlyRateMap[key] = { month: monthNames[d.getMonth()], unique: new Set(), rate: 0 };
+        }
+        (sixMonthAtt || []).forEach(a => {
+            const key = a.date?.slice(0, 7); // YYYY-MM
+            if (monthlyRateMap[key]) monthlyRateMap[key].unique.add(a.employee_id);
+        });
+        const monthlyRate = Object.values(monthlyRateMap).map(m => ({
+            month: m.month,
+            rate: Math.min(100, Math.round((m.unique.size / totalEmployees) * 100)),
+            count: m.unique.size,
+        }));
+
+        res.json({
+            dailyTrend,
+            monthly: {
+                current: currMonthPresent,
+                previous: prevMonthPresent,
+                growthPercent: monthlyGrowth,
+            },
+            monthlyRate,
+            departmentComparison,
+        });
+    } catch (error) {
+        console.error('❌ Attendance Analytics Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Activity Trend Endpoint (24h)
+app.get('/api/stats/activity', async (req, res) => {
+    try {
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        const { data: logs, error } = await supabase
+            .from('access_logs')
+            .select('created_at, status, confidence')
+            .gte('created_at', twentyFourHoursAgo.toISOString())
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        // Initialize 24 empty hourly buckets
+        const history = [];
+        for (let i = 23; i >= 0; i--) {
+            const time = new Date(Date.now() - i * 60 * 60 * 1000);
+            time.setMinutes(0, 0, 0);
+            history.push({
+                time: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                timestamp: time.getTime(),
+                Face: 0,
+                Fingerprint: 0,
+                RFID: 0,
+                Denied: 0
+            });
+        }
+
+        // Aggregate logs into buckets
+        logs.forEach(log => {
+            const logTime = new Date(log.created_at);
+            logTime.setMinutes(0, 0, 0);
+            const bucket = history.find(b => Math.abs(b.timestamp - logTime.getTime()) < 30 * 60 * 1000);
+
+            if (bucket) {
+                if (log.status === 'success') {
+                    // Inference logic if 'method' column is missing or null
+                    const method = (log.confidence && log.confidence > 0) ? 'Face' : 'RFID';
+                    bucket[method]++;
+                } else {
+                    bucket.Denied++;
+                }
+            }
+        });
+
+        res.json(history);
+    } catch (error) {
+        console.error("❌ Activity stats error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// ─── Security Logs Endpoint ───────────────────────────────────────────────────
+// Filters: status, method, device_id, startDate, endDate, search (employee name)
+app.get('/api/logs', authenticateToken, async (req, res) => {
+    try {
+        const {
+            page = 1,
+            limit = 20,
+            status,
+            method,
+            device_id,
+            startDate,
+            endDate,
+            search,
+        } = req.query;
+
+        const pgLimit = Math.min(parseInt(limit, 10) || 20, 100);
+        const from = (parseInt(page, 10) - 1) * pgLimit;
+        const to = from + pgLimit - 1;
+
+        let q = supabase
+            .from('access_logs')
+            .select('*, employees(name, employee_id, department, image_url)', { count: 'exact' })
+            .order('created_at', { ascending: false });
+
+        if (status) q = q.eq('status', status);
+        if (method) q = q.eq('method', method);
+        if (device_id) q = q.eq('device_id', device_id);
+        if (startDate) q = q.gte('created_at', `${startDate}T00:00:00.000Z`);
+        if (endDate) q = q.lte('created_at', `${endDate}T23:59:59.999Z`);
+        if (search) q = q.ilike('employees.name', `%${search}%`);
+
+        const { data: logs, count, error } = await q.range(from, to);
+        if (error) throw error;
+
+        res.json({
+            logs: logs || [],
+            total: count || 0,
             pagination: {
-                total: count,
-                page: Number(page),
-                pages: Math.ceil(count / limit)
+                total: count || 0,
+                page: parseInt(page, 10),
+                limit: pgLimit,
+                pages: Math.ceil((count || 0) / pgLimit),
             }
         });
     } catch (error) {
-        console.error("❌ Logs error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error('❌ Logs error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -480,6 +1502,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
                 form.append('employeeId', employeeId);
                 form.append('email', email || `${employeeId}@internal.com`);
                 if (name) form.append('name', name);
+                if (req.body.re_enroll) form.append('re_enroll', req.body.re_enroll); // forward re-enroll flag
 
                 console.log("📡 Forwarding to Biometric Engine (Port 8001)...");
                 const response = await axios.post('http://localhost:8001/api/biometrics/face/register', form, {
@@ -562,7 +1585,7 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
             console.log("📡 Attempting Biometric Engine (Port 8001)...");
             const response = await axios.post('http://localhost:8001/api/biometrics/face/verify', form, {
                 headers: form.getHeaders(),
-                timeout: 8000 // Increased timeout for DeepFace processing
+                timeout: 15000 // Increased timeout for DeepFace processing on CPU
             });
 
             if (response.data.success) {
@@ -575,15 +1598,21 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
                         employee_id: employeeId,
                         status: 'success',
                         confidence: response.data.confidence,
-                        device_id: 'terminal_01',
-                        metadata: { method: 'face', confidence: response.data.confidence }
+                        device_id: 'terminal_01'
                     });
                 } catch (logError) {
-                    console.error("⚠️ Failed to record access log (likely schema mismatch):", logError.message);
+                    console.error("⚠️ Failed to record access log:", logError.message);
                 }
 
                 // --- TRIGGER DOOR UNLOCK ---
                 await unlockDoor();
+
+                // --- RECORD ATTENDANCE ---
+                // We need the internal UUID for the attendance table
+                const { data: empRecord } = await supabase.from('employees').select('id').eq('employee_id', employeeId).single();
+                if (empRecord) {
+                    await recordAttendance(empRecord.id, 'face', 'terminal_01');
+                }
 
                 return res.json({
                     success: true,
@@ -601,8 +1630,7 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
                     await supabase.from('access_logs').insert({
                         employee_id: response.data.id_hint,
                         status: 'ambiguous',
-                        device_id: 'terminal_01',
-                        metadata: { method: 'face', error: 'AMBIGUOUS_MATCH' }
+                        device_id: 'terminal_01'
                     });
                 } catch (logError) {
                     console.error("⚠️ Failed to record ambiguous access log:", logError.message);
@@ -616,6 +1644,17 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
                 });
             } else {
                 console.log(`🚫 Engine Rejection: ${response.data.message}`);
+                // Log failed attempt
+                try {
+                    await supabase.from('access_logs').insert({
+                        employee_id: null,
+                        status: 'failed',
+                        confidence: response.data.confidence || null,
+                        device_id: 'terminal_01',
+                        method: 'face',
+                        metadata: { reason: response.data.message }
+                    });
+                } catch (le) { console.error('⚠️ Failed to log rejection:', le.message); }
                 return res.status(401).json({
                     success: false,
                     message: response.data.message || "Access Denied."
@@ -623,6 +1662,16 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
             }
         } catch (engineError) {
             console.error("❌ Biometric Engine error/offline:", engineError.message);
+            // Log engine offline as failed
+            try {
+                await supabase.from('access_logs').insert({
+                    employee_id: null,
+                    status: 'failed',
+                    device_id: 'terminal_01',
+                    method: 'face',
+                    metadata: { reason: 'Biometric engine offline', error: engineError.message }
+                });
+            } catch (le) { console.error('⚠️ Failed to log engine-offline event:', le.message); }
             return res.status(503).json({
                 success: false,
                 message: "Biometric Service Unavailable. Please use manual override or contact admin."
@@ -631,7 +1680,293 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
 
     } catch (error) {
         console.error("❌ Verification error:", error);
-        res.status(500).json({ success: false, error: "Internal Verification Error" });
+        res.status(500).json({
+            success: false,
+            message: "System Error: Face processing failed or timed out. Please try again.",
+            error: error.message
+        });
+    }
+})
+
+// Attendance Records Endpoint
+app.get('/api/attendance', authenticateToken, async (req, res) => {
+    try {
+        const {
+            startDate,
+            endDate,
+            employee_id,
+            department,
+            search,
+            status,           // NEW: 'ON_TIME' | 'LATE' | ''
+            page = 1,
+            pageSize = 10,
+            sortBy = 'date',
+            sortDir = 'desc',
+        } = req.query;
+
+        // Whitelist sortable columns to prevent SQL injection
+        const ALLOWED_SORT = ['date', 'check_in', 'check_out', 'working_hours', 'status'];
+        const safeSortBy = ALLOWED_SORT.includes(sortBy) ? sortBy : 'date';
+        const ascending = sortDir === 'asc';
+
+        let query = supabase
+            .from('attendance')
+            .select(`
+                *,
+                employees!inner(name, employee_id, image_url, department)
+            `, { count: 'exact' });
+
+        // Date Range Filter
+        if (startDate && endDate) {
+            query = query.gte('date', startDate).lte('date', endDate);
+        } else if (startDate) {
+            query = query.eq('date', startDate);
+        } else {
+            // Default to today if no date range provided
+            const today = new Date().toISOString().split('T')[0];
+            query = query.eq('date', today);
+        }
+
+        // Employee Filter
+        if (employee_id) {
+            query = query.eq('employee_id', employee_id);
+        }
+
+        // Department Filter (via inner join)
+        if (department) {
+            query = query.eq('employees.department', department);
+        }
+
+        // Search Filter (name or employee_id)
+        if (search) {
+            query = query.or(`name.ilike.%${search}%,employee_id.ilike.%${search}%`, { foreignTable: 'employees' });
+        }
+
+        // Status Filter (ON_TIME | LATE)
+        if (status && ['ON_TIME', 'LATE'].includes(status)) {
+            query = query.eq('status', status);
+        }
+
+        // Pagination
+        const pgSize = Math.min(parseInt(pageSize, 10) || 10, 100);
+        const from = (parseInt(page, 10) - 1) * pgSize;
+        const to = from + pgSize - 1;
+
+        const { data, count, error } = await query
+            .order(safeSortBy, { ascending })
+            .range(from, to);
+
+        if (error) throw error;
+
+        res.json({
+            data: data || [],
+            total: count || 0,
+            page: parseInt(page, 10),
+            pageSize: pgSize,
+        });
+    } catch (error) {
+        console.error("❌ Get attendance error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+/**
+ * Dedicated Attendance Service Endpoint
+ * POST /api/attendance/mark
+ * Handles both public IDs and internal UUIDs
+ */
+app.post('/api/attendance/mark', validateDevice, async (req, res) => {
+    const { employee_id, method, device_id } = req.body;
+
+    if (!employee_id || !method) {
+        return res.status(400).json({ error: "Missing required fields: employee_id, method" });
+    }
+
+    try {
+        // Resolve internally (handles both UUID and public employee_id)
+        // Also fetch 'name' so we can include it in the enriched response
+        let employeeQuery = supabase.from('employees').select('id, name');
+
+        // Basic UUID check to avoid Postgres error on casting
+        const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        if (uuidRegex.test(employee_id)) {
+            employeeQuery = employeeQuery.or(`id.eq.${employee_id},employee_id.eq.${employee_id}`);
+        } else {
+            employeeQuery = employeeQuery.eq('employee_id', employee_id);
+        }
+
+        const { data: employee, error: empError } = await employeeQuery.single();
+
+        if (empError || !employee) {
+            return res.status(404).json({ error: "Employee profile not found" });
+        }
+
+        const result = await recordAttendance(employee.id, method, device_id || 'remote_terminal');
+
+        // Return enriched response with employee_name + attendance detail
+        return res.status(200).json({
+            employee_name: employee.name,
+            check_in: result.check_in,
+            check_out: result.check_out,
+            working_hours: result.working_hours,
+            status: result.status,
+            message: result.message
+        });
+    } catch (error) {
+        console.error("❌ /attendance/mark Error:", error.message);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Legacy/Compatibility Alias
+app.post('/attendance/mark', (req, res) => {
+    req.url = '/api/attendance/mark';
+    app.handle(req, res);
+});
+
+// Attendance Export Endpoints
+app.get('/api/attendance/export/excel', authenticateToken, async (req, res) => {
+    try {
+        const { startDate, endDate, employee_id, department, search } = req.query;
+
+        let query = supabase
+            .from('attendance')
+            .select('*, employees!inner(name, employee_id, department)');
+
+        if (startDate && endDate) query = query.gte('date', startDate).lte('date', endDate);
+        else if (startDate) query = query.eq('date', startDate);
+        if (employee_id) query = query.eq('employee_id', employee_id);
+        if (department) query = query.eq('employees.department', department);
+        if (search) query = query.or(`name.ilike.%${search}%,employee_id.ilike.%${search}%`, { foreignTable: 'employees' });
+
+        const { data, error } = await query.order('date', { ascending: false }).order('check_in', { ascending: false });
+        if (error) throw error;
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Attendance');
+
+        worksheet.columns = [
+            { header: 'Employee Name', key: 'name', width: 25 },
+            { header: 'Employee ID', key: 'eid', width: 15 },
+            { header: 'Date', key: 'date', width: 15 },
+            { header: 'Check-In', key: 'check_in', width: 20 },
+            { header: 'Check-Out', key: 'check_out', width: 20 },
+            { header: 'Work Hours', key: 'hours', width: 15 },
+            { header: 'Method', key: 'method', width: 15 }
+        ];
+
+        data.forEach(record => {
+            const hours = record.check_in && record.check_out
+                ? ((new Date(record.check_out) - new Date(record.check_in)) / (1000 * 60 * 60)).toFixed(2) + 'h'
+                : '--';
+
+            worksheet.addRow({
+                name: record.employees?.name,
+                eid: record.employees?.employee_id,
+                date: record.date,
+                check_in: record.check_in ? new Date(record.check_in).toLocaleTimeString() : '--',
+                check_out: record.check_out ? new Date(record.check_out).toLocaleTimeString() : '--',
+                hours: hours,
+                method: record.method
+            });
+        });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=attendance_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        console.error("❌ Excel Export Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get('/api/attendance/export/pdf', authenticateToken, async (req, res) => {
+    try {
+        const { startDate, endDate, employee_id, department, search } = req.query;
+
+        let query = supabase
+            .from('attendance')
+            .select('*, employees!inner(name, employee_id, department)');
+
+        if (startDate && endDate) query = query.gte('date', startDate).lte('date', endDate);
+        else if (startDate) query = query.eq('date', startDate);
+        if (employee_id) query = query.eq('employee_id', employee_id);
+        if (department) query = query.eq('employees.department', department);
+        if (search) query = query.or(`name.ilike.%${search}%,employee_id.ilike.%${search}%`, { foreignTable: 'employees' });
+
+        const { data, error } = await query.order('date', { ascending: false }).order('check_in', { ascending: false });
+        if (error) throw error;
+
+        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=attendance_${new Date().toISOString().split('T')[0]}.pdf`);
+        doc.pipe(res);
+
+        doc.fontSize(18).text('Attendance Audit Report', { align: 'center', underline: true });
+        doc.moveDown();
+        doc.fontSize(10).text(`Generated on: ${new Date().toLocaleString()}`, { align: 'right' });
+        doc.moveDown();
+
+        const table = {
+            title: "Personnel Presence Log",
+            headers: ["Employee", "Date", "In", "Out", "Hours", "Method"],
+            rows: data.map(record => {
+                const hours = record.check_in && record.check_out
+                    ? ((new Date(record.check_out) - new Date(record.check_in)) / (1000 * 60 * 60)).toFixed(2) + 'h'
+                    : '--';
+                return [
+                    record.employees?.name || 'Unknown',
+                    record.date,
+                    record.check_in ? new Date(record.check_in).toLocaleTimeString() : '--',
+                    record.check_out ? new Date(record.check_out).toLocaleTimeString() : '--',
+                    hours,
+                    record.method
+                ];
+            })
+        };
+
+        await doc.table(table, {
+            prepareHeader: () => doc.font("Helvetica-Bold").fontSize(10),
+            prepareRow: () => doc.font("Helvetica").fontSize(8)
+        });
+
+        doc.end();
+    } catch (error) {
+        console.error("❌ PDF Export Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Phone Biometric Attendance Endpoint
+app.post('/api/attendance/phone-verify', authenticateToken, async (req, res) => {
+    try {
+        const { employee_id } = req.user; // From JWT
+
+        // Fetch internal identity
+        const { data: employee, error } = await supabase
+            .from('employees')
+            .select('id, name')
+            .eq('email', req.user.email)
+            .single();
+
+        if (error || !employee) {
+            return res.status(404).json({ error: "Employee profile not found" });
+        }
+
+        console.log(`📱 [Attendance] Phone Fingerprint verified for: ${employee.id}`);
+
+        await recordAttendance(employee.id, 'fingerprint', 'mobile_app');
+
+        res.json({
+            success: true,
+            message: `Attendance recorded for ${employee.name}`,
+            type: 'phone_biometric'
+        });
+    } catch (error) {
+        console.error("❌ Phone verification error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 

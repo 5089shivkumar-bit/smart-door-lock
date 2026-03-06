@@ -8,15 +8,25 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
  * Middleware to enforce identity integrity.
  * Checks for duplicate employee_id, name, rfid, and fingerprint_id.
  * Logs suspicious attempts to security_alerts table.
+ *
+ * Set re_enroll=true in the request body to bypass duplicate checks
+ * when updating biometrics for an already-existing employee.
  */
 const validateIdentity = async (req, res, next) => {
     const { employee_id, employeeId, name, rfid, fingerprint_id } = req.body;
     const finalId = employee_id || employeeId;
     const isUpdate = req.method === 'PATCH' || req.method === 'PUT';
-    const targetId = req.params.id; // Original employee_id if update
+    const isReEnroll = req.body.re_enroll === 'true' || req.body.re_enroll === true;
+    const targetId = req.params.id; // UUID of employee being updated
+
+    // When re-enrolling biometrics the employee MUST already exist.
+    // Skip all duplicate-existence checks in that case.
+    if (isReEnroll) {
+        return next();
+    }
 
     try {
-        // 1. Check Employee ID Uniqueness
+        // 1. Check Employee ID Uniqueness (new registrations only)
         if (finalId && !isUpdate) {
             const { data } = await supabase
                 .from('employees')
@@ -30,7 +40,7 @@ const validateIdentity = async (req, res, next) => {
             }
         }
 
-        // 2. Check Name Uniqueness (Stricter for display clarity)
+        // 2. Check Name Uniqueness
         if (name) {
             const { data } = await supabase
                 .from('employees')
@@ -58,9 +68,8 @@ const validateIdentity = async (req, res, next) => {
             }
         }
 
-        // 4. Check Fingerprint Uniqueness (Simulated for Now)
+        // 4. Check Fingerprint Uniqueness
         if (fingerprint_id) {
-            // Note: In a real system, we'd check against fingerprints table index
             const { data } = await supabase
                 .from('fingerprints')
                 .select('employee_id')

@@ -50,14 +50,15 @@ export const apiService = {
     },
 
     // Face Registration
-    registerFace: async (imageBlob, employeeId, email, name) => {
+    registerFace: async (imageBlob, employeeId, email, name, reEnroll = false) => {
         const formData = new FormData();
         formData.append('file', imageBlob, 'register.jpg');
         formData.append('employeeId', employeeId);
         formData.append('email', email);
         if (name) formData.append('name', name);
+        if (reEnroll) formData.append('re_enroll', 'true');  // bypass duplicate-ID guard
 
-        console.log(`📤 Sending face registration for: ${employeeId}`);
+        console.log(`📤 Sending face registration for: ${employeeId} (re_enroll=${reEnroll})`);
         const response = await api.post('/api/biometrics/face/register', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -81,14 +82,72 @@ export const apiService = {
         return response.data;
     },
 
+    disableUser: async (id) => {
+        const response = await api.patch(`/api/users/${id}`, { status: 'Disabled' });
+        return response.data;
+    },
+
+    enableUser: async (id) => {
+        const response = await api.patch(`/api/users/${id}`, { status: 'Active' });
+        return response.data;
+    },
+
     deleteUser: async (id) => {
         const response = await api.delete(`/api/users/${id}`);
         return response.data;
     },
 
     // Logs
-    getLogs: async () => {
-        const response = await api.get('/api/logs');
+    getLogs: async (params = {}) => {
+        const response = await api.get('/api/logs', { params });
+        return response.data;
+    },
+
+    // Stats
+    getDashboardStats: async () => {
+        const response = await api.get('/api/stats');
+        return response.data;
+    },
+
+    getActivityStats: async () => {
+        const response = await api.get('/api/stats/activity');
+        return response.data;
+    },
+
+    getAttendanceAnalytics: async () => {
+        const response = await api.get('/api/stats/attendance-analytics');
+        return response.data;
+    },
+
+    // Attendance
+    getAttendance: async (params) => {
+        const response = await api.get('/api/attendance', { params });
+        return response.data;
+    },
+
+    getAttendanceReport: async () => {
+        const response = await api.get('/api/attendance/report');
+        return response.data;
+    },
+
+    getMonthlyReport: async (month, year) => {
+        const response = await api.get('/api/attendance/monthly-report', { params: { month, year } });
+        return response.data;
+    },
+
+    exportAttendanceExcel: async (params) => {
+        const response = await api.get('/api/attendance/export/excel', {
+            params,
+            responseType: 'blob'
+        });
+        return response.data;
+    },
+
+    exportAttendancePDF: async (params) => {
+        const response = await api.get('/api/attendance/export/pdf', {
+            params,
+            responseType: 'blob'
+        });
         return response.data;
     }
 };

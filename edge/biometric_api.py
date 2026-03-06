@@ -9,8 +9,8 @@ from supabase_client import supabase
 from datetime import datetime
 import json
 import uuid
-
 import os
+import httpx
 
 # Disable TensorFlow logging for cleaner output
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -50,6 +50,24 @@ def queue_pending_log(log_data):
     logs.append(log_data)
     with open(PENDING_LOGS_FILE, "w") as f:
         json.dump(logs, f)
+
+async def mark_attendance_async(employee_id: str):
+    """Notify the attendance service about a successful scan."""
+    try:
+        async with httpx.AsyncClient() as client:
+            print(f"📡 [Attendance] Sending mark request for {employee_id}...")
+            response = await client.post(
+                "http://localhost:8000/attendance/mark",
+                json={
+                    "employee_id": employee_id,
+                    "method": "face",
+                    "device_id": "office_terminal"
+                },
+                timeout=5.0
+            )
+            print(f"✅ [Attendance] Service responded: {response.text}")
+    except Exception as e:
+        print(f"⚠️ [Attendance] API call failed: {str(e)}")
 
 async def sync_task():
     """Background task to sync logs and refresh cache."""
@@ -96,6 +114,7 @@ async def register_face(
     employeeId: str = Form(...),
     email: str = Form(...),
     name: str = Form(None),
+    re_enroll: str = Form("false"),
     file: UploadFile = File(...)
 ):
     """
@@ -147,34 +166,42 @@ async def register_face(
                 existing_distances = [np.linalg.norm(target - exp) for exp in existing_encodings]
                 
                 min_conflict_dist = np.min(existing_distances)
-                if min_conflict_dist < 0.40: # DeepFace/Facenet threshold is different, usually 0.4-0.6
+                if min_conflict_dist < 0.40:
                     conflict_idx = np.argmin(existing_distances)
                     conflicting_emp = valid_cached[conflict_idx]
-                    print(f"[REJECTED] Biometric Conflict! Face already registered to: {conflicting_emp['name']}")
                     
-                    # Log security alert
-                    try:
-                        alert_data = {
-                            "alert_type": "biometric_conflict",
-                            "employee_id": employeeId,
-                            "severity": "medium",
-                            "details": {
-                                "attempted_id": employeeId,
-                                "conflicting_id": conflicting_emp['employee_id'],
-                                "conflict_name": conflicting_emp['name'],
-                                "distance": float(min_conflict_dist)
-                            },
-                            "device_id": "face_engine_01"
-                        }
-                        supabase.table("security_alerts").insert(alert_data).execute()
-                    except Exception as alert_err:
-                        print(f"[WARNING] Failed to log security alert: {str(alert_err)}")
+                    # Skip conflict if this is a re-enrollment of the SAME employee
+                    same_employee = (conflicting_emp.get("employee_id") == employeeId)
+                    is_re_enroll = re_enroll.lower() == "true"
+                    
+                    if same_employee or is_re_enroll:
+                        print(f"[INFO] Conflict guard bypassed for re-enrollment of {employeeId}")
+                    else:
+                        print(f"[REJECTED] Biometric Conflict! Face already registered to: {conflicting_emp['name']}")
+                        
+                        # Log security alert
+                        try:
+                            alert_data = {
+                                "alert_type": "biometric_conflict",
+                                "employee_id": employeeId,
+                                "severity": "medium",
+                                "details": {
+                                    "attempted_id": employeeId,
+                                    "conflicting_id": conflicting_emp['employee_id'],
+                                    "conflict_name": conflicting_emp['name'],
+                                    "distance": float(min_conflict_dist)
+                                },
+                                "device_id": "face_engine_01"
+                            }
+                            supabase.table("security_alerts").insert(alert_data).execute()
+                        except Exception as alert_err:
+                            print(f"[WARNING] Failed to log security alert: {str(alert_err)}")
 
-                    return {
-                        "success": False, 
-                        "message": f"Biometric Conflict: This person is already registered as {conflicting_emp['name']}.",
-                        "conflicting_id": conflicting_emp['employee_id']
-                    }
+                        return {
+                            "success": False, 
+                            "message": f"Biometric Conflict: This person is already registered as {conflicting_emp['name']}.",
+                            "conflicting_id": conflicting_emp['employee_id']
+                        }
 
         # 4. Upload Image to Supabase Storage
         file_path = f"faces/{employeeId}_{uuid.uuid4().hex[:8]}.jpg"
@@ -339,7 +366,11 @@ async def verify_face(file: UploadFile = File(...)):
 
         # Success: Best Match Confirmed
         matched_emp = valid_employees[best_idx]
-        print(f"[VERIFIED] Match: {matched_emp['employee_id']}")
+        print(f"[VERIFIED] Match: {matched_emp['employee_id']} | Name: {matched_emp.get('name')}")
+        
+        # Integrate Attendance API (Fire and forget task)
+        asyncio.create_task(mark_attendance_async(matched_emp["employee_id"]))
+        print(f"[DEBUG] matched_emp keys: {list(matched_emp.keys())}")
 
         # Log to Database
         log_data = {
@@ -347,7 +378,6 @@ async def verify_face(file: UploadFile = File(...)):
             "status": "success",
             "confidence": round(1.0 - (min_distance / 2), 4), # Normalized confidence
             "device_id": "terminal_01",
-            "metadata": {"mode": mode, "engine": "DeepFace", "distance": float(min_distance)},
             "created_at": datetime.utcnow().isoformat()
         }
         
@@ -369,7 +399,7 @@ async def verify_face(file: UploadFile = File(...)):
             "success": True, 
             "message": f"Verified ({mode})", 
             "employee_id": matched_emp["employee_id"],
-            "name": matched_emp["name"],
+            "name": str(matched_emp.get("name") or "Authorized User").strip(),
             "confidence": log_data["confidence"]
         }
 
