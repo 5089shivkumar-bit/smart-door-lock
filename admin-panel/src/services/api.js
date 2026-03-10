@@ -149,6 +149,43 @@ export const apiService = {
             responseType: 'blob'
         });
         return response.data;
+    },
+
+    // Door Control
+    unlockDoor: async () => {
+        const response = await api.post('/api/door/unlock');
+        return response.data;
+    },
+
+    getDoorStatus: async () => {
+        const response = await api.get('/api/door/status');
+        return response.data;
+    },
+
+    getDeviceInfo: async () => {
+        const response = await api.get('/api/door/device');
+        return response.data;
+    },
+
+    // BLE Management (New)
+    scanBleDevices: async () => {
+        const response = await api.get('/api/ble/scan');
+        return response.data;
+    },
+
+    getBleStatus: async () => {
+        const response = await api.get('/api/ble/status');
+        return response.data;
+    },
+
+    lockDoor: async () => {
+        const response = await api.post('/api/door/lock');
+        return response.data;
+    },
+
+    testRelay: async () => {
+        const response = await api.post('/api/door/test');
+        return response.data;
     }
 };
 

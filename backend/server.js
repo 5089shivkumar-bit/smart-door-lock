@@ -13,9 +13,10 @@ const validateIdentity = require('./middleware/validateIdentity');
 const validateDevice = require('./middleware/validateDevice');
 const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit-table');
+const doorService = require('./doorService');
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 // --- Security: Rate Limiters ---
 const authLimiter = rateLimit({
@@ -44,6 +45,10 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// --- Routes ---
+const doorRoute = require('./door_route');
+app.use('/api/door', doorRoute);
 
 // Root Route for Health Check
 app.get('/', (req, res) => {
@@ -237,43 +242,27 @@ const recordAttendance = async (employeeId, method, deviceId = 'server') => {
 
 // --- IoT Utilities ---
 /**
- * Triggers the door unlock on ESP32
+ * Safely triggers the door unlock without breaking the main flow
  */
-const unlockDoor = async () => {
-    const esp32Ip = process.env.ESP32_IP;
-    const secret = process.env.ESP32_SECRET;
-
-    if (!esp32Ip || !secret) {
-        console.warn("⚠️ [IoT] ESP32 configuration missing. Skipping unlock.");
-        return;
-    }
-
+const safeTriggerDoorUnlock = async () => {
     try {
-        const timestamp = Math.floor(Date.now() / 1000);
-        const payload = JSON.stringify({ timestamp });
-
-        // --- Security: HMAC-SHA256 Signing ---
-        const hmac = crypto.createHmac('sha256', secret);
-        hmac.update(payload);
-        const signature = hmac.digest('hex');
-
-        console.log(`🔓 [IoT] Sending HMAC-signed unlock command to ${esp32Ip}...`);
-
-        await axios.post(`http://${esp32Ip}/unlock`, {
-            timestamp: timestamp,
-            signature: signature
-        }, {
-            headers: { 'Content-Type': 'application/json' },
-            timeout: 5000
-        });
-
-        console.log("✅ [IoT] Door unlocked successfully!");
+        console.log("🔓 [Trigger] Calling door unlock service...");
+        const result = await doorService.unlockDoor();
+        if (!result.success) {
+            console.warn(`⚠️ [Trigger] Door unlock service reported failure: ${result.message}`);
+        } else {
+            console.log("✅ [Trigger] Door unlock service successful");
+        }
     } catch (error) {
-        console.error("❌ [IoT] Unlock command failed:", error.response?.data || error.message);
+        console.error("❌ [Trigger] Critical error calling door unlock service:", error.message);
     }
 };
 
 // --- Routes ---
+const bleRoutes = require('./ble_route');
+const doorRoute = require('./door_route');
+app.use('/api/ble', authenticateToken, bleRoutes);
+app.use('/api/door', authenticateToken, doorRoute);
 
 // Login Endpoint
 app.post('/auth/login', authLimiter, async (req, res) => {
@@ -1698,9 +1687,31 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
             });
 
             console.log("📡 Attempting Biometric Engine (Port 8001)...");
+
+            // --- WAIT FOR ENGINE READY (max 60s) ---
+            let engineReady = false;
+            for (let attempt = 0; attempt < 12; attempt++) {
+                try {
+                    await axios.get('http://localhost:8001/health', { timeout: 5000 });
+                    engineReady = true;
+                    break;
+                } catch (_) {
+                    console.log(`⏳ Biometric engine not ready yet, waiting... (attempt ${attempt + 1}/12)`);
+                    await new Promise(r => setTimeout(r, 5000));
+                }
+            }
+
+            if (!engineReady) {
+                console.error("❌ Biometric engine did not become ready in time.");
+                return res.status(503).json({
+                    success: false,
+                    message: "Biometric Service is still starting up. Please wait 30 seconds and try again."
+                });
+            }
+
             const response = await axios.post('http://localhost:8001/api/biometrics/face/verify', form, {
                 headers: form.getHeaders(),
-                timeout: 15000 // Increased timeout for DeepFace processing on CPU
+                timeout: 90000 // 90s — DeepFace processing on CPU can take 20-30s on first run
             });
 
             if (response.data.success) {
@@ -1713,14 +1724,15 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
                         employee_id: employeeId,
                         status: 'success',
                         confidence: response.data.confidence,
-                        device_id: 'terminal_01'
+                        device_id: 'terminal_01',
+                        method: 'face'
                     });
                 } catch (logError) {
                     console.error("⚠️ Failed to record access log:", logError.message);
                 }
 
                 // --- TRIGGER DOOR UNLOCK ---
-                await unlockDoor();
+                await safeTriggerDoorUnlock();
 
                 // --- RECORD ATTENDANCE ---
                 // We need the internal UUID for the attendance table
@@ -1745,7 +1757,8 @@ app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'),
                     await supabase.from('access_logs').insert({
                         employee_id: response.data.id_hint,
                         status: 'ambiguous',
-                        device_id: 'terminal_01'
+                        device_id: 'terminal_01',
+                        method: 'face'
                     });
                 } catch (logError) {
                     console.error("⚠️ Failed to record ambiguous access log:", logError.message);
@@ -1917,6 +1930,9 @@ app.post('/api/attendance/mark', validateDevice, async (req, res) => {
         }
 
         const result = await recordAttendance(employee.id, method, device_id || 'remote_terminal');
+
+        // --- TRIGGER DOOR UNLOCK ---
+        await safeTriggerDoorUnlock();
 
         // Return enriched response with employee_name + attendance detail
         return res.status(200).json({
