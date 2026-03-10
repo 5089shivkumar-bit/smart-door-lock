@@ -47,8 +47,7 @@ app.use(cors({
 app.use(express.json());
 
 // --- Routes ---
-const doorRoute = require('./door_route');
-app.use('/api/door', doorRoute);
+// doorRoute removed (declared at line 263 with authentication)
 
 // Root Route for Health Check
 app.get('/', (req, res) => {
@@ -1611,7 +1610,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
                 console.log("📡 Forwarding to Biometric Engine (Port 8001)...");
                 const response = await axios.post('http://localhost:8001/api/biometrics/face/register', form, {
                     headers: form.getHeaders(),
-                    timeout: 8000
+                    timeout: 30000
                 });
 
                 if (response.data.success) {
