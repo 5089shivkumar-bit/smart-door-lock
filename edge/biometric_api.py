@@ -1,5 +1,9 @@
 import io
 import asyncio
+import subprocess
+import signal
+import sys
+import socket
 import numpy as np
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,6 +18,28 @@ import httpx
 
 # Disable TensorFlow logging for cleaner output
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+# ── Port Wait: Non-destructively wait for port 8001 to become available ────────
+def wait_for_port_free(port: int, max_wait: int = 20):
+    """
+    Wait up to `max_wait` seconds for the port to become available.
+    Does NOT kill any process — just waits politely so the previous
+    uvicorn instance finishes its graceful shutdown.
+    """
+    import time
+    deadline = time.time() + max_wait
+    while time.time() < deadline:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            if s.connect_ex(('127.0.0.1', port)) != 0:
+                print(f"[STARTUP] Port {port} is free — starting uvicorn.")
+                return  # Port available
+        print(f"[STARTUP] Port {port} still in use, waiting... ({int(deadline - time.time())}s left)")
+        time.sleep(2)
+    print(f"[STARTUP] Warning: port {port} still occupied after {max_wait}s — proceeding anyway.")
+
+# Wait for port to free naturally (previous PM2 instance graceful shutdown)
+wait_for_port_free(8001)
 
 app = FastAPI(title="Smart Door Biometric API")
 
@@ -73,23 +99,29 @@ async def sync_task():
     """Background task to sync logs and refresh cache."""
     while True:
         try:
-            # 1. Sync Pending Logs
+            # 1. Sync Pending Logs (strip any unknown columns before inserting)
+            VALID_LOG_COLUMNS = {'employee_id', 'status', 'confidence', 'device_id', 'created_at', 'method'}
             if os.path.exists(PENDING_LOGS_FILE):
                 with open(PENDING_LOGS_FILE, "r") as f:
-                    pending = json.load(f)
+                    try:
+                        pending = json.load(f)
+                    except:
+                        pending = []
                 if pending:
-                    print(f"Syncing {len(pending)} pending logs to Supabase...")
-                    supabase.table("access_logs").insert(pending).execute()
+                    # Strip unknown columns (e.g. 'metadata' which doesn't exist in schema)
+                    clean_pending = [{k: v for k, v in log.items() if k in VALID_LOG_COLUMNS} for log in pending]
+                    print(f"Syncing {len(clean_pending)} pending logs to Supabase...")
+                    supabase.table("access_logs").insert(clean_pending).execute()
                     os.remove(PENDING_LOGS_FILE)
-            
+
             # 2. Refresh Cache
             response = supabase.table("employees").select("id, name, employee_id, face_embedding, role").not_.is_("face_embedding", "null").execute()
             save_face_cache(response.data)
             print("[SUCCESS] Face cache refreshed from Supabase.")
-            
+
         except Exception as e:
             print(f"[WARNING] Sync failed (likely offline): {str(e)}")
-        
+
         await asyncio.sleep(300) # Sync every 5 minutes
 
 @app.on_event("startup")
@@ -287,15 +319,10 @@ async def verify_face(file: UploadFile = File(...)):
 
         # 2. Fetch from cache/Supabase
         employees = []
-        mode = "online"
-        try:
-            response = supabase.table("employees").select("id, name, employee_id, face_embedding, role, status").not_.is_("face_embedding", "null").execute()
-            employees = [e for e in response.data if e.get('status', 'Active') == 'Active']
-            save_face_cache(employees)
-        except Exception as e:
-            print(f"[WARNING] Supabase Offline, using local cache: {str(e)}")
-            employees = load_face_cache()
-            mode = "offline"
+        # 2. Fetch from fast local cache
+        mode = "offline" # Always rely on background sync for speed
+        employees = load_face_cache()
+
 
         if not employees:
             return {"success": False, "message": "No registered users found in system."}
@@ -478,4 +505,4 @@ async def cache_status():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8001, timeout_graceful_shutdown=5)
