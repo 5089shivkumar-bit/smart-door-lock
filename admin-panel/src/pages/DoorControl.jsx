@@ -45,7 +45,7 @@ export default function DoorControl() {
                 ...prev,
                 isOnline: status.online,
                 isConnected: status.isConnected,
-                isLocked: status.isLocked,
+                isLocked: status.isLocked !== undefined ? status.isLocked : prev.isLocked,
                 rssi: status.rssi || (status.online ? -65 : -100),
                 lastActivity: new Date()
             }));
@@ -58,12 +58,14 @@ export default function DoorControl() {
     useEffect(() => {
         fetchStatus();
         fetchLogs();
+        startScan(); // 🚀 Auto-scan on mount
+
         const interval = setInterval(() => {
             fetchStatus();
             fetchLogs();
         }, 5000);
         return () => clearInterval(interval);
-    }, [fetchStatus, fetchLogs]);
+    }, [fetchStatus, fetchLogs]); // Note: startScan not in deps to avoid infinite loop
 
     const handleAction = async (action, apiCall) => {
         setDoorState(prev => ({ ...prev, loading: true, lastCommand: action }));

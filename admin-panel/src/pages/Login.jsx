@@ -16,9 +16,11 @@ export default function Login() {
         setError('');
         try {
             await apiService.login(email, password);
-            navigate('/');
+            navigate('/admin/dashboard');
         } catch (err) {
-            setError(err.response?.data?.message || 'Authentication failed. Please verify credentials.');
+            console.error('❌ Login error:', err);
+            const msg = err.response?.data?.message || err.message || 'Authentication failed';
+            setError(msg);
         } finally {
             setLoading(false);
         }

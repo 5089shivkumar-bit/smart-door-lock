@@ -206,10 +206,9 @@ function FaceEnrollModal({ user, onDone, onClose }) {
                 true   // re_enroll=true → bypass duplicate-ID guard for existing employees
             );
             if (result.success) {
-                // Mark face_registered = true in DB
-                await apiService.updateUser(user.id, { face_registered: true });
                 setStatus('success');
-                setTimeout(() => { onDone({ ...user, face_registered: true, face_embedding: true }); onClose(); }, 1200);
+                // Refresh full user list to get updated join data
+                setTimeout(() => { onDone(result.user || { ...user, face_registered: true }); onClose(); }, 1200);
             } else {
                 throw new Error(result.message || 'Registration failed');
             }
@@ -420,34 +419,47 @@ function FingerprintEnrollModal({ user, onDone, onClose }) {
 
 // ── Biometrics Cell Component ─────────────────────────────────────────────────
 function BiometricsCell({ user, onEnrollFace, onEnrollFP }) {
-    const hasFace = !!(user.face_embedding || user.face_registered);
-    const hasFP = !!(user.fingerprint_registered);
-
     return (
-        <div className="flex items-center gap-2 flex-wrap">
-            {/* Face */}
-            {hasFace ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-400">
-                    <ScanFace className="w-3 h-3" /> Face ✓
-                </span>
-            ) : (
-                <button onClick={() => onEnrollFace(user)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400 hover:bg-blue-500/20 transition-all">
-                    <ScanFace className="w-3 h-3" /> Enroll Face
-                </button>
-            )}
+        <div className="flex items-center gap-1.5 flex-wrap">
+            {/* Face Status */}
+            <div className="flex items-center">
+                {user.face_registered ? (
+                    <div className="flex items-center bg-emerald-500/10 border border-emerald-500/20 rounded-full overflow-hidden">
+                        <span className="px-2.5 py-1 text-[10px] font-black text-emerald-400 flex items-center gap-1">
+                            <ScanFace className="w-3 h-3" /> Face ✓
+                        </span>
+                        <button onClick={() => onEnrollFace(user)} title="Update Face Biometric"
+                            className="px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-[9px] font-black text-emerald-300 border-l border-emerald-500/20 transition-all">
+                            Update
+                        </button>
+                    </div>
+                ) : (
+                    <button onClick={() => onEnrollFace(user)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400 hover:bg-blue-500/20 transition-all">
+                        <ScanFace className="w-3 h-3" /> Enroll Face
+                    </button>
+                )}
+            </div>
 
-            {/* Fingerprint */}
-            {hasFP ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-[10px] font-black text-violet-400">
-                    <Fingerprint className="w-3 h-3" /> FP ✓
-                </span>
-            ) : (
-                <button onClick={() => onEnrollFP(user)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-700/40 border border-white/[0.07] text-[10px] font-black text-slate-400 hover:bg-violet-500/10 hover:border-violet-500/20 hover:text-violet-400 transition-all">
-                    <Fingerprint className="w-3 h-3" /> Enroll FP
-                </button>
-            )}
+            {/* Fingerprint Status */}
+            <div className="flex items-center">
+                {user.fingerprint_registered ? (
+                    <div className="flex items-center bg-violet-500/10 border border-violet-500/20 rounded-full overflow-hidden">
+                        <span className="px-2.5 py-1 text-[10px] font-black text-violet-400 flex items-center gap-1">
+                            <Fingerprint className="w-3 h-3" /> Finger ✓
+                        </span>
+                        <button onClick={() => onEnrollFP(user)} title="Update Fingerprint"
+                            className="px-2 py-1 bg-violet-500/20 hover:bg-violet-500/30 text-[9px] font-black text-violet-300 border-l border-violet-500/20 transition-all">
+                            Update
+                        </button>
+                    </div>
+                ) : (
+                    <button onClick={() => onEnrollFP(user)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-500/10 border border-slate-500/20 text-[10px] font-black text-slate-400 hover:bg-slate-500/20 transition-all">
+                        <Fingerprint className="w-3 h-3" /> Enroll FP
+                    </button>
+                )}
+            </div>
         </div>
     );
 }
@@ -512,9 +524,31 @@ export default function Users() {
     };
 
     const handleEdit = async (form) => {
-        const updated = await apiService.updateUser(editTarget.id, form);
-        patchUser(updated);
-        addToast('Employee details updated.');
+        // Optimization: Only send fields that actually changed
+        const updates = {};
+        Object.keys(form).forEach(key => {
+            if (form[key] !== editTarget[key]) {
+                updates[key] = form[key];
+            }
+        });
+
+        if (Object.keys(updates).length === 0) {
+            addToast('No changes detected.');
+            setEditTarget(null);
+            return;
+        }
+
+        try {
+            console.log(`📡 Sending updates for ${editTarget.id}:`, updates);
+            const updated = await apiService.updateUser(editTarget.id, updates);
+            patchUser(updated);
+            addToast('Employee details updated.');
+            setEditTarget(null);
+        } catch (error) {
+            const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+            addToast(`Update failed: ${msg}`, 'error');
+            throw error; // Let the modal handle the error display
+        }
     };
 
     const handleDisableToggle = async (user) => {

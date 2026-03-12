@@ -98,8 +98,40 @@ export const apiService = {
     },
 
     // Logs
-    getLogs: async (params = {}) => {
-        const response = await api.get('/api/logs', { params });
+    getAccessLogs: async (params = {}) => {
+        const response = await api.get('/api/access-logs', { params });
+        return response.data;
+    },
+
+    getEmployeeAccessLogs: async (employeeId, params) => {
+        const response = await api.get(`/api/access-logs/employee/${employeeId}`, { params });
+        return response.data;
+    },
+
+    getEmployeeAccessSummary: async (employeeId) => {
+        const response = await api.get(`/api/access-logs/employee/${employeeId}/summary`);
+        return response.data;
+    },
+
+    exportAccessLogsExcel: async (params) => {
+        const endpoint = params?.employeeId 
+            ? `/api/access-logs/export/excel/${params.employeeId}`
+            : '/api/access-logs/export/excel';
+        const response = await api.get(endpoint, {
+            params,
+            responseType: 'blob'
+        });
+        return response.data;
+    },
+
+    exportAccessLogsPDF: async (params) => {
+        const endpoint = params?.employeeId 
+            ? `/api/access-logs/export/pdf/${params.employeeId}`
+            : '/api/access-logs/export/pdf';
+        const response = await api.get(endpoint, {
+            params,
+            responseType: 'blob'
+        });
         return response.data;
     },
 
@@ -145,6 +177,32 @@ export const apiService = {
 
     exportAttendancePDF: async (params) => {
         const response = await api.get('/api/attendance/export/pdf', {
+            params,
+            responseType: 'blob'
+        });
+        return response.data;
+    },
+    
+    getEmployeeAttendance: async (employeeId, params) => {
+        const response = await api.get(`/api/attendance/employee/${employeeId}`, { params });
+        return response.data;
+    },
+
+    getEmployeeAttendanceSummary: async (employeeId, params) => {
+        const response = await api.get(`/api/attendance/employee/${employeeId}/summary`, { params });
+        return response.data;
+    },
+
+    exportEmployeeAttendanceExcel: async (employeeId, params) => {
+        const response = await api.get(`/api/attendance/export/excel/${employeeId}`, {
+            params,
+            responseType: 'blob'
+        });
+        return response.data;
+    },
+
+    exportEmployeeAttendancePDF: async (employeeId, params) => {
+        const response = await api.get(`/api/attendance/export/pdf/${employeeId}`, {
             params,
             responseType: 'blob'
         });

@@ -9,15 +9,18 @@ import {
     Settings,
     Lock,
     LogOut,
-    Shield
+    Shield,
+    Key
 } from 'lucide-react';
 
 const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { name: 'Face Register', icon: UserPlus, path: '/register' },
-    { name: 'Registered Users', icon: Users, path: '/users' },
-    { name: 'Access Logs', icon: ClipboardList, path: '/logs' },
-    { name: 'Settings', icon: Settings, path: '/settings' },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
+    { name: 'Employees', icon: Users, path: '/admin/users' },
+    { name: 'Attendance', icon: ClipboardList, path: '/admin/attendance' },
+    { name: 'Reports', icon: Shield, path: '/admin/reports' },
+    { name: 'Access Logs', icon: ClipboardList, path: '/admin/logs' },
+    { name: 'Door Control', icon: Key, path: '/admin/door-control' },
+    { name: 'Settings', icon: Settings, path: '/admin/settings' },
 ];
 
 export default function Sidebar() {
