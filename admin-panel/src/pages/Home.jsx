@@ -16,15 +16,16 @@ export default function Home() {
             <motion.div 
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center mb-16"
+                className="text-center mb-10 md:mb-16"
             >
                 <div className="flex items-center justify-center gap-2 mb-3">
-                    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
-                        <ShieldCheck size={24} className="text-white" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
+                        <ShieldCheck size={20} className="text-white md:hidden" />
+                        <ShieldCheck size={24} className="text-white hidden md:block" />
                     </div>
                 </div>
-                <h1 className="text-4xl font-black tracking-tighter mb-2">AuraLock <span className="text-blue-500">Secure</span></h1>
-                <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">Unified Access Control</p>
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">AuraLock <span className="text-blue-500">Secure</span></h1>
+                <p className="text-slate-500 text-[10px] md:text-sm font-medium uppercase tracking-[0.2em]">Unified Access Control</p>
             </motion.div>
 
             {/* Main Options */}
@@ -34,16 +35,17 @@ export default function Home() {
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate('/scanner')}
-                    className="group p-8 rounded-[2rem] bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-blue-500/30 transition-all flex flex-col items-center gap-6 text-center"
+                    className="group p-6 md:p-8 rounded-[2rem] bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-blue-500/30 transition-all flex flex-col items-center gap-4 md:gap-6 text-center"
                 >
-                    <div className="w-20 h-20 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
-                        <ScanFace size={40} className="text-blue-400" />
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                        <ScanFace size={32} className="text-blue-400 md:hidden" />
+                        <ScanFace size={40} className="text-blue-400 hidden md:block" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-white mb-2">Start Scanner</h2>
-                        <p className="text-slate-500 text-sm font-medium">Open biometric terminal for face & fingerprint recognition</p>
+                        <h2 className="text-xl md:text-2xl font-black text-white mb-2">Start Scanner</h2>
+                        <p className="text-slate-500 text-xs md:text-sm font-medium">Open biometric terminal for face & fingerprint recognition</p>
                     </div>
-                    <div className="mt-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black uppercase tracking-widest text-blue-400">
+                    <div className="mt-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-blue-400">
                         No Login Required
                     </div>
                 </motion.button>
@@ -53,16 +55,17 @@ export default function Home() {
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate('/admin')}
-                    className="group p-8 rounded-[2rem] bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-emerald-500/30 transition-all flex flex-col items-center gap-6 text-center"
+                    className="group p-6 md:p-8 rounded-[2rem] bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-emerald-500/30 transition-all flex flex-col items-center gap-4 md:gap-6 text-center"
                 >
-                    <div className="w-20 h-20 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
-                        <ShieldEllipsis size={40} className="text-emerald-400" />
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+                        <ShieldEllipsis size={32} className="text-emerald-400 md:hidden" />
+                        <ShieldEllipsis size={40} className="text-emerald-400 hidden md:block" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-white mb-2">Admin Panel</h2>
-                        <p className="text-slate-500 text-sm font-medium">Access dashboard, logs, and employee management</p>
+                        <h2 className="text-xl md:text-2xl font-black text-white mb-2">Admin Panel</h2>
+                        <p className="text-slate-500 text-xs md:text-sm font-medium">Access dashboard, logs, and employee management</p>
                     </div>
-                    <div className="mt-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                    <div className="mt-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-emerald-400">
                         Admin Login Required
                     </div>
                 </motion.button>

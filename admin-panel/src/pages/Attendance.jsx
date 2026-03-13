@@ -267,8 +267,8 @@ export default function Attendance() {
             {/* ── Header ── */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-white mb-2 tracking-tighter">Attendance Registry</h1>
-                    <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">
+                    <h1 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">Attendance Registry</h1>
+                    <p className="text-slate-500 text-[10px] md:text-sm font-medium uppercase tracking-[0.2em]">
                         Verified Presence // <span className="text-blue-400">{totalRecords}</span> Records
                     </p>
                 </div>
@@ -422,14 +422,14 @@ export default function Attendance() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/[0.03] bg-white/[0.01]">
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Employee</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Department</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Employee</th>
+                                <th className="hidden lg:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Department</th>
                                 <SortTh label="Date" col="date" sortCol={sortCol} sortDir={sortDir} onSort={handleSort} className="text-center" />
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check In</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check Out</th>
-                                <SortTh label="Work Hours" col="working_hours" sortCol={sortCol} sortDir={sortDir} onSort={handleSort} className="text-center" />
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Status</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Method</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check In</th>
+                                <th className="hidden sm:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check Out</th>
+                                <SortTh label="Work Hours" col="working_hours" sortCol={sortCol} sortDir={sortDir} onSort={handleSort} className="text-center hidden xl:table-cell" />
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Status</th>
+                                <th className="hidden md:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Method</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/[0.025]">
@@ -466,18 +466,18 @@ export default function Attendance() {
                                         className="group hover:bg-white/[0.04] cursor-pointer transition-all border-l-2 border-l-transparent hover:border-l-blue-500"
                                         onClick={() => navigate(`/attendance/employee/${rec.employees?.employee_id || rec.employee_id}`)}>
                                         {/* Employee */}
-                                        <td className="px-6 py-4">
+                                        <td className="px-4 md:px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-blue-600/20 to-slate-800 border border-white/[0.06] flex items-center justify-center text-[11px] font-black text-blue-400 overflow-hidden">
+                                                <div className="w-8 h-8 md:w-9 md:h-9 shrink-0 rounded-xl bg-gradient-to-br from-blue-600/20 to-slate-800 border border-white/[0.06] flex items-center justify-center text-[10px] md:text-[11px] font-black text-blue-400 overflow-hidden">
                                                     {rec.employees?.image_url
                                                         ? <img src={rec.employees.image_url} alt="" className="w-full h-full object-cover" />
                                                         : initials}
                                                 </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors whitespace-nowrap">
+                                                <div className="min-w-0">
+                                                    <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors whitespace-nowrap truncate">
                                                         {name}
                                                     </div>
-                                                    <div className="text-[10px] font-mono text-slate-500">
+                                                    <div className="text-[9px] md:text-[10px] font-mono text-slate-500 truncate">
                                                         {rec.employees?.employee_id || '—'}
                                                     </div>
                                                 </div>
@@ -485,7 +485,7 @@ export default function Attendance() {
                                         </td>
 
                                         {/* Department */}
-                                        <td className="px-6 py-4">
+                                        <td className="hidden lg:table-cell px-6 py-4">
                                             <div className="flex items-center gap-1.5">
                                                 <Briefcase className="w-3 h-3 text-slate-600 shrink-0" />
                                                 <span className="text-xs font-semibold text-slate-400 whitespace-nowrap">
@@ -495,22 +495,22 @@ export default function Attendance() {
                                         </td>
 
                                         {/* Date */}
-                                        <td className="px-6 py-4 text-center">
-                                            <span className="text-xs font-bold text-slate-300 tabular-nums whitespace-nowrap">
+                                        <td className="px-4 md:px-6 py-4 text-center">
+                                            <span className="text-[11px] md:text-xs font-bold text-slate-300 tabular-nums whitespace-nowrap">
                                                 {fmtDate(rec.date)}
                                             </span>
                                         </td>
 
                                         {/* Check In */}
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-[11px] font-bold text-emerald-400 tabular-nums">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                                        <td className="px-4 md:px-6 py-4">
+                                            <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-emerald-400 tabular-nums">
+                                                <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-emerald-500 shrink-0" />
                                                 {fmtTime(rec.check_in)}
                                             </div>
                                         </td>
 
                                         {/* Check Out */}
-                                        <td className="px-6 py-4">
+                                        <td className="hidden sm:table-cell px-6 py-4">
                                             <div className={`flex items-center gap-2 text-[11px] font-bold tabular-nums
                                                 ${rec.check_out ? 'text-slate-400' : 'text-slate-700'}`}>
                                                 <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${rec.check_out ? 'bg-slate-500' : 'bg-slate-800'}`} />
@@ -519,7 +519,7 @@ export default function Attendance() {
                                         </td>
 
                                         {/* Working Hours */}
-                                        <td className="px-6 py-4 text-center">
+                                        <td className="hidden xl:table-cell px-6 py-4 text-center">
                                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-950 border border-white/[0.05] text-xs font-black text-white tabular-nums">
                                                 <Clock className="w-3 h-3 text-slate-600" />
                                                 {workHoursDisplay(rec)}
@@ -527,12 +527,12 @@ export default function Attendance() {
                                         </td>
 
                                         {/* Status */}
-                                        <td className="px-6 py-4 text-center">
+                                        <td className="px-4 md:px-6 py-4 text-center">
                                             <StatusBadge status={rec.status} />
                                         </td>
 
                                         {/* Method */}
-                                        <td className="px-6 py-4 text-center">
+                                        <td className="hidden md:table-cell px-6 py-4 text-center">
                                             <MethodBadge method={rec.method} />
                                         </td>
                                     </tr>

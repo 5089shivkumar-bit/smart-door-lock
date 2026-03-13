@@ -573,3 +573,22 @@
 2026-03-12T17:48:44: [2m5:48:44 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/build/intermediates/assets/debug/public/index.html[22m
 2026-03-12T17:49:43: [2m5:49:43 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m
 2026-03-12T17:49:44: [2m5:49:44 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/build/intermediates/assets/debug/public/index.html[22m
+2026-03-13T17:04:40: Port 3001 is in use, trying another one...
+2026-03-13T17:04:40: 
+2026-03-13T17:04:40:   [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m4266[22m[2m[0m ms[22m
+2026-03-13T17:04:40: 
+2026-03-13T17:04:40:   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3001[22m/[39m
+2026-03-13T17:04:40:   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.2.166:[1m3001[22m/[39m
+2026-03-13T17:04:40: 
+2026-03-13T17:04:40:   [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m4635[22m[2m[0m ms[22m
+2026-03-13T17:04:40: 
+2026-03-13T17:04:40:   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3002[22m/[39m
+2026-03-13T17:04:40:   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.2.166:[1m3002[22m/[39m
+2026-03-13T17:15:10: [2m5:15:10 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m
+2026-03-13T17:15:10: [2m5:15:10 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m
+2026-03-13T17:15:31: [2m5:15:31 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m
+2026-03-13T17:15:31: [2m5:15:31 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m
+2026-03-13T17:16:47: [2m5:16:47 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/build/intermediates/assets/debug/public/index.html[22m
+2026-03-13T17:16:47: [2m5:16:47 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/build/intermediates/assets/debug/public/index.html[22m
+2026-03-13T17:17:38: [2m5:17:38 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m
+2026-03-13T17:17:38: [2m5:17:38 pm[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mandroid/app/src/main/assets/public/index.html[22m

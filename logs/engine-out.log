@@ -5857,3 +5857,688 @@
 2026-03-12T18:05:46: [SUCCESS] Biometric cache refreshed: 3 templates.
 2026-03-12T18:06:01: [INFO] Registering face for: 7767726c-a146-4cc1-8db9-8f8d906cb7b5
 2026-03-12T18:06:02: INFO:     127.0.0.1:63362 - "POST /api/biometrics/face/register HTTP/1.1" 200 OK
+2026-03-13T17:05:29: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:05:29: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:05:29: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:05:29: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:05:29: [STARTUP] System ready.
+2026-03-13T17:05:29: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:05:29: [STARTUP] System ready.
+2026-03-13T17:05:29: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:05:30: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:05:30: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:05:30: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:05:30: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:05:31: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:05:39: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:05:46: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:05:46: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:05:46: [STARTUP] System ready.
+2026-03-13T17:05:46: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:05:47: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:05:47: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:05:47: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:05:58: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:03: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:06:03: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:03: [STARTUP] System ready.
+2026-03-13T17:06:03: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:06:04: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:04: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:06:06: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:07: INFO:     127.0.0.1:58957 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:06:14: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:19: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:06:19: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:19: [STARTUP] System ready.
+2026-03-13T17:06:19: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:06:20: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:20: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:06:23: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:30: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:06:30: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:30: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:06:31: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:35: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:06:35: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:35: [STARTUP] System ready.
+2026-03-13T17:06:35: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:06:36: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:36: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:06:40: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:49: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:06:50: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:06:50: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:50: [STARTUP] System ready.
+2026-03-13T17:06:50: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:06:50: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:06:50: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:06:57: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:06: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:07:06: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:06: [STARTUP] System ready.
+2026-03-13T17:07:06: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:07:06: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:07: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:07: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:07:14: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:21: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:07:21: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:21: [STARTUP] System ready.
+2026-03-13T17:07:21: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:07:22: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:22: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:07:23: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:30: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:07:31: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:31: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:07:31: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:36: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:07:36: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:36: [STARTUP] System ready.
+2026-03-13T17:07:36: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:07:36: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:36: 
+2026-03-13T17:07:39: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:48: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:07:51: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:07:51: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:51: [STARTUP] System ready.
+2026-03-13T17:07:51: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:07:51: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:07:51: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:07:56: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:04: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:05: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:08:05: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:05: 
+2026-03-13T17:08:05: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:08:06: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:06: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:08:13: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:20: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:08:20: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:20: [STARTUP] System ready.
+2026-03-13T17:08:20: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:08:21: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:21: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:08:22: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:30: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:31: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:08:31: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:31: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:08:35: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:08:35: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:35: [STARTUP] System ready.
+2026-03-13T17:08:35: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:08:36: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:36: 
+2026-03-13T17:08:39: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:48: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:08:49: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:08:49: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:49: [STARTUP] System ready.
+2026-03-13T17:08:49: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:08:49: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:08:49: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:08:56: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:02: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:09:02: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:02: [STARTUP] System ready.
+2026-03-13T17:09:02: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:09:03: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:03: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:09:05: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:13: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:15: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:09:15: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:15: [STARTUP] System ready.
+2026-03-13T17:09:15: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:09:16: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:16: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:09:21: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:28: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:09:28: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:28: [STARTUP] System ready.
+2026-03-13T17:09:28: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:09:28: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:28: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:09:30: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:31: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:09:31: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:31: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:09:38: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:38: 
+2026-03-13T17:09:41: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:09:41: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:41: [STARTUP] System ready.
+2026-03-13T17:09:41: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:09:42: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:42: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:09:46: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:54: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:09:54: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:54: [STARTUP] System ready.
+2026-03-13T17:09:54: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:09:55: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:09:55: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:09:55: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:10:03: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:07: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:10:07: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:07: [STARTUP] System ready.
+2026-03-13T17:10:07: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:10:08: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:08: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:10:11: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:20: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:20: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:10:20: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:20: [STARTUP] System ready.
+2026-03-13T17:10:20: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:10:21: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:21: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:10:28: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:31: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:10:32: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:32: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:10:33: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:10:33: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:33: 
+2026-03-13T17:10:33: 
+2026-03-13T17:10:33: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:10:34: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:34: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:10:36: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:44: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:46: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:10:46: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:46: [STARTUP] System ready.
+2026-03-13T17:10:46: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:10:47: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:47: 
+2026-03-13T17:10:53: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:10:53: 
+2026-03-13T17:10:59: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:10:59: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:10:59: 
+2026-03-13T17:10:59: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:11:00: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:00: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:11:02: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:11: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:14: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:11:14: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:14: [STARTUP] System ready.
+2026-03-13T17:11:14: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:11:15: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:15: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:11:19: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:27: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:28: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:11:28: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:28: [STARTUP] System ready.
+2026-03-13T17:11:28: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:11:29: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:29: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:11:32: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:11:32: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:32: 
+2026-03-13T17:11:36: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:42: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:11:42: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:42: [STARTUP] System ready.
+2026-03-13T17:11:42: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:11:43: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:43: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:11:44: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:53: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:11:53: 
+2026-03-13T17:11:56: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:11:56: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:56: [STARTUP] System ready.
+2026-03-13T17:11:56: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:11:57: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:11:57: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:12:02: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:12:10: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:12:10: 
+2026-03-13T17:12:11: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:12:11: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:11: [STARTUP] System ready.
+2026-03-13T17:12:11: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:12:12: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:12: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:12:19: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:12:19: 
+2026-03-13T17:12:24: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:12:24: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:24: [STARTUP] System ready.
+2026-03-13T17:12:24: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:12:25: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:25: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:12:27: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:12:32: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:12:32: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:32: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:12:36: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:12:37: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:12:37: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:37: 
+2026-03-13T17:12:37: [STARTUP] System ready.
+2026-03-13T17:12:37: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:12:38: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:38: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:12:44: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:12:50: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:12:50: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:50: [STARTUP] System ready.
+2026-03-13T17:12:50: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:12:51: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:12:51: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:12:52: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:00: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:04: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:13:04: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:04: [STARTUP] System ready.
+2026-03-13T17:13:04: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:13:05: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:05: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:13:08: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:17: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:18: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:13:18: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:18: [STARTUP] System ready.
+2026-03-13T17:13:18: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:13:19: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:19: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:13:25: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:32: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:13:32: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:32: 
+2026-03-13T17:13:33: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:13:33: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:33: [STARTUP] System ready.
+2026-03-13T17:13:33: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:13:34: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:34: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:34: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:13:42: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:49: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:13:49: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:49: 
+2026-03-13T17:13:49: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:13:49: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:13:49: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:13:51: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:13:59: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:04: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:14:04: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:04: [STARTUP] System ready.
+2026-03-13T17:14:04: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:14:06: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:06: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:14:08: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:16: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:21: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:14:21: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:21: [STARTUP] System ready.
+2026-03-13T17:14:21: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:14:22: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:22: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:14:25: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:32: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:14:33: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:33: 
+2026-03-13T17:14:33: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:37: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:14:37: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:37: [STARTUP] System ready.
+2026-03-13T17:14:37: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:14:38: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:38: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:14:41: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:50: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:14:53: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:14:53: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:53: [STARTUP] System ready.
+2026-03-13T17:14:53: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:14:53: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:14:53: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:14:59: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:08: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:09: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:15:09: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:09: [STARTUP] System ready.
+2026-03-13T17:15:09: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:15:10: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:10: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:15:16: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:25: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:25: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:15:25: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:25: [STARTUP] System ready.
+2026-03-13T17:15:25: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:15:26: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:26: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:15:33: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:15:33: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:33: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:15:33: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:33: 
+2026-03-13T17:15:42: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:42: 
+2026-03-13T17:15:46: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:15:46: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:46: [STARTUP] System ready.
+2026-03-13T17:15:46: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:15:47: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:15:47: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:15:50: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:15:59: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:08: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:08: 
+2026-03-13T17:16:12: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:16:12: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:16:12: [STARTUP] System ready.
+2026-03-13T17:16:12: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:16:13: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:16:13: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:16:16: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:25: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:33: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:16:33: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:16:33: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:16:34: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:39: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:16:39: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:16:39: 
+2026-03-13T17:16:39: [STARTUP] System ready.
+2026-03-13T17:16:39: 
+2026-03-13T17:16:39: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:16:39: 
+2026-03-13T17:16:41: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:16:41: 
+2026-03-13T17:16:42: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:51: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:16:59: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:02: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:17:02: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:02: [STARTUP] System ready.
+2026-03-13T17:17:02: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:17:02: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:02: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:17:07: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:15: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:16: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:17:16: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:16: [STARTUP] System ready.
+2026-03-13T17:17:16: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:17:17: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:17: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:17:24: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:31: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:17:31: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:31: [STARTUP] System ready.
+2026-03-13T17:17:31: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:17:31: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:31: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:17:33: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:33: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:17:33: 
+2026-03-13T17:17:34: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:34: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:17:41: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:49: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:17:54: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:17:54: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:54: [STARTUP] System ready.
+2026-03-13T17:17:54: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:17:55: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:17:55: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:17:57: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:18:06: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:18:09: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:18:09: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:09: 
+2026-03-13T17:18:09: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:18:10: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:10: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:18:14: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:18:19: INFO:     127.0.0.1:59455 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:19: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:25: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:18:25: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:25: [STARTUP] System ready.
+2026-03-13T17:18:25: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:18:26: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:26: 
+2026-03-13T17:18:28: [DENIED] Low confidence: EMP-1122 | Sim: 0.2445 < 0.65
+2026-03-13T17:18:28: 
+2026-03-13T17:18:28: INFO:     127.0.0.1:59455 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:28: [LOG] Access log synced for EMP-1122
+2026-03-13T17:18:28: INFO:     127.0.0.1:59457 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:28: INFO:     127.0.0.1:59459 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:28: INFO:     127.0.0.1:59463 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:28: INFO:     127.0.0.1:59468 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:28: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:29: [VERIFIED] EMP-0001 | Sim: 0.8039
+2026-03-13T17:18:29: [PERF] Performance: 1076ms (Enc: 1068ms, Comp: 0ms)
+2026-03-13T17:18:29: INFO:     127.0.0.1:59463 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:29: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:31: [VERIFIED] EMP-0001 | Sim: 0.8355
+2026-03-13T17:18:31: [PERF] Performance: 1050ms (Enc: 1045ms, Comp: 0ms)
+2026-03-13T17:18:31: INFO:     127.0.0.1:59468 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:31: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:18:31: [LOG] Access log synced for EMP-0001
+2026-03-13T17:18:32: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:18:32: 
+2026-03-13T17:18:32: [LOG] Access log synced for EMP-0001
+2026-03-13T17:18:32: INFO:     127.0.0.1:59455 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:32: INFO:     127.0.0.1:59472 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:32: INFO:     127.0.0.1:59474 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:32: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:34: [VERIFIED] EMP-0001 | Sim: 0.8663
+2026-03-13T17:18:34: [PERF] Performance: 1483ms (Enc: 1476ms, Comp: 0ms)
+2026-03-13T17:18:34: INFO:     127.0.0.1:59455 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:34: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:18:35: [LOG] Access log synced for EMP-0001
+2026-03-13T17:18:35: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:35: 
+2026-03-13T17:18:36: [VERIFIED] EMP-0001 | Sim: 0.8100
+2026-03-13T17:18:36: [PERF] Performance: 1223ms (Enc: 1214ms, Comp: 0ms)
+2026-03-13T17:18:36: INFO:     127.0.0.1:59472 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:36: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:37: [VERIFIED] EMP-0001 | Sim: 0.8521
+2026-03-13T17:18:37: [PERF] Performance: 1203ms (Enc: 1198ms, Comp: 0ms)
+2026-03-13T17:18:37: INFO:     127.0.0.1:59474 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:37: INFO:     127.0.0.1:59468 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:18:38: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:18:38: [LOG] Access log synced for EMP-0001
+2026-03-13T17:18:39: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:18:39: [LOG] Access log synced for EMP-0001
+2026-03-13T17:18:39: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:18:39: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:39: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:18:39: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:18:39: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:18:39: 
+2026-03-13T17:18:41: [VERIFIED] EMP-0001 | Sim: 0.7909
+2026-03-13T17:18:41: [PERF] Performance: 1707ms (Enc: 1700ms, Comp: 0ms)
+2026-03-13T17:18:41: INFO:     127.0.0.1:59468 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:18:41: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:18:42: [LOG] Access log synced for EMP-0001
+2026-03-13T17:18:42: [Attendance] API call failed: 
+2026-03-13T17:18:42: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:48:41.583Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:18:42: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:48:41.605Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:18:42: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:48:42.595Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:18:42: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:48:42.625Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:18:42: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:48:42.636Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:18:45: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:18:45: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:45: [STARTUP] System ready.
+2026-03-13T17:18:45: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:18:46: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:46: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:18:48: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:18:56: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:18:59: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:18:59: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:18:59: 
+2026-03-13T17:18:59: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:19:00: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:00: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:19:05: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:19:13: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:19:16: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:19:16: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:16: [STARTUP] System ready.
+2026-03-13T17:19:16: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:19:17: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:17: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:19:21: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:19:29: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:19:30: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:19:30: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:30: 
+2026-03-13T17:19:30: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:19:31: INFO:     127.0.0.1:59524 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:19:31: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:19:31: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:31: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:19:32: [DENIED] Low confidence: EMP-1122 | Sim: 0.1288 < 0.65
+2026-03-13T17:19:32: INFO:     127.0.0.1:59524 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:19:32: [LOG] Access log synced for EMP-1122
+2026-03-13T17:19:33: INFO:     127.0.0.1:59524 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:19:33: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:19:34: [DENIED] Low confidence: EMP-1122 | Sim: 0.1674 < 0.65
+2026-03-13T17:19:34: INFO:     127.0.0.1:59524 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:19:34: [LOG] Access log synced for EMP-1122
+2026-03-13T17:19:35: INFO:     127.0.0.1:59524 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:19:35: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:19:36: [VERIFIED] EMP-0001 | Sim: 0.8132
+2026-03-13T17:19:36: [PERF] Performance: 1074ms (Enc: 1068ms, Comp: 0ms)
+2026-03-13T17:19:36: INFO:     127.0.0.1:59524 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:19:36: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:19:36: [LOG] Access log synced for EMP-0001
+2026-03-13T17:19:37: INFO:     127.0.0.1:59524 - "GET /health HTTP/1.1" 200 OK
+2026-03-13T17:19:37: [DEBUG] Verification frame saved (Size: (480, 640))
+2026-03-13T17:19:38: [VERIFIED] EMP-0001 | Sim: 0.8108
+2026-03-13T17:19:38: [PERF] Performance: 1413ms (Enc: 1407ms, Comp: 0ms)
+2026-03-13T17:19:38: INFO:     127.0.0.1:59524 - "POST /api/biometrics/face/verify HTTP/1.1" 200 OK
+2026-03-13T17:19:39: [Attendance] Sending mark request for EMP-0001...
+2026-03-13T17:19:39: [LOG] Access log synced for EMP-0001
+2026-03-13T17:19:39: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:49:37.448Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:19:39: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:19:39: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:39: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:19:39: [Attendance] Service responded: {"message":"Check-in recorded","check_in":"2026-03-13T11:49:39.744Z","check_out":null,"working_hours":null,"status":"LATE"}
+2026-03-13T17:19:46: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:19:46: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:46: [STARTUP] System ready.
+2026-03-13T17:19:46: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:19:47: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:19:47: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:19:51: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:19:59: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:00: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:20:00: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:00: [STARTUP] System ready.
+2026-03-13T17:20:00: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:20:01: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:01: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:20:08: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:14: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:20:14: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:14: [STARTUP] System ready.
+2026-03-13T17:20:14: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:20:15: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:15: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:20:17: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:26: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:28: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:20:28: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:28: [STARTUP] System ready.
+2026-03-13T17:20:28: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:20:29: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:29: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:20:34: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:39: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:20:39: 
+2026-03-13T17:20:40: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:40: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:20:42: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:20:42: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:42: [STARTUP] System ready.
+2026-03-13T17:20:42: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:20:43: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:43: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:20:43: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:51: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:20:56: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:20:56: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:56: [STARTUP] System ready.
+2026-03-13T17:20:56: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:20:57: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:20:57: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:20:59: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:08: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:10: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:21:10: 
+2026-03-13T17:21:10: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:10: [STARTUP] System ready.
+2026-03-13T17:21:10: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:21:11: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:11: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:21:16: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:24: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:21:24: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:24: [STARTUP] System ready.
+2026-03-13T17:21:24: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:21:24: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:25: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:25: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:21:33: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:38: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:21:38: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:38: [STARTUP] System ready.
+2026-03-13T17:21:38: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:21:39: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:39: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:21:40: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:21:40: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:40: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:21:41: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:49: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:21:52: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:21:52: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:52: [STARTUP] System ready.
+2026-03-13T17:21:52: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:21:53: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:21:53: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:21:58: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:22:06: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:22:06: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:22:06: [STARTUP] System ready.
+2026-03-13T17:22:06: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:22:07: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:22:07: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:22:07: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:22:16: [BLE] Device 58:8C:81:CC:65:29 found (RSSI: N/A)
+2026-03-13T17:22:20: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:22:20: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:22:20: [STARTUP] System ready.
+2026-03-13T17:22:20: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:22:20: [INFO] Registering face for: EMP-0006
+2026-03-13T17:22:21: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:22:21: [SUCCESS] Biometric cache refreshed: 3 templates.
+2026-03-13T17:22:49: [STARTUP] Initializing Biometric Engine...
+2026-03-13T17:22:49: 
+2026-03-13T17:22:49: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:22:49: 
+2026-03-13T17:22:49: [STARTUP] System ready.
+2026-03-13T17:22:49: 
+2026-03-13T17:22:49: [SYNC] Refreshing biometric cache from face_templates...
+2026-03-13T17:22:53: [CACHE] Optimized cache loaded with 3 employees.
+2026-03-13T17:22:53: 
+2026-03-13T17:22:53: [SUCCESS] Biometric cache refreshed: 3 templates.

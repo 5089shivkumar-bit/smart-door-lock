@@ -20761,3 +20761,212 @@
 2026-03-12T18:06:01: 📡 Forwarding to Biometric Engine (Port 8001)...
 2026-03-12T18:06:02: ❌ Biometric Engine error: No face detected.
 2026-03-12T18:06:02: ❌ Registration error: No face detected.
+2026-03-13T17:04:33: [dotenv@17.3.1] injecting env (10) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+2026-03-13T17:04:34: [dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+2026-03-13T17:04:37: [dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+2026-03-13T17:04:38: 🚀 [Config] ADMIN_EMAIL: 5089shivkumar@gmail.com
+2026-03-13T17:04:38: 🚀 [Config] ADMIN_PASSWORD: SET
+2026-03-13T17:04:38: 🚀 [Config] JWT_SECRET: SET
+2026-03-13T17:04:38: 🚀 [Config] SUPABASE_URL: https://wdtizlzfsijikcejerwq.supabase.co
+2026-03-13T17:04:38: Backend running on http://localhost:8000
+2026-03-13T17:05:19: 📡 [5:05:19 pm] GET /api/stats
+2026-03-13T17:05:19: 📡 [5:05:19 pm] GET /api/door/status
+2026-03-13T17:05:19: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:05:19: 📡 [5:05:19 pm] GET /api/stats/attendance-analytics
+2026-03-13T17:05:19: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:05:19: 📡 [5:05:19 pm] GET /api/stats/activity
+2026-03-13T17:05:20: 📊 [Stats] todayIST=2026-03-13 | employees=5 | present=84 | late=64 | scans=55
+2026-03-13T17:06:07: 📡 [5:06:07 pm] GET /api/biometrics/health
+2026-03-13T17:18:09: 📡 [5:18:09 pm] GET /api/terminal/users
+2026-03-13T17:18:19: 📡 [5:18:19 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:19: 📦 Body: {}
+2026-03-13T17:18:19: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:19: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:21: 📡 [5:18:21 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:21: 📦 Body: {}
+2026-03-13T17:18:21: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:21: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:22: 📡 [5:18:22 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:22: 📦 Body: {}
+2026-03-13T17:18:22: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:23: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:25: 📡 [5:18:25 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:25: 📦 Body: {}
+2026-03-13T17:18:25: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:25: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:26: ⏳ Biometric engine not ready yet, waiting... (attempt 1/12)
+2026-03-13T17:18:26: 📡 [5:18:26 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:26: 📦 Body: {}
+2026-03-13T17:18:27: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:27: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:28: ⏳ Biometric engine not ready yet, waiting... (attempt 1/12)
+2026-03-13T17:18:28: 🚫 Engine Rejection: Unrecognized face.
+2026-03-13T17:18:28: 📡 [5:18:28 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:28: 📦 Body: {}
+2026-03-13T17:18:29: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:29: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:31: 📡 [5:18:31 pm] POST /api/biometrics/face/verify
+2026-03-13T17:18:31: 📦 Body: {}
+2026-03-13T17:18:31: 🔍 [Verification] Checking face identity...
+2026-03-13T17:18:31: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:18:31: ✅ Face Verified: EMP-0001
+2026-03-13T17:18:32: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:32: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:32: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:32)
+2026-03-13T17:18:32: ✅ Face Verified: EMP-0001
+2026-03-13T17:18:33: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:33: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:33: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:33)
+2026-03-13T17:18:35: ✅ Face Verified: EMP-0001
+2026-03-13T17:18:35: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:35: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:35: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:35)
+2026-03-13T17:18:38: ✅ Face Verified: EMP-0001
+2026-03-13T17:18:38: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:38: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:38: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:38)
+2026-03-13T17:18:39: ✅ Face Verified: EMP-0001
+2026-03-13T17:18:39: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:39: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:39: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:39)
+2026-03-13T17:18:41: 📡 [5:18:41 pm] POST /attendance/mark
+2026-03-13T17:18:41: 📦 Body: {
+2026-03-13T17:18:41:   "employee_id": "EMP-0001",
+2026-03-13T17:18:41:   "method": "face",
+2026-03-13T17:18:41:   "device_id": "office_terminal"
+2026-03-13T17:18:41: }
+2026-03-13T17:18:41: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:18:41: 📡 [5:18:41 pm] POST /attendance/mark
+2026-03-13T17:18:41: 📦 Body: {
+2026-03-13T17:18:41:   "employee_id": "EMP-0001",
+2026-03-13T17:18:41:   "method": "face",
+2026-03-13T17:18:41:   "device_id": "office_terminal"
+2026-03-13T17:18:41: }
+2026-03-13T17:18:41: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:18:41: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:41: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:41: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:41: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:41)
+2026-03-13T17:18:41: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:41: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:41)
+2026-03-13T17:18:42: ✅ Face Verified: EMP-0001
+2026-03-13T17:18:42: 📡 [5:18:42 pm] POST /attendance/mark
+2026-03-13T17:18:42: 📦 Body: {
+2026-03-13T17:18:42:   "employee_id": "EMP-0001",
+2026-03-13T17:18:42:   "method": "face",
+2026-03-13T17:18:42:   "device_id": "office_terminal"
+2026-03-13T17:18:42: }
+2026-03-13T17:18:42: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:18:42: 📡 [5:18:42 pm] POST /attendance/mark
+2026-03-13T17:18:42: 📦 Body: {
+2026-03-13T17:18:42:   "employee_id": "EMP-0001",
+2026-03-13T17:18:42:   "method": "face",
+2026-03-13T17:18:42:   "device_id": "office_terminal"
+2026-03-13T17:18:42: }
+2026-03-13T17:18:42: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:18:42: 📡 [5:18:42 pm] POST /attendance/mark
+2026-03-13T17:18:42: 📦 Body: {
+2026-03-13T17:18:42:   "employee_id": "EMP-0001",
+2026-03-13T17:18:42:   "method": "face",
+2026-03-13T17:18:42:   "device_id": "office_terminal"
+2026-03-13T17:18:42: }
+2026-03-13T17:18:42: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:18:42: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:42: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:42: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:42: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:18:42: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:42: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:42)
+2026-03-13T17:18:42: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:42: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:42)
+2026-03-13T17:18:42: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:42: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:42)
+2026-03-13T17:18:42: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:18:42: 🕒 [Attendance] Arrival status: LATE (check-in at 17:18:42)
+2026-03-13T17:19:30: 📡 [5:19:30 pm] POST /api/biometrics/face/verify
+2026-03-13T17:19:30: 📦 Body: {}
+2026-03-13T17:19:30: 🔍 [Verification] Checking face identity...
+2026-03-13T17:19:31: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:19:32: 🚫 Engine Rejection: Unrecognized face.
+2026-03-13T17:19:32: 📡 [5:19:32 pm] POST /api/biometrics/face/verify
+2026-03-13T17:19:32: 📦 Body: {}
+2026-03-13T17:19:32: 🔍 [Verification] Checking face identity...
+2026-03-13T17:19:33: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:19:34: 🚫 Engine Rejection: Unrecognized face.
+2026-03-13T17:19:34: 📡 [5:19:34 pm] POST /api/biometrics/face/verify
+2026-03-13T17:19:34: 📦 Body: {}
+2026-03-13T17:19:34: 🔍 [Verification] Checking face identity...
+2026-03-13T17:19:35: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:19:36: 📡 [5:19:36 pm] POST /api/biometrics/face/verify
+2026-03-13T17:19:36: 📦 Body: {}
+2026-03-13T17:19:36: 🔍 [Verification] Checking face identity...
+2026-03-13T17:19:36: ✅ Face Verified: EMP-0001
+2026-03-13T17:19:36: 📡 [5:19:36 pm] POST /attendance/mark
+2026-03-13T17:19:36: 📦 Body: {
+2026-03-13T17:19:36:   "employee_id": "EMP-0001",
+2026-03-13T17:19:36:   "method": "face",
+2026-03-13T17:19:36:   "device_id": "office_terminal"
+2026-03-13T17:19:36: }
+2026-03-13T17:19:36: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:19:37: 📡 Attempting Biometric Engine (Port 8001)...
+2026-03-13T17:19:37: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:19:37: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:19:37: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:19:37: 🕒 [Attendance] Arrival status: LATE (check-in at 17:19:37)
+2026-03-13T17:19:37: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:19:37: 🕒 [Attendance] Arrival status: LATE (check-in at 17:19:37)
+2026-03-13T17:19:39: ✅ Face Verified: EMP-0001
+2026-03-13T17:19:39: 📡 [5:19:39 pm] POST /attendance/mark
+2026-03-13T17:19:39: 📦 Body: {
+2026-03-13T17:19:39:   "employee_id": "EMP-0001",
+2026-03-13T17:19:39:   "method": "face",
+2026-03-13T17:19:39:   "device_id": "office_terminal"
+2026-03-13T17:19:39: }
+2026-03-13T17:19:39: 🎯 [Attendance Mark] Processing mark request for: EMP-0001
+2026-03-13T17:19:39: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:19:39: 🕒 [Attendance Debug] Checking for 2bb20292-5c00-4b1c-9e93-06c11a487755 on 2026-03-13 with method: face
+2026-03-13T17:19:39: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:19:39: 🕒 [Attendance] Arrival status: LATE (check-in at 17:19:39)
+2026-03-13T17:19:39: 🕒 [Attendance] Checking IN employee: 2bb20292-5c00-4b1c-9e93-06c11a487755
+2026-03-13T17:19:39: 🕒 [Attendance] Arrival status: LATE (check-in at 17:19:39)
+2026-03-13T17:20:21: 📡 [5:20:21 pm] GET /api/users
+2026-03-13T17:20:21: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:20:21: 📡 [5:20:21 pm] GET /api/users
+2026-03-13T17:20:21: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:21:44: 📡 [5:21:44 pm] POST /api/users
+2026-03-13T17:21:44: 📦 Body: {
+2026-03-13T17:21:44:   "name": "Gaurav  Panchal",
+2026-03-13T17:21:44:   "email": "gauravpanchalenglabs@gmail.com",
+2026-03-13T17:21:44:   "employee_id": "EMP-0006",
+2026-03-13T17:21:44:   "department": "Engineering",
+2026-03-13T17:21:44:   "role": "employee"
+2026-03-13T17:21:44: }
+2026-03-13T17:21:44: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:21:44: 🛡️ [IdentityValidation] POST /api/users | finalId: EMP-0006 | isReEnroll: false
+2026-03-13T17:21:45: ✅ User created/updated in Supabase: EMP-0006
+2026-03-13T17:22:20: 📡 [5:22:20 pm] POST /api/biometrics/face/register
+2026-03-13T17:22:20: 📦 Body: {}
+2026-03-13T17:22:20: 🛡️ [IdentityValidation] POST /api/biometrics/face/register | finalId: EMP-0006 | isReEnroll: true
+2026-03-13T17:22:20: ✅ [IdentityValidation] Bypassing checks for re-enrollment.
+2026-03-13T17:22:20: 📸 Received biometric registration for: EMP-0006
+2026-03-13T17:22:20: 📡 Forwarding to Biometric Engine (Port 8001)...
+2026-03-13T17:22:50: ❌ Biometric Engine error: timeout of 30000ms exceeded
+2026-03-13T17:22:50: ❌ Registration error: timeout of 30000ms exceeded
+2026-03-13T17:23:15: 📡 [5:23:15 pm] GET /api/stats/activity
+2026-03-13T17:23:15: 📡 [5:23:15 pm] GET /api/door/status
+2026-03-13T17:23:15: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:23:15: 📡 [5:23:15 pm] GET /api/stats/attendance-analytics
+2026-03-13T17:23:15: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:23:15: 📡 [5:23:15 pm] GET /api/stats
+2026-03-13T17:23:15: 📡 [5:23:15 pm] GET /api/users
+2026-03-13T17:23:15: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:23:16: 📊 [Stats] todayIST=2026-03-13 | employees=6 | present=99 | late=79 | scans=66
+2026-03-13T17:23:16: 📡 [5:23:16 pm] GET /api/stats/activity
+2026-03-13T17:23:20: 📡 [5:23:20 pm] GET /api/stats/attendance-analytics
+2026-03-13T17:23:20: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:23:20: 📡 [5:23:20 pm] GET /api/users
+2026-03-13T17:23:20: 🔓 Authenticated User: 5089shivkumar@gmail.com
+2026-03-13T17:23:20: 📡 [5:23:20 pm] GET /api/stats
+2026-03-13T17:23:20: 📊 [Stats] todayIST=2026-03-13 | employees=6 | present=99 | late=79 | scans=66
+2026-03-13T17:23:21: 📡 [5:23:21 pm] GET /api/door/status
+2026-03-13T17:23:21: 🔓 Authenticated User: 5089shivkumar@gmail.com

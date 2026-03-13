@@ -46,10 +46,10 @@ function LiveClock() {
     }, []);
     return (
         <div className="text-center">
-            <div className="text-7xl font-black tabular-nums tracking-tight text-white/90">
+            <div className="text-5xl md:text-7xl font-black tabular-nums tracking-tight text-white/90">
                 {time.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
             </div>
-            <div className="text-slate-500 text-sm font-bold mt-2 uppercase tracking-[0.3em] opacity-80">
+            <div className="text-slate-500 text-[10px] md:text-sm font-bold mt-2 uppercase tracking-[0.2em] md:tracking-[0.3em] opacity-80 px-4">
                 {time.toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
             </div>
         </div>
@@ -357,8 +357,8 @@ export default function Scanner() {
                     <span className="text-xs font-bold uppercase tracking-widest">Back to Home</span>
                 </button>
                 <div className="flex flex-col items-center">
-                    <div className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-500">AuraLock Terminal</div>
-                    <div className="text-[8px] text-slate-600 font-bold uppercase tracking-widest mt-0.5">Biometric Scanner v4.0</div>
+                    <div className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-blue-500">AuraLock Terminal</div>
+                    <div className="text-[7px] md:text-[8px] text-slate-600 font-bold uppercase tracking-widest mt-0.5">Biometric Scanner v4.0</div>
                 </div>
                 <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -379,15 +379,15 @@ export default function Scanner() {
                         
                         <LiveClock />
 
-                        <div className="relative w-80 h-80 md:w-[400px] md:h-[400px]">
+                        <div className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-[400px] md:h-[400px]">
                             {/* Scanning UI Brackets */}
                             {[['top-0 left-0', 'border-t-4 border-l-4'], ['top-0 right-0', 'border-t-4 border-r-4'],
                             ['bottom-0 left-0', 'border-b-4 border-l-4'], ['bottom-0 right-0', 'border-b-4 border-r-4']].map(([pos, br], i) => (
-                                <div key={i} className={`absolute w-16 h-16 ${pos} ${br} border-blue-500 rounded-2xl z-20`} />
+                                <div key={i} className={`absolute w-12 h-12 md:w-16 md:h-16 ${pos} ${br} border-blue-500 rounded-2xl z-20`} />
                             ))}
-
+ 
                             {/* Live Video Feed */}
-                            <div className="w-full h-full rounded-[2.5rem] overflow-hidden bg-black border-2 border-white/5 shadow-2xl relative">
+                            <div className="w-full h-full rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-black border-2 border-white/5 shadow-2xl relative">
                                 <video 
                                     ref={videoRef} 
                                     autoPlay 
@@ -398,7 +398,7 @@ export default function Scanner() {
                                 
                                 {/* Overlay Gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
-
+ 
                                 {/* Scanning Line Animation */}
                                 <motion.div
                                     animate={{ y: ['0%', '100%', '0%'] }}
@@ -408,12 +408,12 @@ export default function Scanner() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="px-6 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center gap-3">
+                        <div className="flex flex-col items-center gap-3 md:gap-4 px-4">
+                            <div className="px-5 md:px-6 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center gap-2 md:gap-3">
                                 <div className={`w-2 h-2 rounded-full ${isProcessing ? 'bg-blue-400 animate-ping' : view === 'face' ? 'bg-blue-400' : 'bg-emerald-400'}`} />
-                                <span className="text-xl font-black text-blue-200 uppercase tracking-widest">{message}</span>
+                                <span className="text-sm md:text-xl font-black text-blue-200 uppercase tracking-widest truncate max-w-[200px] md:max-w-none">{message}</span>
                             </div>
-                            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.4em]">Biometric Terminal Active</p>
+                            <p className="text-slate-500 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.4em]">Biometric Terminal Active</p>
                         </div>
                     </motion.div>
                 )}
@@ -463,12 +463,12 @@ export default function Scanner() {
                                 <CheckCircle2 size={84} className="text-emerald-400" />
                             </div>
                         </div>
-                        <div className="space-y-4">
+                        <div className="space-y-4 px-4">
                             <p className="text-[10px] font-black uppercase tracking-[0.6em] text-emerald-400">Access Granted</p>
-                            <h2 className="text-6xl font-black text-white tracking-tighter">Welcome {result?.name}</h2>
+                            <h2 className="text-3xl md:text-6xl font-black text-white tracking-tighter">Welcome {result?.name}</h2>
                             <div className="flex flex-col items-center gap-2 pt-2">
-                                <p className="text-emerald-500 font-black text-xl uppercase tracking-widest translate-y-1">Verification Success</p>
-                                <p className="text-slate-500 text-3xl font-black tabular-nums">{result?.time}</p>
+                                <p className="text-emerald-500 font-black text-base md:text-xl uppercase tracking-widest translate-y-1">Verification Success</p>
+                                <p className="text-slate-500 text-xl md:text-3xl font-black tabular-nums">{result?.time}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4 bg-white/[0.02] px-6 py-3 rounded-2xl border border-white/5 grayscale">
@@ -489,15 +489,15 @@ export default function Scanner() {
                                 <LogOut size={84} className="text-indigo-400" />
                             </div>
                         </div>
-                        <div className="space-y-4">
+                        <div className="space-y-4 px-4">
                             <p className="text-[10px] font-black uppercase tracking-[0.6em] text-indigo-400">Shift Ended</p>
-                            <h2 className="text-6xl font-black text-white tracking-tighter">Goodbye {result?.name}</h2>
+                            <h2 className="text-3xl md:text-6xl font-black text-white tracking-tighter">Goodbye {result?.name}</h2>
                             <div className="flex flex-col items-center gap-2 pt-2">
-                                <p className="text-indigo-400 font-black text-xl uppercase tracking-widest">Access Granted</p>
-                                <p className="text-slate-400 text-2xl font-black tabular-nums">{result?.checkoutTime}</p>
+                                <p className="text-indigo-400 font-black text-base md:text-xl uppercase tracking-widest">Access Granted</p>
+                                <p className="text-slate-400 text-lg md:text-2xl font-black tabular-nums">{result?.checkoutTime}</p>
                                 {result?.workingHours && (
-                                    <div className="mt-4 px-8 py-2 rounded-full bg-indigo-500/5 border border-indigo-500/20">
-                                        <span className="text-indigo-300 font-black text-sm tracking-[0.2em] uppercase">
+                                    <div className="mt-4 px-6 md:px-8 py-2 rounded-full bg-indigo-500/5 border border-indigo-500/20">
+                                        <span className="text-indigo-300 font-black text-xs md:text-sm tracking-[0.2em] uppercase">
                                             {result.workingHours} Total
                                         </span>
                                     </div>
@@ -521,11 +521,11 @@ export default function Scanner() {
                                 <AlertTriangle size={84} className="text-red-400" />
                             </motion.div>
                         </div>
-                        <div className="space-y-4">
+                        <div className="space-y-4 px-4">
                             <p className="text-[10px] font-black uppercase tracking-[0.6em] text-red-500">Security Warning</p>
-                            <h2 className="text-5xl font-black text-white tracking-tighter">Access Denied</h2>
-                            <p className="text-red-400 text-xl font-black uppercase tracking-widest">{message}</p>
-                            <p className="text-slate-500 text-sm font-medium italic opacity-70">Please use fingerprint fallback</p>
+                            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter">Access Denied</h2>
+                            <p className="text-red-400 text-base md:text-xl font-black uppercase tracking-widest">{message}</p>
+                            <p className="text-slate-500 text-xs md:text-sm font-medium italic opacity-70">Please use fingerprint fallback</p>
                         </div>
                         <div className="flex items-center gap-4 opacity-30">
                             <CountdownRing seconds={countdown} color="#ef4444" />

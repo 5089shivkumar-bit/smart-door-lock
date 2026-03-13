@@ -1629,3 +1629,5 @@
 2026-03-12T18:05:44: ❌ Registration error: No face detected.
 2026-03-12T18:06:02: ❌ Biometric Engine error: No face detected.
 2026-03-12T18:06:02: ❌ Registration error: No face detected.
+2026-03-13T17:22:50: ❌ Biometric Engine error: timeout of 30000ms exceeded
+2026-03-13T17:22:50: ❌ Registration error: timeout of 30000ms exceeded

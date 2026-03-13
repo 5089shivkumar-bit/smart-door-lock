@@ -141,8 +141,8 @@ export default function Logs() {
             {/* ── Header ── */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-white mb-1 tracking-tighter">Security Audit Log</h1>
-                    <p className="text-slate-500 text-sm">Real-time biometric access events — every scan attempt recorded</p>
+                    <h1 className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tighter">Security Audit Log</h1>
+                    <p className="text-slate-500 text-[10px] md:text-sm">Real-time biometric access events &mdash; every scan attempt recorded</p>
                 </div>
                 <button onClick={() => fetchLogs(true)} disabled={refreshing}
                     className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.07] rounded-xl text-slate-400 hover:text-white text-xs font-bold transition-all disabled:opacity-50">
@@ -221,12 +221,12 @@ export default function Logs() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-900/50 text-slate-600 text-[10px] font-bold uppercase tracking-widest border-b border-white/[0.05]">
-                                <th className="px-6 py-3">Subject</th>
-                                <th className="px-6 py-3">Method</th>
-                                <th className="px-6 py-3">Timestamp</th>
-                                <th className="px-6 py-3">Confidence</th>
-                                <th className="px-6 py-3">Device</th>
-                                <th className="px-6 py-3 text-right">Result</th>
+                                <th className="px-4 md:px-6 py-3">Subject</th>
+                                <th className="px-4 md:px-6 py-3">Method</th>
+                                <th className="hidden lg:table-cell px-6 py-3">Timestamp</th>
+                                <th className="hidden xl:table-cell px-6 py-3">Confidence</th>
+                                <th className="hidden md:table-cell px-6 py-3">Device</th>
+                                <th className="px-4 md:px-6 py-3 text-right">Result</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/[0.04]">
@@ -256,7 +256,7 @@ export default function Logs() {
                                     className={`hover:bg-white/[0.03] cursor-pointer transition-all duration-300 group active:scale-[0.995] ${log.status === 'failed' ? 'border-l-2 border-red-500/30' : log.status === 'ambiguous' ? 'border-l-2 border-amber-500/30' : 'border-l-2 border-transparent'}`}>
 
                                     {/* Subject */}
-                                    <td className="px-6 py-4">
+                                    <td className="px-4 md:px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-lg bg-slate-800 border border-white/[0.06] overflow-hidden shrink-0">
                                                 {log.employees?.image_url
@@ -265,14 +265,14 @@ export default function Logs() {
                                                         {log.employees?.name?.[0] || '?'}
                                                     </div>}
                                             </div>
-                                            <div>
-                                                <div className="text-sm font-bold text-white leading-tight">
+                                            <div className="min-w-0">
+                                                <div className="text-sm font-bold text-white leading-tight truncate">
                                                     {log.employees?.name ? log.employees.name : (
                                                         log.method === 'REMOTE' ? 'Remote Unlock' : 
                                                         log.method === 'FINGERPRINT' ? 'Unknown Fingerprint' : 'Unknown Person'
                                                     )}
                                                 </div>
-                                                <div className="text-[10px] text-slate-600 font-medium">
+                                                <div className="text-[10px] text-slate-600 font-medium truncate">
                                                     {log.employees?.employee_id || (log.method === 'REMOTE' ? 'Admin Panel' : 'No ID')}
                                                 </div>
                                             </div>
@@ -280,10 +280,10 @@ export default function Logs() {
                                     </td>
 
                                     {/* Method */}
-                                    <td className="px-6 py-4"><MethodBadge method={log.method} /></td>
+                                    <td className="px-4 md:px-6 py-4"><MethodBadge method={log.method} /></td>
 
                                     {/* Timestamp */}
-                                    <td className="px-6 py-4">
+                                    <td className="hidden lg:table-cell px-6 py-4">
                                         <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
                                             <Clock className="w-3 h-3 text-slate-600 shrink-0" />
                                             <div>
@@ -294,10 +294,10 @@ export default function Logs() {
                                     </td>
 
                                     {/* Confidence */}
-                                    <td className="px-6 py-4"><ConfidenceBar value={log.confidence} /></td>
+                                    <td className="hidden xl:table-cell px-6 py-4"><ConfidenceBar value={log.confidence} /></td>
 
                                     {/* Device */}
-                                    <td className="px-6 py-4">
+                                    <td className="hidden md:table-cell px-6 py-4">
                                         <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
                                             <Monitor className="w-3.5 h-3.5 text-slate-700" />
                                             {log.device_id || 'terminal_01'}
@@ -305,7 +305,7 @@ export default function Logs() {
                                     </td>
 
                                     {/* Result */}
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-4 md:px-6 py-4 text-right">
                                         <StatusBadge status={log.status} />
                                     </td>
                                 </tr>

@@ -1836,51 +1836,93 @@ app.patch('/api/users/:id', authenticateToken, isAdmin, validateIdentity, async 
         const { id } = req.params;
         const rawUpdates = req.body;
 
+        // Fetch existing user to check for ID changes and biometric status
+        const { data: existingUser, error: fetchErr } = await supabase
+            .from('employees')
+            .select('employee_id, face_embedding')
+            .eq('id', id)
+            .single();
+        
+        if (fetchErr || !existingUser) {
+            return res.status(404).json({ error: "Employee not found" });
+        }
+        
+        const old_eid = existingUser.employee_id;
+
         // Whitelist: only allow columns that actually exist in the employees table.
-        // Silently drop any frontend-only fields (face_registered, fingerprint_registered, etc.)
-        // to prevent Supabase "column does not exist" errors -> 500.
+        // Silently drop any frontend-only fields to prevent Supabase errors.
         const ALLOWED_COLUMNS = new Set([
             'name', 'email', 'role', 'department', 'status',
             'employee_id', 'image_url', 'is_deleted', 'face_embedding'
         ]);
+        
         const updates = Object.fromEntries(
             Object.entries(rawUpdates).filter(([k]) => ALLOWED_COLUMNS.has(k))
         );
 
-        if (Object.keys(updates).length === 0) {
-            return res.status(400).json({ error: "No valid fields to update.", received: Object.keys(rawUpdates) });
+        // Handle Fingerprint registration flag from frontend
+        if (rawUpdates.fingerprint_registered === true) {
+            const eid = rawUpdates.employee_id || old_eid;
+            console.log(`📝 [Biometric] Marking fingerprint as registered for ${eid}`);
+            try {
+                await supabase.from('fingerprint_templates').upsert({
+                    employee_id: eid,
+                    template_data: 'ENROLLED_VIA_ADMIN_MOCK'
+                }, { on_conflict: 'employee_id' });
+            } catch (fpErr) {
+                console.warn("⚠️ Fingerprint record upsert failed:", fpErr.message);
+            }
         }
 
-        // Apply employee update
-        console.log(`📝 [Update] Applying employee update for UUID ${id}...`);
-        const { data: updatedUser, error } = await supabase
-            .from('employees')
-            .update(updates)
-            .eq('id', id)
-            .select('id, employee_id, name, email, role, department, status, image_url, created_at, updated_at, is_deleted')
-            .single();
+        // Apply employee update if there are valid fields
+        let updatedUser = { ...existingUser, id };
+        if (Object.keys(updates).length > 0) {
+            console.log(`📝 [Update] Applying employee update for UUID ${id}...`);
+            const { data, error } = await supabase
+                .from('employees')
+                .update(updates)
+                .eq('id', id)
+                .select('id, employee_id, name, email, role, department, status, image_url, created_at, updated_at, is_deleted, face_embedding')
+                .single();
 
-        if (error) {
-            console.error("❌ [Update] Employee update failed:", error.message);
-            throw error;
+            if (error) {
+                console.error("❌ [Update] Employee update failed:", error.message);
+                throw error;
+            }
+            updatedUser = data;
+        } else if (!rawUpdates.fingerprint_registered && !rawUpdates.face_registered) {
+            return res.status(400).json({ error: "No valid fields to update.", received: Object.keys(rawUpdates) });
+        } else {
+            // If we only updated biometrics, re-fetch the user record for the response
+            const { data } = await supabase.from('employees').select('*').eq('id', id).single();
+            updatedUser = data;
         }
 
         // Handle Biometric Cache Eviction if ID changed
-        if (old_id) {
-            console.log(`🔄 [Cache] Evicting old biometric cache for ID: ${old_id}`);
+        const new_eid = updatedUser.employee_id;
+        if (old_eid && new_eid !== old_eid) {
+            console.log(`🔄 [Cache] Evicting old biometric cache for ID: ${old_eid}`);
             try {
-                await axios.delete(`http://localhost:8001/api/biometrics/face/${encodeURIComponent(old_id)}`, { timeout: 3000 });
+                await axios.delete(`http://localhost:8001/api/biometrics/face/${encodeURIComponent(old_eid)}`, { timeout: 3000 });
             } catch (ce) {
                 console.warn(`⚠️ [Cache] Old ID eviction skipped: ${ce.message}`);
             }
         }
 
-        // Same transformation as GET: strip raw vector, return booleans
+        // Fetch real-time biometric status for the response
+        const [
+            { count: faceCount },
+            { count: fpCount }
+        ] = await Promise.all([
+            supabase.from('face_templates').select('id', { count: 'exact', head: true }).eq('employee_id', updatedUser.employee_id),
+            supabase.from('fingerprint_templates').select('id', { count: 'exact', head: true }).eq('employee_id', updatedUser.employee_id)
+        ]);
+
         res.json({
             ...updatedUser,
             face_embedding: undefined,
-            face_registered: !!updatedUser.face_embedding,
-            fingerprint_registered: false
+            face_registered: faceCount > 0 || !!updatedUser.face_embedding,
+            fingerprint_registered: fpCount > 0
         });
     } catch (error) {
         console.error("❌ Update user error:", error.message || error);

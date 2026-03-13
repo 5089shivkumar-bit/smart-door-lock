@@ -66,12 +66,12 @@ export default function Reports() {
                     <h1 className="text-3xl font-black text-white mb-2 tracking-tighter uppercase">Attendance Analytics</h1>
                     <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">Data Insights // Performance Audit</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="btn-secondary flex items-center gap-2 text-xs">
-                        <Download className="w-4 h-4" /> Export Summary
+                <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                    <button className="flex-1 md:flex-none px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-white text-[10px] md:text-xs font-black transition-all flex items-center justify-center gap-2">
+                        <Download className="w-4 h-4" /> Export
                     </button>
-                    <button className="btn-primary flex items-center gap-2 text-xs">
-                        <FileText className="w-4 h-4" /> Full Audit Log
+                    <button className="flex-1 md:flex-none px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-white text-[10px] md:text-xs font-black transition-all flex items-center justify-center gap-2">
+                        <FileText className="w-4 h-4" /> Audit Log
                     </button>
                 </div>
             </div>
@@ -89,23 +89,23 @@ export default function Reports() {
                             <TrendingUp className="w-4 h-4" />
                         </div>
                     </div>
-                    <div className="h-[280px] w-full">
+                    <div className="h-[200px] md:h-[280px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={reportData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                 <XAxis
                                     dataKey="date"
                                     stroke="#475569"
-                                    fontSize={10}
-                                    tickFormatter={(str) => format(new Date(str), 'MMM dd')}
+                                    fontSize={9}
+                                    tickFormatter={(str) => format(new Date(str), 'MM/dd')}
                                 />
-                                <YAxis stroke="#475569" fontSize={10} />
+                                <YAxis stroke="#475569" fontSize={9} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
-                                    itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                                    itemStyle={{ fontSize: '10px', fontWeight: 'bold' }}
                                 />
-                                <Bar dataKey="present" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={32} />
-                                <Bar dataKey="late" fill="#f59e0b" radius={[6, 6, 0, 0]} barSize={32} />
+                                <Bar dataKey="present" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={16} />
+                                <Bar dataKey="late" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={16} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -122,21 +122,21 @@ export default function Reports() {
                             <Clock className="w-4 h-4" />
                         </div>
                     </div>
-                    <div className="h-[280px] w-full">
+                    <div className="h-[200px] md:h-[280px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={reportData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                 <XAxis
                                     dataKey="date"
                                     stroke="#475569"
-                                    fontSize={10}
-                                    tickFormatter={(str) => format(new Date(str), 'MMM dd')}
+                                    fontSize={9}
+                                    tickFormatter={(str) => format(new Date(str), 'MM/dd')}
                                 />
-                                <YAxis stroke="#475569" fontSize={10} />
+                                <YAxis stroke="#475569" fontSize={9} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
                                 />
-                                <Line type="monotone" dataKey="late" stroke="#f59e0b" strokeWidth={4} dot={{ r: 6, fill: '#f59e0b', strokeWidth: 0 }} />
+                                <Line type="monotone" dataKey="late" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
@@ -151,29 +151,31 @@ export default function Reports() {
                         <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Personnel Aggregation // {months[selectedMonth - 1]} {selectedYear}</p>
                     </div>
 
-                    <div className="flex items-center gap-4 p-2 bg-slate-950/50 border border-white/5 rounded-2xl">
-                        <select
-                            value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                            className="bg-transparent text-xs font-black text-white uppercase tracking-widest px-4 py-2 focus:outline-none cursor-pointer"
-                        >
-                            {months.map((m, i) => (
-                                <option key={i} value={i + 1} className="bg-slate-900">{m}</option>
-                            ))}
-                        </select>
-                        <select
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                            className="bg-transparent text-xs font-black text-white uppercase tracking-widest px-4 py-2 border-l border-white/5 focus:outline-none cursor-pointer"
-                        >
-                            {years.map(y => (
-                                <option key={y} value={y} className="bg-slate-900">{y}</option>
-                            ))}
-                        </select>
+                    <div className="flex flex-wrap items-center gap-2 p-2 bg-slate-950/50 border border-white/5 rounded-2xl">
+                        <div className="flex items-center flex-1 md:flex-none">
+                            <select
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                                className="bg-transparent text-[10px] md:text-xs font-black text-white uppercase tracking-widest px-3 md:px-4 py-2 focus:outline-none cursor-pointer flex-1"
+                            >
+                                {months.map((m, i) => (
+                                    <option key={i} value={i + 1} className="bg-slate-900">{m}</option>
+                                ))}
+                            </select>
+                            <select
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                                className="bg-transparent text-[10px] md:text-xs font-black text-white uppercase tracking-widest px-3 md:px-4 py-2 border-l border-white/5 focus:outline-none cursor-pointer"
+                            >
+                                {years.map(y => (
+                                    <option key={y} value={y} className="bg-slate-900">{y}</option>
+                                ))}
+                            </select>
+                        </div>
                         <button
                             onClick={fetchMonthlyReport}
                             disabled={generating}
-                            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${generating ? 'bg-slate-800 text-slate-500' : 'bg-blue-600 hover:bg-blue-500 text-white'
+                            className={`w-full md:w-auto px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${generating ? 'bg-slate-800 text-slate-500' : 'bg-blue-600 hover:bg-blue-500 text-white'
                                 }`}
                         >
                             {generating ? 'Generating...' : 'Refresh'}
@@ -186,14 +188,14 @@ export default function Reports() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
-                                <tr className="bg-white/[0.02] border-b border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                    <th className="px-8 py-5">Personnel</th>
-                                    <th className="px-8 py-5">Department</th>
-                                    <th className="px-8 py-5 text-center">Working Days</th>
-                                    <th className="px-8 py-5 text-center">Present</th>
-                                    <th className="px-8 py-5 text-center text-red-400">Absent</th>
-                                    <th className="px-8 py-5 text-center text-amber-400">Late</th>
-                                    <th className="px-8 py-5 text-right">Work Hours</th>
+                                <tr className="bg-white/[0.02] border-b border-white/5 text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                    <th className="px-4 md:px-8 py-5">Personnel</th>
+                                    <th className="hidden md:table-cell px-8 py-5">Department</th>
+                                    <th className="hidden lg:table-cell px-8 py-5 text-center">Working Days</th>
+                                    <th className="px-4 md:px-8 py-5 text-center">Present</th>
+                                    <th className="px-4 md:px-8 py-5 text-center text-red-400">Absent</th>
+                                    <th className="hidden sm:table-cell px-8 py-5 text-center text-amber-400">Late</th>
+                                    <th className="px-4 md:px-8 py-5 text-right">Hours</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/[0.02]">
@@ -206,46 +208,46 @@ export default function Reports() {
                                 ) : monthlyReport?.data.length > 0 ? (
                                     monthlyReport.data.map((row) => (
                                         <tr key={row.id} className="group hover:bg-white/[0.02] transition-colors">
-                                            <td className="px-8 py-5">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-xs font-black text-slate-500 uppercase">
+                                            <td className="px-4 md:px-8 py-5">
+                                                <div className="flex items-center gap-3 md:gap-4">
+                                                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-[10px] md:text-xs font-black text-slate-500 uppercase">
                                                         {row.name[0]}
                                                     </div>
-                                                    <div>
-                                                        <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{row.name}</div>
-                                                        <div className="text-[10px] font-medium text-slate-500 tracking-wider">ID: {row.employee_id}</div>
+                                                    <div className="min-w-0">
+                                                        <div className="text-xs md:text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">{row.name}</div>
+                                                        <div className="text-[9px] md:text-[10px] font-medium text-slate-500 tracking-wider">ID: {row.employee_id}</div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5">
+                                            <td className="hidden md:table-cell px-8 py-5">
                                                 <div className="flex items-center gap-2">
                                                     <Briefcase className="w-3.5 h-3.5 text-slate-600" />
                                                     <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">{row.department}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5 text-center font-bold text-slate-500 italic tabular-nums">
+                                            <td className="hidden lg:table-cell px-8 py-5 text-center font-bold text-slate-500 italic tabular-nums">
                                                 {monthlyReport.workingDaysInMonth}
                                             </td>
-                                            <td className="px-8 py-5 text-center">
-                                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-black text-emerald-400 tabular-nums">
+                                            <td className="px-4 md:px-8 py-5 text-center">
+                                                <div className="inline-flex items-center gap-1 px-2 md:gap-1.5 md:px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] md:text-[11px] font-black text-emerald-400 tabular-nums">
                                                     <CheckCircle className="w-3 h-3" /> {row.presentDays}
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5 text-center">
-                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black tabular-nums ${row.absentDays > 3 ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'
+                                            <td className="px-4 md:px-8 py-5 text-center">
+                                                <div className={`inline-flex items-center gap-1 px-2 md:gap-1.5 md:px-3 py-1 rounded-full text-[10px] md:text-[11px] font-black tabular-nums ${row.absentDays > 3 ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'
                                                     }`}>
                                                     <AlertTriangle className="w-3 h-3" /> {row.absentDays}
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5 text-center">
+                                            <td className="hidden sm:table-cell px-8 py-5 text-center">
                                                 <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black tabular-nums ${row.lateDays > 5 ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-500'
                                                     }`}>
                                                     <Timer className="w-3 h-3" /> {row.lateDays}
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5 text-right">
-                                                <div className="flex items-center justify-end gap-2 text-sm font-black text-white tabular-nums">
-                                                    <Clock className="w-3.5 h-3.5 text-blue-500" />
+                                            <td className="px-4 md:px-8 py-5 text-right">
+                                                <div className="flex items-center justify-end gap-1.5 md:gap-2 text-xs md:text-sm font-black text-white tabular-nums">
+                                                    <Clock className="w-3 md:w-3.5 h-3 md:h-3.5 text-blue-500" />
                                                     {row.totalWorkHours}h
                                                 </div>
                                             </td>

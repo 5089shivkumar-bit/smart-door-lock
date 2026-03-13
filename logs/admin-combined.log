@@ -2340,3 +2340,16 @@
 2026-03-12T17:34:30:   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.2.154:[1m5181[22m/[39m
 2026-03-12T17:34:30:   [32m➜[39m  [1mNetwork[22m: [36mhttp://172.31.112.1:[1m5181[22m/[39m
 2026-03-12T17:58:45: [2m5:58:45 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/SAM/Documents/Antigravity/LockingApp/admin-panel/src/pages/Users.jsx, /@fs/C:/Users/SAM/Documents/Antigravity/LockingApp/admin-panel/src/index.css[22m
+2026-03-13T14:05:30: 
+2026-03-13T14:05:30:   [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m1395[22m[2m[0m ms[22m
+2026-03-13T14:05:30: 
+2026-03-13T14:05:30:   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5181[22m/[39m
+2026-03-13T14:05:30:   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.2.166:[1m5181[22m/[39m
+2026-03-13T16:06:14: [2m4:06:14 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.jsx, /src/index.css[22m
+2026-03-13T16:06:14: [2m4:06:14 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.jsx, /src/index.css[22m
+2026-03-13T16:16:33: [2m4:16:33 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Users.jsx, /src/index.css[22m
+2026-03-13T17:04:40: 
+2026-03-13T17:04:40:   [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m6308[22m[2m[0m ms[22m
+2026-03-13T17:04:40: 
+2026-03-13T17:04:40:   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5181[22m/[39m
+2026-03-13T17:04:40:   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.2.166:[1m5181[22m/[39m

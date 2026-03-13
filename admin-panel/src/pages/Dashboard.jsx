@@ -142,8 +142,8 @@ export default function Dashboard() {
             {/* ── Header ── */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-white mb-2 tracking-tighter">Command Center</h1>
-                    <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">Operational Oversight // AuraLock v2.4</p>
+                    <h1 className="text-2xl md:text-3xl font-black text-white mb-1 md:mb-2 tracking-tighter">Command Center</h1>
+                    <p className="text-slate-500 text-[10px] md:text-sm font-medium uppercase tracking-[0.2em]">Operational Oversight // AuraLock v2.4</p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -152,61 +152,62 @@ export default function Dashboard() {
             </div>
 
             {/* ── 5 KPI Cards ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
                 {kpis.map((kpi, i) => (
                     <div key={i}
-                        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${kpi.gradient} border ${kpi.border} p-6
+                        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${kpi.gradient} border ${kpi.border} p-4 sm:p-6
                                     hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group`}>
                         {/* background glow */}
-                        <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full ${kpi.dot} opacity-5 group-hover:opacity-10 transition-opacity blur-xl`} />
+                        <div className={`absolute -right-4 -top-4 w-16 h-16 sm:-right-6 sm:-top-6 sm:w-24 sm:h-24 rounded-full ${kpi.dot} opacity-5 group-hover:opacity-10 transition-opacity blur-xl`} />
 
                         {/* icon */}
-                        <div className={`w-10 h-10 rounded-xl bg-black/30 border ${kpi.border} flex items-center justify-center mb-4`}>
-                            <kpi.icon className={`w-5 h-5 ${kpi.accent}`} />
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-black/30 border ${kpi.border} flex items-center justify-center mb-3 sm:mb-4`}>
+                            <kpi.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${kpi.accent}`} />
                         </div>
 
                         {/* value */}
-                        <div className={`text-4xl font-black tabular-nums ${kpi.accent} mb-1 transition-transform group-hover:translate-x-0.5`}>
+                        <div className={`text-2xl sm:text-4xl font-black tabular-nums ${kpi.accent} mb-0.5 sm:mb-1 transition-transform group-hover:translate-x-0.5`}>
                             {loading ? (
-                                <div className="w-16 h-9 bg-white/5 rounded-lg animate-pulse" />
+                                <div className="w-10 h-6 sm:w-16 sm:h-9 bg-white/5 rounded-lg animate-pulse" />
                             ) : kpi.value}
                         </div>
 
                         {/* label */}
-                        <div className="text-sm font-bold text-white/90 mb-0.5">{kpi.label}</div>
+                        <div className="text-[11px] sm:text-sm font-bold text-white/90 mb-0.5 leading-tight">{kpi.label}</div>
 
                         {/* sub-label */}
-                        <div className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.15em]">{kpi.sub}</div>
+                        <div className="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-[0.15em] leading-tight line-clamp-1">{kpi.sub}</div>
 
                         {/* live dot */}
-                        <div className="absolute top-4 right-4 flex items-center gap-1">
-                            <div className={`w-1.5 h-1.5 rounded-full ${kpi.dot} animate-pulse`} />
+                        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1">
+                            <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${kpi.dot} animate-pulse`} />
                         </div>
                     </div>
                 ))}
 
                 {/* --- Door Status Card --- */}
-                <div className={`relative overflow-hidden rounded-2xl bg-slate-900/50 border border-white/5 p-6 
+                <div className={`relative overflow-hidden rounded-2xl bg-slate-900/50 border border-white/5 p-4 sm:p-6 
                                 hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group`}>
-                    <div className="flex items-center justify-between mb-4">
-                        <div className={`w-10 h-10 rounded-xl bg-black/30 border border-white/5 flex items-center justify-center`}>
-                            {doorStatus === 'Locked' ? <Lock className="w-5 h-5 text-emerald-400" /> : <Unlock className="w-5 h-5 text-blue-400 animate-pulse" />}
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-black/30 border border-white/5 flex items-center justify-center`}>
+                            {doorStatus === 'Locked' ? <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" /> : <Unlock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 animate-pulse" />}
                         </div>
                         <div className="flex flex-col items-end gap-1">
-                            <div className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded 
+                            <div className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded 
                                             ${doorStatus === 'Locked' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-blue-500/10 text-blue-500'}`}>
                                 {doorStatus}
                             </div>
-                            <div className={`flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest ${isOnline ? 'text-emerald-500' : 'text-red-500'}`}>
+                            <div className={`flex items-center gap-1 text-[7px] sm:text-[8px] font-bold uppercase tracking-widest ${isOnline ? 'text-emerald-500' : 'text-red-500'}`}>
                                 <div className={`w-1 h-1 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-                                {isOnline ? 'Hardware Online' : 'Hardware Offline'}
+                                <span className="hidden sm:inline">{isOnline ? 'Hardware Online' : 'Hardware Offline'}</span>
+                                <span className="sm:hidden">{isOnline ? 'Online' : 'Offline'}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="mb-4">
-                        <div className="text-sm font-bold text-white/90">Door Status</div>
-                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <div className="mb-3 sm:mb-4">
+                        <div className="text-[11px] sm:text-sm font-bold text-white/90 mb-0.5 leading-tight">Door Status</div>
+                        <div className="text-[8px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-tight">
                             Last Unlock: <span className="text-slate-300">{lastUnlock}</span>
                         </div>
                     </div>
@@ -214,8 +215,8 @@ export default function Dashboard() {
                     <button
                         onClick={handleRemoteUnlock}
                         disabled={unlocking || doorStatus === 'Unlocked'}
-                        className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:bg-slate-800 
-                                   rounded-xl text-[10px] font-black text-white uppercase tracking-widest transition-all
+                        className="w-full py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:bg-slate-800 
+                                   rounded-xl text-[9px] sm:text-[10px] font-black text-white uppercase tracking-widest transition-all
                                    flex items-center justify-center gap-2 group/btn"
                     >
                         {unlocking ? (
@@ -223,7 +224,8 @@ export default function Dashboard() {
                         ) : (
                             <>
                                 <Key className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" />
-                                Remote Unlock
+                                <span className="hidden sm:inline">Remote Unlock</span>
+                                <span className="sm:hidden">Unlock</span>
                             </>
                         )}
                     </button>
@@ -252,7 +254,7 @@ export default function Dashboard() {
                             <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-500" />Late</div>
                         </div>
                     </div>
-                    <div className="h-[260px]">
+                    <div className="h-[200px] md:h-[260px]">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={analytics?.dailyTrend || []}>
                                 <defs>
@@ -335,7 +337,7 @@ export default function Dashboard() {
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-slate-600" />Total</div>
                     </div>
                 </div>
-                <div className="h-[260px]">
+                <div className="h-[200px] md:h-[260px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={analytics?.departmentComparison || []} barGap={6} barCategoryGap="25%">
                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />

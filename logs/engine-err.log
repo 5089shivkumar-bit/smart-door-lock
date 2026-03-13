@@ -573,3 +573,715 @@
 2026-03-12T17:34:34: INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
 2026-03-12T17:55:53: 2026-03-12 17:55:53.512652: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 2026-03-12T17:55:53: To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-03-13T17:04:47: 2026-03-13 17:04:47.961498: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:04:47: 2026-03-13 17:04:47.962496: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:09: 2026-03-13 17:05:09.217508: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:09: 2026-03-13 17:05:09.217503: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:13: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:05:13: 
+2026-03-13T17:05:13: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:05:13: 
+2026-03-13T17:05:29: INFO:     Started server process [21428]
+2026-03-13T17:05:29: INFO:     Started server process [14524]
+2026-03-13T17:05:29: INFO:     Waiting for application startup.
+2026-03-13T17:05:29: INFO:     Waiting for application startup.
+2026-03-13T17:05:30: INFO:     Application startup complete.
+2026-03-13T17:05:30: INFO:     Application startup complete.
+2026-03-13T17:05:30: INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-03-13T17:05:30: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:05:30: INFO:     Waiting for application shutdown.
+2026-03-13T17:05:30: INFO:     Application shutdown complete.
+2026-03-13T17:05:36: 2026-03-13 17:05:36.566164: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:40: 2026-03-13 17:05:40.083547: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:43: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:05:43: 
+2026-03-13T17:05:46: INFO:     Started server process [21260]
+2026-03-13T17:05:46: INFO:     Waiting for application startup.
+2026-03-13T17:05:47: INFO:     Application startup complete.
+2026-03-13T17:05:47: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:05:47: INFO:     Waiting for application shutdown.
+2026-03-13T17:05:47: INFO:     Application shutdown complete.
+2026-03-13T17:05:53: 2026-03-13 17:05:53.285924: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:56: 2026-03-13 17:05:56.624593: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:05:59: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:05:59: 
+2026-03-13T17:06:03: INFO:     Started server process [9640]
+2026-03-13T17:06:03: INFO:     Waiting for application startup.
+2026-03-13T17:06:04: INFO:     Application startup complete.
+2026-03-13T17:06:04: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:06:04: INFO:     Waiting for application shutdown.
+2026-03-13T17:06:04: INFO:     Application shutdown complete.
+2026-03-13T17:06:10: 2026-03-13 17:06:10.274124: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:13: 2026-03-13 17:06:13.282286: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:16: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:06:16: 
+2026-03-13T17:06:19: INFO:     Started server process [9340]
+2026-03-13T17:06:19: INFO:     Waiting for application startup.
+2026-03-13T17:06:20: INFO:     Application startup complete.
+2026-03-13T17:06:20: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:06:20: INFO:     Waiting for application shutdown.
+2026-03-13T17:06:20: INFO:     Application shutdown complete.
+2026-03-13T17:06:26: 2026-03-13 17:06:26.173060: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:29: 2026-03-13 17:06:29.622127: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:32: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:06:32: 
+2026-03-13T17:06:35: INFO:     Started server process [13704]
+2026-03-13T17:06:35: INFO:     Waiting for application startup.
+2026-03-13T17:06:36: INFO:     Application startup complete.
+2026-03-13T17:06:36: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:06:36: INFO:     Waiting for application shutdown.
+2026-03-13T17:06:36: INFO:     Application shutdown complete.
+2026-03-13T17:06:41: 2026-03-13 17:06:41.937150: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:44: 2026-03-13 17:06:44.519463: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:46: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:06:46: 
+2026-03-13T17:06:50: INFO:     Started server process [6548]
+2026-03-13T17:06:50: INFO:     Waiting for application startup.
+2026-03-13T17:06:50: INFO:     Application startup complete.
+2026-03-13T17:06:50: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:06:50: INFO:     Waiting for application shutdown.
+2026-03-13T17:06:50: INFO:     Application shutdown complete.
+2026-03-13T17:06:56: 2026-03-13 17:06:56.640538: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:06:59: 2026-03-13 17:06:59.657661: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:02: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:07:02: 
+2026-03-13T17:07:06: INFO:     Started server process [20880]
+2026-03-13T17:07:06: INFO:     Waiting for application startup.
+2026-03-13T17:07:07: INFO:     Application startup complete.
+2026-03-13T17:07:07: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:07:07: INFO:     Waiting for application shutdown.
+2026-03-13T17:07:07: INFO:     Application shutdown complete.
+2026-03-13T17:07:12: 2026-03-13 17:07:12.632663: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:15: 2026-03-13 17:07:15.521051: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:18: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:07:18: 
+2026-03-13T17:07:21: INFO:     Started server process [18052]
+2026-03-13T17:07:21: INFO:     Waiting for application startup.
+2026-03-13T17:07:22: INFO:     Application startup complete.
+2026-03-13T17:07:22: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:07:22: INFO:     Waiting for application shutdown.
+2026-03-13T17:07:22: INFO:     Application shutdown complete.
+2026-03-13T17:07:27: 2026-03-13 17:07:27.747343: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:30: 2026-03-13 17:07:30.290204: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:33: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:07:33: 
+2026-03-13T17:07:36: INFO:     Started server process [18036]
+2026-03-13T17:07:36: INFO:     Waiting for application startup.
+2026-03-13T17:07:36: INFO:     Application startup complete.
+2026-03-13T17:07:36: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:07:36: INFO:     Waiting for application shutdown.
+2026-03-13T17:07:36: INFO:     Application shutdown complete.
+2026-03-13T17:07:42: 2026-03-13 17:07:42.205700: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:45: 2026-03-13 17:07:45.200701: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:47: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:07:47: 
+2026-03-13T17:07:51: INFO:     Started server process [11116]
+2026-03-13T17:07:51: INFO:     Waiting for application startup.
+2026-03-13T17:07:51: INFO:     Application startup complete.
+2026-03-13T17:07:51: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:07:51: INFO:     Waiting for application shutdown.
+2026-03-13T17:07:51: INFO:     Application shutdown complete.
+2026-03-13T17:07:57: 2026-03-13 17:07:57.274891: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:07:59: 2026-03-13 17:07:59.915264: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:02: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:08:02: 
+2026-03-13T17:08:05: INFO:     Started server process [8252]
+2026-03-13T17:08:05: INFO:     Waiting for application startup.
+2026-03-13T17:08:06: INFO:     Application startup complete.
+2026-03-13T17:08:06: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:08:06: INFO:     Waiting for application shutdown.
+2026-03-13T17:08:06: INFO:     Application shutdown complete.
+2026-03-13T17:08:11: 2026-03-13 17:08:11.854574: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:14: 2026-03-13 17:08:14.647742: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:17: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:08:17: 
+2026-03-13T17:08:20: INFO:     Started server process [10576]
+2026-03-13T17:08:20: INFO:     Waiting for application startup.
+2026-03-13T17:08:21: INFO:     Application startup complete.
+2026-03-13T17:08:21: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:08:21: INFO:     Waiting for application shutdown.
+2026-03-13T17:08:21: INFO:     Application shutdown complete.
+2026-03-13T17:08:26: 2026-03-13 17:08:26.731728: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:29: 2026-03-13 17:08:29.243445: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:31: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:08:31: 
+2026-03-13T17:08:35: INFO:     Started server process [1236]
+2026-03-13T17:08:35: INFO:     Waiting for application startup.
+2026-03-13T17:08:36: INFO:     Application startup complete.
+2026-03-13T17:08:36: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:08:36: INFO:     Waiting for application shutdown.
+2026-03-13T17:08:36: INFO:     Application shutdown complete.
+2026-03-13T17:08:41: 2026-03-13 17:08:41.824693: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:44: 2026-03-13 17:08:44.366629: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:46: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:08:46: 
+2026-03-13T17:08:49: INFO:     Started server process [16072]
+2026-03-13T17:08:49: INFO:     Waiting for application startup.
+2026-03-13T17:08:50: INFO:     Application startup complete.
+2026-03-13T17:08:50: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:08:50: INFO:     Waiting for application shutdown.
+2026-03-13T17:08:50: INFO:     Application shutdown complete.
+2026-03-13T17:08:55: 2026-03-13 17:08:55.010709: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:57: 2026-03-13 17:08:57.336310: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:08:59: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:08:59: 
+2026-03-13T17:09:02: INFO:     Started server process [4004]
+2026-03-13T17:09:02: INFO:     Waiting for application startup.
+2026-03-13T17:09:03: INFO:     Application startup complete.
+2026-03-13T17:09:03: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:09:03: INFO:     Waiting for application shutdown.
+2026-03-13T17:09:03: INFO:     Application shutdown complete.
+2026-03-13T17:09:08: 2026-03-13 17:09:08.102282: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:10: 2026-03-13 17:09:10.529957: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:12: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:09:12: 
+2026-03-13T17:09:15: INFO:     Started server process [15436]
+2026-03-13T17:09:15: INFO:     Waiting for application startup.
+2026-03-13T17:09:16: INFO:     Application startup complete.
+2026-03-13T17:09:16: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:09:16: INFO:     Waiting for application shutdown.
+2026-03-13T17:09:16: INFO:     Application shutdown complete.
+2026-03-13T17:09:21: 2026-03-13 17:09:21.154490: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:23: 2026-03-13 17:09:23.499332: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:25: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:09:25: 
+2026-03-13T17:09:28: INFO:     Started server process [2160]
+2026-03-13T17:09:28: INFO:     Waiting for application startup.
+2026-03-13T17:09:29: INFO:     Application startup complete.
+2026-03-13T17:09:29: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:09:29: INFO:     Waiting for application shutdown.
+2026-03-13T17:09:29: INFO:     Application shutdown complete.
+2026-03-13T17:09:34: 2026-03-13 17:09:34.021021: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:36: 2026-03-13 17:09:36.507517: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:38: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:09:38: 
+2026-03-13T17:09:41: INFO:     Started server process [21132]
+2026-03-13T17:09:41: INFO:     Waiting for application startup.
+2026-03-13T17:09:42: INFO:     Application startup complete.
+2026-03-13T17:09:42: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:09:42: INFO:     Waiting for application shutdown.
+2026-03-13T17:09:42: INFO:     Application shutdown complete.
+2026-03-13T17:09:47: 2026-03-13 17:09:47.206484: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:49: 2026-03-13 17:09:49.520137: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:09:51: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:09:51: 
+2026-03-13T17:09:54: INFO:     Started server process [18392]
+2026-03-13T17:09:54: INFO:     Waiting for application startup.
+2026-03-13T17:09:55: INFO:     Application startup complete.
+2026-03-13T17:09:55: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:09:55: INFO:     Waiting for application shutdown.
+2026-03-13T17:09:55: INFO:     Application shutdown complete.
+2026-03-13T17:10:00: 2026-03-13 17:10:00.068866: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:02: 2026-03-13 17:10:02.384801: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:04: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:10:04: 
+2026-03-13T17:10:07: INFO:     Started server process [17056]
+2026-03-13T17:10:07: INFO:     Waiting for application startup.
+2026-03-13T17:10:08: INFO:     Application startup complete.
+2026-03-13T17:10:08: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:10:08: INFO:     Waiting for application shutdown.
+2026-03-13T17:10:08: INFO:     Application shutdown complete.
+2026-03-13T17:10:13: 2026-03-13 17:10:13.079932: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:15: 2026-03-13 17:10:15.407018: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:17: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:10:17: 
+2026-03-13T17:10:20: INFO:     Started server process [21276]
+2026-03-13T17:10:20: INFO:     Waiting for application startup.
+2026-03-13T17:10:21: INFO:     Application startup complete.
+2026-03-13T17:10:21: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:10:21: INFO:     Waiting for application shutdown.
+2026-03-13T17:10:21: INFO:     Application shutdown complete.
+2026-03-13T17:10:26: 2026-03-13 17:10:26.067565: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:28: 2026-03-13 17:10:28.479674: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:30: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:10:30: 
+2026-03-13T17:10:33: INFO:     Started server process [21080]
+2026-03-13T17:10:33: INFO:     Waiting for application startup.
+2026-03-13T17:10:34: INFO:     Application startup complete.
+2026-03-13T17:10:34: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:10:34: INFO:     Waiting for application shutdown.
+2026-03-13T17:10:34: INFO:     Application shutdown complete.
+2026-03-13T17:10:39: 2026-03-13 17:10:39.453644: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:41: 2026-03-13 17:10:41.872001: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:43: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:10:43: 
+2026-03-13T17:10:46: INFO:     Started server process [1076]
+2026-03-13T17:10:46: INFO:     Waiting for application startup.
+2026-03-13T17:10:47: INFO:     Application startup complete.
+2026-03-13T17:10:47: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:10:47: INFO:     Waiting for application shutdown.
+2026-03-13T17:10:47: INFO:     Application shutdown complete.
+2026-03-13T17:10:52: 2026-03-13 17:10:52.443785: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:54: 2026-03-13 17:10:54.778528: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:10:56: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:10:56: 
+2026-03-13T17:10:59: INFO:     Started server process [11444]
+2026-03-13T17:10:59: INFO:     Waiting for application startup.
+2026-03-13T17:11:00: INFO:     Application startup complete.
+2026-03-13T17:11:00: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:11:00: INFO:     Waiting for application shutdown.
+2026-03-13T17:11:00: INFO:     Application shutdown complete.
+2026-03-13T17:11:05: 2026-03-13 17:11:05.583486: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:08: 2026-03-13 17:11:08.299788: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:11: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:11:11: 
+2026-03-13T17:11:14: INFO:     Started server process [3532]
+2026-03-13T17:11:14: INFO:     Waiting for application startup.
+2026-03-13T17:11:15: INFO:     Application startup complete.
+2026-03-13T17:11:15: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:11:15: INFO:     Waiting for application shutdown.
+2026-03-13T17:11:15: INFO:     Application shutdown complete.
+2026-03-13T17:11:21: 2026-03-13 17:11:21.069525: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:23: 2026-03-13 17:11:23.431204: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:25: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:11:25: 
+2026-03-13T17:11:28: INFO:     Started server process [16288]
+2026-03-13T17:11:28: INFO:     Waiting for application startup.
+2026-03-13T17:11:29: INFO:     Application startup complete.
+2026-03-13T17:11:29: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:11:29: INFO:     Waiting for application shutdown.
+2026-03-13T17:11:29: INFO:     Application shutdown complete.
+2026-03-13T17:11:34: 2026-03-13 17:11:34.538077: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:37: 2026-03-13 17:11:37.323908: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:39: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:11:39: 
+2026-03-13T17:11:42: INFO:     Started server process [20664]
+2026-03-13T17:11:42: INFO:     Waiting for application startup.
+2026-03-13T17:11:43: INFO:     Application startup complete.
+2026-03-13T17:11:43: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:11:43: INFO:     Waiting for application shutdown.
+2026-03-13T17:11:43: INFO:     Application shutdown complete.
+2026-03-13T17:11:48: 2026-03-13 17:11:48.397223: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:51: 2026-03-13 17:11:51.065109: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:11:53: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:11:53: 
+2026-03-13T17:11:56: INFO:     Started server process [15832]
+2026-03-13T17:11:56: INFO:     Waiting for application startup.
+2026-03-13T17:11:57: INFO:     Application startup complete.
+2026-03-13T17:11:57: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:11:57: INFO:     Waiting for application shutdown.
+2026-03-13T17:11:57: INFO:     Application shutdown complete.
+2026-03-13T17:12:02: 2026-03-13 17:12:02.440796: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:05: 2026-03-13 17:12:05.200318: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:08: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:12:08: 
+2026-03-13T17:12:11: INFO:     Started server process [14772]
+2026-03-13T17:12:11: INFO:     Waiting for application startup.
+2026-03-13T17:12:12: INFO:     Application startup complete.
+2026-03-13T17:12:12: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:12:12: INFO:     Waiting for application shutdown.
+2026-03-13T17:12:12: INFO:     Application shutdown complete.
+2026-03-13T17:12:17: 2026-03-13 17:12:17.127470: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:19: 2026-03-13 17:12:19.604286: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:21: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:12:21: 
+2026-03-13T17:12:24: INFO:     Started server process [16656]
+2026-03-13T17:12:24: INFO:     Waiting for application startup.
+2026-03-13T17:12:25: INFO:     Application startup complete.
+2026-03-13T17:12:25: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:12:25: INFO:     Waiting for application shutdown.
+2026-03-13T17:12:25: INFO:     Application shutdown complete.
+2026-03-13T17:12:30: 2026-03-13 17:12:30.117903: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:32: 2026-03-13 17:12:32.446066: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:34: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:12:34: 
+2026-03-13T17:12:37: INFO:     Started server process [15640]
+2026-03-13T17:12:37: INFO:     Waiting for application startup.
+2026-03-13T17:12:38: INFO:     Application startup complete.
+2026-03-13T17:12:38: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:12:38: INFO:     Waiting for application shutdown.
+2026-03-13T17:12:38: INFO:     Application shutdown complete.
+2026-03-13T17:12:43: 2026-03-13 17:12:43.148722: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:45: 2026-03-13 17:12:45.469537: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:47: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:12:47: 
+2026-03-13T17:12:50: INFO:     Started server process [5288]
+2026-03-13T17:12:50: INFO:     Waiting for application startup.
+2026-03-13T17:12:51: INFO:     Application startup complete.
+2026-03-13T17:12:51: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:12:51: INFO:     Waiting for application shutdown.
+2026-03-13T17:12:51: INFO:     Application shutdown complete.
+2026-03-13T17:12:56: 2026-03-13 17:12:56.569385: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:12:59: 2026-03-13 17:12:59.121069: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:01: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:13:01: 
+2026-03-13T17:13:04: INFO:     Started server process [8152]
+2026-03-13T17:13:04: INFO:     Waiting for application startup.
+2026-03-13T17:13:05: INFO:     Application startup complete.
+2026-03-13T17:13:05: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:13:05: INFO:     Waiting for application shutdown.
+2026-03-13T17:13:05: INFO:     Application shutdown complete.
+2026-03-13T17:13:10: 2026-03-13 17:13:10.789198: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:13: 2026-03-13 17:13:13.195014: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:15: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:13:15: 
+2026-03-13T17:13:18: INFO:     Started server process [14028]
+2026-03-13T17:13:18: INFO:     Waiting for application startup.
+2026-03-13T17:13:19: INFO:     Application startup complete.
+2026-03-13T17:13:19: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:13:19: INFO:     Waiting for application shutdown.
+2026-03-13T17:13:19: INFO:     Application shutdown complete.
+2026-03-13T17:13:24: 2026-03-13 17:13:24.879706: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:28: 2026-03-13 17:13:28.210473: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:30: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:13:30: 
+2026-03-13T17:13:33: INFO:     Started server process [16536]
+2026-03-13T17:13:33: INFO:     Waiting for application startup.
+2026-03-13T17:13:34: INFO:     Application startup complete.
+2026-03-13T17:13:34: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:13:34: INFO:     Waiting for application shutdown.
+2026-03-13T17:13:34: INFO:     Application shutdown complete.
+2026-03-13T17:13:41: 2026-03-13 17:13:41.012745: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:43: 2026-03-13 17:13:43.585154: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:46: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:13:46: 
+2026-03-13T17:13:49: INFO:     Started server process [12232]
+2026-03-13T17:13:49: INFO:     Waiting for application startup.
+2026-03-13T17:13:49: INFO:     Application startup complete.
+2026-03-13T17:13:49: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:13:49: INFO:     Waiting for application shutdown.
+2026-03-13T17:13:49: INFO:     Application shutdown complete.
+2026-03-13T17:13:55: 2026-03-13 17:13:55.055828: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:13:57: 2026-03-13 17:13:57.591723: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:00: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:14:00: 
+2026-03-13T17:14:04: INFO:     Started server process [18136]
+2026-03-13T17:14:04: INFO:     Waiting for application startup.
+2026-03-13T17:14:06: INFO:     Application startup complete.
+2026-03-13T17:14:06: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:14:06: INFO:     Waiting for application shutdown.
+2026-03-13T17:14:06: INFO:     Application shutdown complete.
+2026-03-13T17:14:12: 2026-03-13 17:14:12.106366: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:14: 2026-03-13 17:14:14.971201: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:18: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:14:18: 
+2026-03-13T17:14:21: INFO:     Started server process [12592]
+2026-03-13T17:14:21: INFO:     Waiting for application startup.
+2026-03-13T17:14:22: INFO:     Application startup complete.
+2026-03-13T17:14:22: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:14:22: INFO:     Waiting for application shutdown.
+2026-03-13T17:14:22: INFO:     Application shutdown complete.
+2026-03-13T17:14:28: 2026-03-13 17:14:28.150972: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:31: 2026-03-13 17:14:31.087471: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:34: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:14:34: 
+2026-03-13T17:14:37: INFO:     Started server process [19584]
+2026-03-13T17:14:37: INFO:     Waiting for application startup.
+2026-03-13T17:14:38: INFO:     Application startup complete.
+2026-03-13T17:14:38: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:14:38: INFO:     Waiting for application shutdown.
+2026-03-13T17:14:38: INFO:     Application shutdown complete.
+2026-03-13T17:14:43: 2026-03-13 17:14:43.917479: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:47: 2026-03-13 17:14:47.079589: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:14:50: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:14:50: 
+2026-03-13T17:14:53: INFO:     Started server process [8644]
+2026-03-13T17:14:53: INFO:     Waiting for application startup.
+2026-03-13T17:14:54: INFO:     Application startup complete.
+2026-03-13T17:14:54: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:14:54: INFO:     Waiting for application shutdown.
+2026-03-13T17:14:54: INFO:     Application shutdown complete.
+2026-03-13T17:14:59: 2026-03-13 17:14:59.745943: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:15:02: 2026-03-13 17:15:02.367596: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:15:04: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:15:04: 
+2026-03-13T17:15:09: INFO:     Started server process [11984]
+2026-03-13T17:15:09: INFO:     Waiting for application startup.
+2026-03-13T17:15:10: INFO:     Application startup complete.
+2026-03-13T17:15:10: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:15:10: INFO:     Waiting for application shutdown.
+2026-03-13T17:15:10: INFO:     Application shutdown complete.
+2026-03-13T17:15:16: 2026-03-13 17:15:16.599326: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:15:19: 2026-03-13 17:15:19.695479: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:15:22: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:15:22: 
+2026-03-13T17:15:25: INFO:     Started server process [624]
+2026-03-13T17:15:25: INFO:     Waiting for application startup.
+2026-03-13T17:15:26: INFO:     Application startup complete.
+2026-03-13T17:15:26: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:15:26: INFO:     Waiting for application shutdown.
+2026-03-13T17:15:26: INFO:     Application shutdown complete.
+2026-03-13T17:15:32: 2026-03-13 17:15:32.630016: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:15:37: 2026-03-13 17:15:37.025389: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:15:41: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:15:41: 
+2026-03-13T17:15:46: INFO:     Started server process [16712]
+2026-03-13T17:15:46: INFO:     Waiting for application startup.
+2026-03-13T17:15:47: INFO:     Application startup complete.
+2026-03-13T17:15:47: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:15:47: INFO:     Waiting for application shutdown.
+2026-03-13T17:15:47: INFO:     Application shutdown complete.
+2026-03-13T17:15:54: 2026-03-13 17:15:54.338318: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:16:00: 2026-03-13 17:16:00.576089: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:16:06: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:16:06: 
+2026-03-13T17:16:12: INFO:     Started server process [18844]
+2026-03-13T17:16:12: INFO:     Waiting for application startup.
+2026-03-13T17:16:13: INFO:     Application startup complete.
+2026-03-13T17:16:13: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:16:13: INFO:     Waiting for application shutdown.
+2026-03-13T17:16:13: INFO:     Application shutdown complete.
+2026-03-13T17:16:20: 2026-03-13 17:16:20.509909: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:16:26: 2026-03-13 17:16:26.081141: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:16:31: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:16:31: 
+2026-03-13T17:16:39: INFO:     Started server process [1064]
+2026-03-13T17:16:39: INFO:     Waiting for application startup.
+2026-03-13T17:16:41: INFO:     Application startup complete.
+2026-03-13T17:16:41: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:16:41: INFO:     Waiting for application shutdown.
+2026-03-13T17:16:41: INFO:     Application shutdown complete.
+2026-03-13T17:16:52: 2026-03-13 17:16:52.547984: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:16:56: 2026-03-13 17:16:56.060123: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:16:58: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:16:58: 
+2026-03-13T17:17:02: INFO:     Started server process [13564]
+2026-03-13T17:17:02: INFO:     Waiting for application startup.
+2026-03-13T17:17:02: INFO:     Application startup complete.
+2026-03-13T17:17:02: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:17:02: INFO:     Waiting for application shutdown.
+2026-03-13T17:17:02: INFO:     Application shutdown complete.
+2026-03-13T17:17:08: 2026-03-13 17:17:08.181361: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:17:10: 2026-03-13 17:17:10.892499: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:17:13: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:17:13: 
+2026-03-13T17:17:16: INFO:     Started server process [18944]
+2026-03-13T17:17:16: INFO:     Waiting for application startup.
+2026-03-13T17:17:17: INFO:     Application startup complete.
+2026-03-13T17:17:17: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:17:17: INFO:     Waiting for application shutdown.
+2026-03-13T17:17:17: INFO:     Application shutdown complete.
+2026-03-13T17:17:22: 2026-03-13 17:17:22.653062: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:17:25: 2026-03-13 17:17:25.232418: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:17:28: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:17:28: 
+2026-03-13T17:17:31: INFO:     Started server process [4520]
+2026-03-13T17:17:31: INFO:     Waiting for application startup.
+2026-03-13T17:17:31: INFO:     Application startup complete.
+2026-03-13T17:17:31: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:17:31: INFO:     Waiting for application shutdown.
+2026-03-13T17:17:31: INFO:     Application shutdown complete.
+2026-03-13T17:17:37: 2026-03-13 17:17:37.817225: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:17:44: 2026-03-13 17:17:44.404561: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:17:51: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:17:51: 
+2026-03-13T17:17:54: INFO:     Started server process [20944]
+2026-03-13T17:17:54: INFO:     Waiting for application startup.
+2026-03-13T17:17:55: INFO:     Application startup complete.
+2026-03-13T17:17:55: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:17:55: INFO:     Waiting for application shutdown.
+2026-03-13T17:17:55: INFO:     Application shutdown complete.
+2026-03-13T17:18:00: 2026-03-13 17:18:00.868113: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:03: 2026-03-13 17:18:03.760251: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:06: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:18:06: 
+2026-03-13T17:18:09: INFO:     Started server process [17052]
+2026-03-13T17:18:09: INFO:     Waiting for application startup.
+2026-03-13T17:18:10: INFO:     Application startup complete.
+2026-03-13T17:18:10: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:18:10: INFO:     Waiting for application shutdown.
+2026-03-13T17:18:10: INFO:     Application shutdown complete.
+2026-03-13T17:18:15: 2026-03-13 17:18:15.699296: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:18: 2026-03-13 17:18:18.343631: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:20: 2026-03-13 17:18:20.246557: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2026-03-13T17:18:20: To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-03-13T17:18:21: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:18:21: 
+2026-03-13T17:18:25: INFO:     Started server process [15580]
+2026-03-13T17:18:25: INFO:     Waiting for application startup.
+2026-03-13T17:18:26: Exception ignored in: <_io.BufferedReader>
+2026-03-13T17:18:26: Traceback (most recent call last):
+2026-03-13T17:18:26:   File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\lz4\frame\__init__.py", line 753, in flush
+2026-03-13T17:18:26:     self._fp.flush()
+2026-03-13T17:18:26: I/O operation on closed file.
+2026-03-13T17:18:26: Exception ignored in: <_io.BufferedReader>
+2026-03-13T17:18:26: Traceback (most recent call last):
+2026-03-13T17:18:26:   File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\lz4\frame\__init__.py", line 753, in flush
+2026-03-13T17:18:26:     self._fp.flush()
+2026-03-13T17:18:26: 
+2026-03-13T17:18:26: ValueError: I/O operation on closed file.
+2026-03-13T17:18:26: Exception ignored in: <_io.BufferedReader>
+2026-03-13T17:18:26: Traceback (most recent call last):
+2026-03-13T17:18:26:   File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\lz4\frame\__init__.py", line 753, in flush
+2026-03-13T17:18:26:     self._fp.flush()
+2026-03-13T17:18:26: ValueError: I/O operation on closed file.
+2026-03-13T17:18:26: INFO:     Application startup complete.
+2026-03-13T17:18:26: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:18:26: INFO:     Waiting for application shutdown.
+2026-03-13T17:18:26: INFO:     Application shutdown complete.
+2026-03-13T17:18:27: 2026-03-13 17:18:27.738924: I tensorflow/core/framework/local_rendezvous.cc:407] Local rendezvous is aborting with status: INVALID_ARGUMENT: Must provide as many biases as the last dimension of the input tensor: [32] vs. [0,48,48,3]
+2026-03-13T17:18:33: 2026-03-13 17:18:33.295256: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:37: 2026-03-13 17:18:37.698430: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:42: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:18:42: 
+2026-03-13T17:18:45: INFO:     Started server process [6660]
+2026-03-13T17:18:45: INFO:     Waiting for application startup.
+2026-03-13T17:18:46: INFO:     Application startup complete.
+2026-03-13T17:18:46: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:18:46: INFO:     Waiting for application shutdown.
+2026-03-13T17:18:46: INFO:     Application shutdown complete.
+2026-03-13T17:18:51: 2026-03-13 17:18:51.895875: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:54: 2026-03-13 17:18:54.457316: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:18:56: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:18:56: 
+2026-03-13T17:18:59: INFO:     Started server process [2760]
+2026-03-13T17:18:59: INFO:     Waiting for application startup.
+2026-03-13T17:19:00: INFO:     Application startup complete.
+2026-03-13T17:19:00: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:19:00: INFO:     Waiting for application shutdown.
+2026-03-13T17:19:00: INFO:     Application shutdown complete.
+2026-03-13T17:19:06: 2026-03-13 17:19:06.971088: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:10: 2026-03-13 17:19:10.275876: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:13: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:19:13: 
+2026-03-13T17:19:16: INFO:     Started server process [16168]
+2026-03-13T17:19:16: INFO:     Waiting for application startup.
+2026-03-13T17:19:17: INFO:     Application startup complete.
+2026-03-13T17:19:17: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:19:17: INFO:     Waiting for application shutdown.
+2026-03-13T17:19:17: INFO:     Application shutdown complete.
+2026-03-13T17:19:22: 2026-03-13 17:19:22.744875: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:25: 2026-03-13 17:19:25.350795: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:27: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:19:27: 
+2026-03-13T17:19:30: INFO:     Started server process [1180]
+2026-03-13T17:19:30: INFO:     Waiting for application startup.
+2026-03-13T17:19:31: INFO:     Application startup complete.
+2026-03-13T17:19:31: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:19:31: INFO:     Waiting for application shutdown.
+2026-03-13T17:19:31: INFO:     Application shutdown complete.
+2026-03-13T17:19:31: 2026-03-13 17:19:31.987946: I tensorflow/core/framework/local_rendezvous.cc:407] Local rendezvous is aborting with status: INVALID_ARGUMENT: Must provide as many biases as the last dimension of the input tensor: [32] vs. [0,48,48,3]
+2026-03-13T17:19:37: 2026-03-13 17:19:37.807320: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:41: 2026-03-13 17:19:41.055124: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:43: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:19:43: 
+2026-03-13T17:19:46: INFO:     Started server process [1008]
+2026-03-13T17:19:46: INFO:     Waiting for application startup.
+2026-03-13T17:19:47: INFO:     Application startup complete.
+2026-03-13T17:19:47: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:19:47: INFO:     Waiting for application shutdown.
+2026-03-13T17:19:47: INFO:     Application shutdown complete.
+2026-03-13T17:19:52: 2026-03-13 17:19:52.599501: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:55: 2026-03-13 17:19:55.140852: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:19:57: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:19:57: 
+2026-03-13T17:20:00: INFO:     Started server process [16208]
+2026-03-13T17:20:00: INFO:     Waiting for application startup.
+2026-03-13T17:20:01: INFO:     Application startup complete.
+2026-03-13T17:20:01: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:20:01: INFO:     Waiting for application shutdown.
+2026-03-13T17:20:01: INFO:     Application shutdown complete.
+2026-03-13T17:20:06: 2026-03-13 17:20:06.362806: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:08: 2026-03-13 17:20:08.902669: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:11: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:20:11: 
+2026-03-13T17:20:14: INFO:     Started server process [12992]
+2026-03-13T17:20:14: INFO:     Waiting for application startup.
+2026-03-13T17:20:15: INFO:     Application startup complete.
+2026-03-13T17:20:15: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:20:15: INFO:     Waiting for application shutdown.
+2026-03-13T17:20:15: INFO:     Application shutdown complete.
+2026-03-13T17:20:20: 2026-03-13 17:20:20.436268: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:22: 2026-03-13 17:20:22.991830: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:25: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:20:25: 
+2026-03-13T17:20:28: INFO:     Started server process [13896]
+2026-03-13T17:20:28: INFO:     Waiting for application startup.
+2026-03-13T17:20:29: INFO:     Application startup complete.
+2026-03-13T17:20:29: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:20:29: INFO:     Waiting for application shutdown.
+2026-03-13T17:20:29: INFO:     Application shutdown complete.
+2026-03-13T17:20:34: 2026-03-13 17:20:34.175277: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:36: 2026-03-13 17:20:36.708065: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:39: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:20:39: 
+2026-03-13T17:20:42: INFO:     Started server process [17896]
+2026-03-13T17:20:42: INFO:     Waiting for application startup.
+2026-03-13T17:20:43: INFO:     Application startup complete.
+2026-03-13T17:20:43: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:20:43: INFO:     Waiting for application shutdown.
+2026-03-13T17:20:43: INFO:     Application shutdown complete.
+2026-03-13T17:20:48: 2026-03-13 17:20:48.594921: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:51: 2026-03-13 17:20:51.113089: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:20:53: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:20:53: 
+2026-03-13T17:20:56: INFO:     Started server process [9520]
+2026-03-13T17:20:56: INFO:     Waiting for application startup.
+2026-03-13T17:20:57: INFO:     Application startup complete.
+2026-03-13T17:20:57: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:20:57: INFO:     Waiting for application shutdown.
+2026-03-13T17:20:57: INFO:     Application shutdown complete.
+2026-03-13T17:21:02: 2026-03-13 17:21:02.460843: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:05: 2026-03-13 17:21:05.083003: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:07: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:21:07: 
+2026-03-13T17:21:10: INFO:     Started server process [20168]
+2026-03-13T17:21:10: INFO:     Waiting for application startup.
+2026-03-13T17:21:11: INFO:     Application startup complete.
+2026-03-13T17:21:11: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:21:11: INFO:     Waiting for application shutdown.
+2026-03-13T17:21:11: INFO:     Application shutdown complete.
+2026-03-13T17:21:16: 2026-03-13 17:21:16.613002: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:19: 2026-03-13 17:21:19.148356: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:21: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:21:21: 
+2026-03-13T17:21:24: INFO:     Started server process [14348]
+2026-03-13T17:21:24: INFO:     Waiting for application startup.
+2026-03-13T17:21:25: INFO:     Application startup complete.
+2026-03-13T17:21:25: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:21:25: INFO:     Waiting for application shutdown.
+2026-03-13T17:21:25: INFO:     Application shutdown complete.
+2026-03-13T17:21:30: 2026-03-13 17:21:30.658404: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:33: 2026-03-13 17:21:33.209215: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:35: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:21:35: 
+2026-03-13T17:21:38: INFO:     Started server process [3564]
+2026-03-13T17:21:38: INFO:     Waiting for application startup.
+2026-03-13T17:21:39: INFO:     Application startup complete.
+2026-03-13T17:21:39: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:21:39: INFO:     Waiting for application shutdown.
+2026-03-13T17:21:39: INFO:     Application shutdown complete.
+2026-03-13T17:21:44: 2026-03-13 17:21:44.802226: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:47: 2026-03-13 17:21:47.305599: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:21:49: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:21:49: 
+2026-03-13T17:21:52: INFO:     Started server process [19072]
+2026-03-13T17:21:52: INFO:     Waiting for application startup.
+2026-03-13T17:21:53: INFO:     Application startup complete.
+2026-03-13T17:21:53: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:21:53: INFO:     Waiting for application shutdown.
+2026-03-13T17:21:53: INFO:     Application shutdown complete.
+2026-03-13T17:21:58: 2026-03-13 17:21:58.677446: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:22:01: 2026-03-13 17:22:01.207516: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:22:03: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:22:03: 
+2026-03-13T17:22:06: INFO:     Started server process [17128]
+2026-03-13T17:22:06: INFO:     Waiting for application startup.
+2026-03-13T17:22:07: INFO:     Application startup complete.
+2026-03-13T17:22:07: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:22:07: INFO:     Waiting for application shutdown.
+2026-03-13T17:22:07: INFO:     Application shutdown complete.
+2026-03-13T17:22:12: 2026-03-13 17:22:12.528690: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:22:15: 2026-03-13 17:22:15.059742: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:22:17: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:22:17: 
+2026-03-13T17:22:20: INFO:     Started server process [10032]
+2026-03-13T17:22:20: INFO:     Waiting for application startup.
+2026-03-13T17:22:21: INFO:     Application startup complete.
+2026-03-13T17:22:21: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:22:21: INFO:     Waiting for application shutdown.
+2026-03-13T17:22:21: INFO:     Application shutdown complete.
+2026-03-13T17:22:30: 2026-03-13 17:22:30.570374: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:22:36: 2026-03-13 17:22:36.803653: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:22:41: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:22:41: 
+2026-03-13T17:22:49: INFO:     Started server process [15048]
+2026-03-13T17:22:49: INFO:     Waiting for application startup.
+2026-03-13T17:22:54: INFO:     Application startup complete.
+2026-03-13T17:22:57: ERROR:    [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8001): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+2026-03-13T17:22:57: INFO:     Waiting for application shutdown.
+2026-03-13T17:22:57: INFO:     Application shutdown complete.
+2026-03-13T17:23:22: 2026-03-13 17:23:22.386222: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:23:31: 2026-03-13 17:23:31.674618: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-13T17:23:37: WARNING:tensorflow:From C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+2026-03-13T17:23:37: 

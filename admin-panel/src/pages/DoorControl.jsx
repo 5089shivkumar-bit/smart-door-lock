@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
-const SECTION_STYLE = "bg-white/[0.02] border border-white/[0.05] rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-2xl overflow-hidden relative group transition-all duration-500 hover:border-white/10";
+const SECTION_STYLE = "bg-white/[0.02] border border-white/[0.05] rounded-[2rem] md:rounded-3xl p-5 md:p-8 backdrop-blur-xl shadow-2xl overflow-hidden relative group transition-all duration-500 hover:border-white/10";
 
 export default function DoorControl() {
     const [doorState, setDoorState] = useState({
@@ -117,10 +117,10 @@ export default function DoorControl() {
             {/* Header with Live Badge */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-2">Door Manager <span className="text-blue-500">v2.1</span></h1>
-                    <div className="flex items-center gap-4">
-                        <p className="text-slate-500 text-xs font-black uppercase tracking-[0.3em]">Hardware Ecosystem Control</p>
-                        <div className="h-px w-12 bg-white/10" />
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter mb-2">Door Manager <span className="text-blue-500">v2.1</span></h1>
+                    <div className="flex flex-wrap items-center gap-2 md:gap-4">
+                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em]">Hardware Ecosystem Control</p>
+                        <div className="hidden md:block h-px w-12 bg-white/10" />
                         <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest
                             ${doorState.isConnected ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
                                 doorState.isOnline ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
@@ -154,14 +154,14 @@ export default function DoorControl() {
                         <div className="relative z-10 flex flex-col lg:flex-row gap-12 items-center">
                             {/* Visual Lock Indicator */}
                             <div className="relative flex-shrink-0">
-                                <div className={`w-48 h-48 rounded-full flex items-center justify-center border-4 transition-all duration-700
+                                <div className={`w-32 h-32 md:w-48 md:h-48 rounded-full flex items-center justify-center border-4 transition-all duration-700
                                     ${doorState.isLocked
                                         ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400 shadow-[0_0_60px_rgba(16,185,129,0.1)]'
                                         : 'bg-blue-600/10 border-blue-500/30 text-blue-400 shadow-[0_0_80px_rgba(59,130,246,0.2)]'}`}>
-                                    {doorState.isLocked ? <Lock className="w-20 h-20" /> : <Unlock className="w-20 h-20" />}
+                                    {doorState.isLocked ? <Lock className="w-12 h-12 md:w-20 md:h-20" /> : <Unlock className="w-12 h-12 md:w-20 md:h-20" />}
                                 </div>
-                                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-6 py-2 rounded-2xl bg-black/60 border border-white/10 backdrop-blur-md">
-                                    <span className={`text-xl font-black tracking-tighter uppercase ${doorState.isLocked ? 'text-emerald-400' : 'text-blue-400'}`}>
+                                <div className="absolute -bottom-2 md:-bottom-4 left-1/2 -translate-x-1/2 px-4 md:px-6 py-1 md:py-2 rounded-xl md:rounded-2xl bg-black/60 border border-white/10 backdrop-blur-md">
+                                    <span className={`text-sm md:text-xl font-black tracking-tighter uppercase ${doorState.isLocked ? 'text-emerald-400' : 'text-blue-400'}`}>
                                         {doorState.isLocked ? 'Locked' : 'Unlocked'}
                                     </span>
                                 </div>
@@ -206,27 +206,27 @@ export default function DoorControl() {
                         <button
                             onClick={() => handleAction('Unlock', apiService.unlockDoor)}
                             disabled={doorState.loading || !doorState.isOnline || !doorState.isLocked}
-                            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:grayscale p-8 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all duration-300 shadow-xl"
+                            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:grayscale p-6 md:p-8 rounded-[2rem] md:rounded-3xl flex flex-col items-center justify-center gap-4 transition-all duration-300 shadow-xl"
                         >
-                            <Unlock className="w-10 h-10 text-white" />
-                            <span className="text-lg font-black text-white tracking-tighter uppercase whitespace-nowrap">Unlock Door</span>
+                            <Unlock className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                            <span className="text-base md:text-lg font-black text-white tracking-tighter uppercase whitespace-nowrap">Unlock Door</span>
                         </button>
 
                         <button
                             onClick={() => handleAction('Lock', apiService.lockDoor)}
                             disabled={doorState.loading || !doorState.isOnline || doorState.isLocked}
-                            className="bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:grayscale p-8 rounded-3xl border border-white/10 flex flex-col items-center justify-center gap-4 transition-all duration-300 shadow-xl"
+                            className="bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:grayscale p-6 md:p-8 rounded-[2rem] md:rounded-3xl border border-white/10 flex flex-col items-center justify-center gap-4 transition-all duration-300 shadow-xl"
                         >
-                            <Lock className="w-10 h-10 text-white" />
-                            <span className="text-lg font-black text-white tracking-tighter uppercase whitespace-nowrap">Relock Door</span>
+                            <Lock className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                            <span className="text-base md:text-lg font-black text-white tracking-tighter uppercase whitespace-nowrap">Relock Door</span>
                         </button>
 
                         <button
                             onClick={() => setShowEmergencyModal(true)}
-                            className="bg-red-600/10 hover:bg-red-600 border border-red-500/30 text-red-500 hover:text-white p-8 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all duration-500 shadow-xl"
+                            className="bg-red-600/10 hover:bg-red-600 border border-red-500/30 text-red-500 hover:text-white p-6 md:p-8 rounded-[2rem] md:rounded-3xl flex flex-col items-center justify-center gap-4 transition-all duration-500 shadow-xl"
                         >
-                            <AlertTriangle className="w-10 h-10" />
-                            <span className="text-lg font-black tracking-tighter uppercase whitespace-nowrap">Emergency</span>
+                            <AlertTriangle className="w-8 h-8 md:w-10 md:h-10" />
+                            <span className="text-base md:text-lg font-black tracking-tighter uppercase whitespace-nowrap">Emergency</span>
                         </button>
                     </div>
 
@@ -237,17 +237,18 @@ export default function DoorControl() {
                             <h2 className="text-xl font-black text-white tracking-tight">Hardware Diagnostics</h2>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {[
-                                { name: 'Test Relay', icon: RotateCcw, color: 'text-indigo-400', api: apiService.testRelay },
+                            {[{ name: 'Test Relay', icon: RotateCcw, color: 'text-indigo-400', api: apiService.testRelay },
                                 { name: 'Refresh Status', icon: RefreshCw, color: 'text-blue-400', api: fetchStatus },
                                 { name: 'Ping Hardware', icon: Bluetooth, color: 'text-emerald-400', api: () => apiService.getBleStatus() },
                                 { name: 'System Reset', icon: Zap, color: 'text-rose-400', api: () => showAlert('info', 'Reset request sent to service.') }
-                            ].map((tool, i) => (
-                                <button key={i} onClick={tool.api} className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
-                                    <tool.icon className={`w-6 h-6 ${tool.color} group-hover:scale-110 transition-transform`} />
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{tool.name}</span>
-                                </button>
-                            ))}
+                            ].map((tool, i) => 
+                                tool.api && (
+                                    <button key={i} onClick={tool.api} className="flex flex-col items-center gap-3 p-4 md:p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
+                                        <tool.icon className={`w-5 h-5 md:w-6 md:h-6 ${tool.color} group-hover:scale-110 transition-transform`} />
+                                        <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{tool.name}</span>
+                                    </button>
+                                )
+                            )}
                         </div>
                     </div>
                 </div>

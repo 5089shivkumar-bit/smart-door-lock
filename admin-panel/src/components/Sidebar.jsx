@@ -30,17 +30,21 @@ export default function Sidebar({ isOpen, onClose }) {
     return (
         <aside className={`fixed left-0 top-0 bottom-0 w-[240px] bg-[#111827] border-r border-white/5 flex flex-col z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
             {/* Logo Section */}
-            <div className="p-6 mb-2 flex items-center justify-between">
+            <div className="p-6 mb-2 flex items-center justify-between md:justify-start">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
+                    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
                         <Lock className="w-5 h-5 text-white" />
                     </div>
-                    <h1 className="font-bold text-white tracking-tight text-xl">
+                    <h1 className="font-bold text-white tracking-tight text-2xl">
                         Aura<span className="text-blue-500">Lock</span>
                     </h1>
                 </div>
-                <button onClick={onClose} className="md:hidden p-1 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 active:scale-95 transition-transform">
-                    <X className="w-5 h-5" />
+                <button 
+                    onClick={onClose} 
+                    className="md:hidden p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 active:scale-95 transition-all"
+                    aria-label="Close menu"
+                >
+                    <X className="w-6 h-6" />
                 </button>
             </div>
 

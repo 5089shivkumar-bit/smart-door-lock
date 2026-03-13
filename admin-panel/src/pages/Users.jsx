@@ -4,8 +4,9 @@ import {
     Search, Trash2, Edit2, UserPlus, X, Save,
     ScanFace, Fingerprint, AlertTriangle, UserX, UserCheck,
     Briefcase, CheckCircle2, Camera, RefreshCw, Loader2,
-    ShieldCheck, AlertCircle, Upload
+    ShieldCheck, AlertCircle, Upload, Smartphone
 } from 'lucide-react';
+import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 const DEPARTMENTS = ['Engineering', 'Operations', 'Security', 'Management', 'HR', 'General'];
 const EMPTY_FORM = { name: '', email: '', employee_id: '', department: 'Engineering', role: 'employee' };
@@ -49,9 +50,9 @@ function useToast() {
 function Modal({ open, onClose, children, maxW = 'max-w-lg' }) {
     if (!open) return null;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={onClose}>
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-            <div className={`relative z-10 w-full ${maxW} bg-[#0a0f1e] border border-white/[0.08] rounded-3xl shadow-2xl p-8`}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4" onClick={onClose}>
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+            <div className={`relative z-10 w-full ${maxW} bg-[#0a0f1e] border border-white/[0.08] rounded-3xl shadow-2xl p-5 md:p-8 max-h-[90vh] overflow-y-auto`}
                 onClick={e => e.stopPropagation()}>
                 {children}
             </div>
@@ -91,16 +92,21 @@ function DeleteDialog({ user, onConfirm, onCancel }) {
 }
 
 // ── Add / Edit Modal ──────────────────────────────────────────────────────────
-function EmployeeModal({ mode, initialData, onSave, onClose }) {
+function EmployeeModal({ mode, initialData, onSave, onClose, onEnrollFace, onEnrollFP }) {
     const [form, setForm] = useState(initialData || EMPTY_FORM);
     const [saving, setSaving] = useState(false);
     const [err, setErr] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e, enrollType = null) => {
+        if (e) e.preventDefault();
         if (!form.name.trim() || !form.email.trim()) { setErr('Name and email are required.'); return; }
         setSaving(true); setErr('');
-        try { await onSave(form); onClose(); }
+        try { 
+            const savedUser = await onSave(form); 
+            if (!enrollType) onClose(); 
+            if (enrollType === 'face' && onEnrollFace) { onClose(); onEnrollFace(savedUser || initialData); }
+            if (enrollType === 'fp' && onEnrollFP) { onClose(); onEnrollFP(savedUser || initialData); }
+        }
         catch (error) { setErr(error?.response?.data?.message || error.message || 'Save failed.'); }
         finally { setSaving(false); }
     };
@@ -122,7 +128,7 @@ function EmployeeModal({ mode, initialData, onSave, onClose }) {
                 <h2 className="text-lg font-black text-white">{mode === 'add' ? 'Add Employee' : 'Edit Employee'}</h2>
                 <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={e => handleSubmit(e)} className="space-y-4">
                 {field('Full Name', 'name', 'text', 'e.g. Rahul Sharma')}
                 {field('Email', 'email', 'email', 'e.g. rahul@company.com')}
                 {field('Employee ID', 'employee_id', 'text', 'e.g. EMP-001')}
@@ -136,6 +142,7 @@ function EmployeeModal({ mode, initialData, onSave, onClose }) {
                     </select>
                 </div>
                 {err && <p className="text-xs font-bold text-red-400 bg-red-500/10 px-3 py-2 rounded-xl border border-red-500/20">{err}</p>}
+                
                 <div className="flex gap-3 pt-2">
                     <button type="button" onClick={onClose}
                         className="flex-1 py-3 rounded-xl border border-white/10 text-slate-400 hover:text-white text-sm font-bold transition-all">
@@ -144,8 +151,24 @@ function EmployeeModal({ mode, initialData, onSave, onClose }) {
                     <button type="submit" disabled={saving}
                         className="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-black transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
                         <Save className="w-4 h-4" />
-                        {saving ? 'Saving...' : mode === 'add' ? 'Add Employee' : 'Save Changes'}
+                        {saving ? 'Saving...' : mode === 'add' ? 'Save Only' : 'Save Changes'}
                     </button>
+                </div>
+
+                <div className="pt-4 mt-2 border-t border-white/[0.04]">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-3">Biometrics Setup</label>
+                    <div className="flex gap-3">
+                        <button type="button" onClick={(e) => handleSubmit(e, 'face')} disabled={saving}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-400 text-[13px] font-bold transition-all">
+                            <ScanFace className="w-4 h-4" /> 
+                            {mode === 'edit' && initialData?.face_registered ? 'Update Face' : 'Add Face'}
+                        </button>
+                        <button type="button" onClick={(e) => handleSubmit(e, 'fp')} disabled={saving}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-violet-500/10 border border-violet-500/20 hover:bg-violet-500/20 text-violet-400 text-[13px] font-bold transition-all">
+                            <Fingerprint className="w-4 h-4" /> 
+                            {mode === 'edit' && initialData?.fingerprint_registered ? 'Update Finger' : 'Add Finger'}
+                        </button>
+                    </div>
                 </div>
             </form>
         </Modal>
@@ -177,13 +200,46 @@ function FaceEnrollModal({ user, onDone, onClose }) {
     const startCamera = useCallback(async () => {
         setCamError('');
         try {
-            const s = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } });
+            // Check if we are in a secure context or localhost, which is required for getUserMedia
+            const isSecure = window.isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            
+            if (!navigator.mediaDevices?.getUserMedia && !isSecure) {
+                setCamError('Camera requires HTTPS or Localhost. Please use the "Upload Photo" button below, which will open your camera directly.');
+                return;
+            }
+
+            const s = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 640 }, 
+                    height: { ideal: 480 }, 
+                    facingMode: 'user' 
+                } 
+            });
             streamRef.current = s;
             if (videoRef.current) videoRef.current.srcObject = s;
-        } catch {
-            setCamError('Camera access denied or not available in this browser.');
+        } catch (err) {
+            console.error("Camera Error:", err);
+            setCamError('Browser camera blocked. Use "Direct Capture" / "Upload" below.');
         }
     }, []);
+
+    const captureWithCapacitor = async () => {
+        try {
+            setLoading(true);
+            const image = await CapCamera.getPhoto({
+                quality: 90,
+                allowEditing: false,
+                resultType: CameraResultType.DataUrl,
+                source: CameraSource.Camera
+            });
+            setCaptured(image.dataUrl);
+            stopCamera();
+        } catch (err) {
+            console.warn("Capacitor Camera cancelled or failed:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const stopCamera = useCallback(() => {
         streamRef.current?.getTracks().forEach(t => t.stop());
@@ -286,16 +342,29 @@ function FaceEnrollModal({ user, onDone, onClose }) {
                     </div>
 
                     {!captured ? (
-                        <div className="flex gap-2">
-                            <button onClick={capture} disabled={!!camError || loading}
-                                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[13px] font-black rounded-xl transition-all">
-                                <Camera className="w-4 h-4" /> Capture Photo
-                            </button>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex gap-2">
+                                <button onClick={capture} disabled={!!camError || loading}
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[13px] font-black rounded-xl transition-all">
+                                    <Camera className="w-4 h-4" /> Snapshot
+                                </button>
+                                <button onClick={captureWithCapacitor} disabled={loading}
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-[13px] font-black rounded-xl transition-all">
+                                    <Smartphone className="w-4 h-4" /> Direct Cam
+                                </button>
+                            </div>
                             <button onClick={() => fileInputRef.current?.click()} disabled={loading}
-                                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-[13px] font-black rounded-xl transition-all">
-                                <Upload className="w-4 h-4" /> Upload Photo
+                                className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white text-[13px] font-black rounded-xl transition-all border border-white/5">
+                                <Upload className="w-4 h-4" /> Upload / Mobile Capture
                             </button>
-                            <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
+                            <input 
+                                type="file" 
+                                ref={fileInputRef} 
+                                onChange={handleFileUpload} 
+                                accept="image/*" 
+                                capture="user" 
+                                className="hidden" 
+                            />
                         </div>
                     ) : (
                         <button onClick={retake} disabled={loading}
@@ -540,6 +609,7 @@ export default function Users() {
         const created = await apiService.createEmployee(form);
         setUsers(u => [created, ...u]);
         addToast(`Employee "${form.name}" added.`);
+        return created;
     };
 
     const handleEdit = async (form) => {
@@ -553,8 +623,10 @@ export default function Users() {
 
         if (Object.keys(updates).length === 0) {
             addToast('No changes detected.');
-            setEditTarget(null);
-            return;
+            // Only close edit modal if we aren't immediately transferring to enroll modal
+            // (the modal handles its own close, but just in case)
+            // returning editTarget helps biometric button know who to enroll
+            return editTarget;
         }
 
         try {
@@ -562,7 +634,7 @@ export default function Users() {
             const updated = await apiService.updateUser(editTarget.id, updates);
             patchUser(updated);
             addToast('Employee details updated.');
-            setEditTarget(null);
+            return updated;
         } catch (error) {
             const msg = error.response?.data?.message || error.response?.data?.error || error.message;
             addToast(`Update failed: ${msg}`, 'error');
@@ -614,8 +686,8 @@ export default function Users() {
             <Toast toasts={toasts} dismiss={dismiss} />
 
             {/* Modals */}
-            {addOpen && <EmployeeModal mode="add" onSave={handleAdd} onClose={() => setAddOpen(false)} />}
-            {editTarget && <EmployeeModal mode="edit" initialData={editTarget} onSave={handleEdit} onClose={() => setEditTarget(null)} />}
+            {addOpen && <EmployeeModal mode="add" onSave={handleAdd} onClose={() => setAddOpen(false)} onEnrollFace={setFaceTarget} onEnrollFP={setFpTarget} />}
+            {editTarget && <EmployeeModal mode="edit" initialData={editTarget} onSave={handleEdit} onClose={() => setEditTarget(null)} onEnrollFace={setFaceTarget} onEnrollFP={setFpTarget} />}
             {faceTarget && <FaceEnrollModal user={faceTarget} onDone={handleFaceEnrolled} onClose={() => setFaceTarget(null)} />}
             {fpTarget && <FingerprintEnrollModal user={fpTarget} onDone={handleFPEnrolled} onClose={() => setFpTarget(null)} />}
             <DeleteDialog user={deleteTarget} onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />
@@ -669,9 +741,12 @@ export default function Users() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/[0.03] bg-white/[0.01]">
-                                {['Employee', 'Department', 'Status', 'Biometrics', 'Created', 'Actions'].map(h => (
-                                    <th key={h} className="px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">{h}</th>
-                                ))}
+                                <th className="px-4 md:px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Employee</th>
+                                <th className="hidden md:table-cell px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Department</th>
+                                <th className="px-4 md:px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
+                                <th className="hidden lg:table-cell px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Biometrics</th>
+                                <th className="hidden xl:table-cell px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Created</th>
+                                <th className="px-4 md:px-8 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/[0.025]">
@@ -699,20 +774,20 @@ export default function Users() {
                                         className={`group transition-colors ${isDisabled ? 'opacity-50' : 'hover:bg-white/[0.02]'}`}>
 
                                         {/* Employee */}
-                                        <td className="px-8 py-4">
+                                        <td className="px-4 md:px-8 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600/30 to-indigo-600/30 border border-blue-500/20 flex items-center justify-center text-xs font-black text-blue-400">
+                                                <div className="w-8 h-8 md:w-9 md:h-9 shrink-0 rounded-xl bg-gradient-to-br from-blue-600/30 to-indigo-600/30 border border-blue-500/20 flex items-center justify-center text-[10px] md:text-xs font-black text-blue-400">
                                                     {initials}
                                                 </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-white">{user.name}</div>
-                                                    <div className="text-[10px] text-slate-500 font-mono">{user.employee_id || user.email}</div>
+                                                <div className="min-w-0">
+                                                    <div className="text-sm font-bold text-white truncate">{user.name}</div>
+                                                    <div className="text-[9px] md:text-[10px] text-slate-500 font-mono truncate">{user.employee_id || user.email}</div>
                                                 </div>
                                             </div>
                                         </td>
-
+                                        
                                         {/* Department */}
-                                        <td className="px-8 py-4">
+                                        <td className="hidden md:table-cell px-8 py-4">
                                             <div className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold">
                                                 <Briefcase className="w-3 h-3 text-slate-600" />
                                                 {user.department || 'General'}
@@ -720,12 +795,12 @@ export default function Users() {
                                         </td>
 
                                         {/* Status */}
-                                        <td className="px-8 py-4">
+                                        <td className="px-4 md:px-8 py-4">
                                             <StatusBadge status={user.status || 'Active'} />
                                         </td>
 
-                                        {/* Biometrics — enrollment buttons or checkmarks */}
-                                        <td className="px-8 py-4">
+                                        {/* Biometrics */}
+                                        <td className="hidden lg:table-cell px-8 py-4">
                                             <BiometricsCell
                                                 user={user}
                                                 onEnrollFace={u => setFaceTarget(u)}
@@ -734,27 +809,27 @@ export default function Users() {
                                         </td>
 
                                         {/* Created */}
-                                        <td className="px-8 py-4">
+                                        <td className="hidden xl:table-cell px-8 py-4">
                                             <span className="text-xs text-slate-500 tabular-nums">{createdAt}</span>
                                         </td>
 
                                         {/* Actions */}
-                                        <td className="px-8 py-4">
-                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <td className="px-4 md:px-8 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-0.5 md:gap-1">
                                                 <button onClick={() => setEditTarget(user)} title="Edit"
-                                                    className="p-2 rounded-lg hover:bg-blue-500/10 text-slate-500 hover:text-blue-400 transition-all">
-                                                    <Edit2 className="w-4 h-4" />
+                                                    className="p-1.5 md:p-2 rounded-lg hover:bg-blue-500/10 text-slate-500 hover:text-blue-400 transition-all">
+                                                    <Edit2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                                 </button>
                                                 <button onClick={() => handleDisableToggle(user)} disabled={isActioning}
                                                     title={isDisabled ? 'Enable' : 'Disable'}
-                                                    className={`p-2 rounded-lg transition-all ${isDisabled
+                                                    className={`p-1.5 md:p-2 rounded-lg transition-all ${isDisabled
                                                         ? 'hover:bg-emerald-500/10 text-slate-500 hover:text-emerald-400'
                                                         : 'hover:bg-amber-500/10  text-slate-500 hover:text-amber-400'}`}>
-                                                    {isDisabled ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                                                    {isDisabled ? <UserCheck className="w-3.5 h-3.5 md:w-4 md:h-4" /> : <UserX className="w-3.5 h-3.5 md:w-4 md:h-4" />}
                                                 </button>
                                                 <button onClick={() => setDeleteTarget(user)} disabled={isActioning} title="Delete"
-                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all">
-                                                    <Trash2 className="w-4 h-4" />
+                                                    className="p-1.5 md:p-2 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all">
+                                                    <Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                                 </button>
                                             </div>
                                         </td>

@@ -181,14 +181,14 @@ export default function EmployeeAccess() {
                     <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05] text-slate-400 hover:text-white transition-all">
                         <ArrowLeft className="w-5 h-5" />
                     </button>
-                    <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <h1 className="text-3xl font-black text-white tracking-tighter">{employee?.name || 'Loading...'}</h1>
-                            <span className="px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 uppercase tracking-widest">
+                    <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
+                            <h1 className="text-xl md:text-3xl font-black text-white tracking-tighter truncate">{employee?.name || 'Loading...'}</h1>
+                            <span className="px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[9px] md:text-[10px] font-bold text-blue-400 uppercase tracking-widest shrink-0">
                                 {employee?.employee_id}
                             </span>
                         </div>
-                        <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">
+                        <p className="text-slate-500 text-[10px] md:text-sm font-medium uppercase tracking-[0.2em] truncate">
                             {employee?.department || 'Registry'} // Access History
                         </p>
                     </div>
@@ -226,7 +226,7 @@ export default function EmployeeAccess() {
             </div>
 
             {/* ── Filters ── */}
-            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="p-4 md:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex flex-col gap-4">
                 <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mr-1">Quick Filters:</span>
                     {[['today', 'Today'], ['week', 'This Week'], ['month', 'This Month']].map(([key, label]) => (
@@ -237,8 +237,8 @@ export default function EmployeeAccess() {
                         </button>
                     ))}
                 </div>
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                         <select 
                             value={selectedMonth} 
                             onChange={e => {
@@ -252,7 +252,7 @@ export default function EmployeeAccess() {
                                     setEndDate(format(end, 'yyyy-MM-dd'));
                                 }
                             }} 
-                            className={`${inputCls} !w-auto`}
+                            className={`${inputCls} !w-auto flex-1 md:flex-none`}
                         >
                             {Array.from({ length: 12 }, (_, i) => (
                                 <option key={i + 1} value={i + 1}>
@@ -273,13 +273,14 @@ export default function EmployeeAccess() {
                                     setEndDate(format(end, 'yyyy-MM-dd'));
                                 }
                             }} 
-                            className={`${inputCls} !w-auto`}
+                            className={`${inputCls} !w-auto flex-1 md:flex-none`}
                         >
                             {[2024, 2025, 2026].map(year => (
                                 <option key={year} value={year}>{year}</option>
                             ))}
                         </select>
-                        <span className="w-px h-4 bg-white/[0.1] mx-1" />
+                    </div>
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                         <input type="date" value={startDate} onChange={e => {setStartDate(e.target.value); setActivePreset('custom');}} className={inputCls} />
                         <span className="text-slate-700">–</span>
                         <input type="date" value={endDate} onChange={e => {setEndDate(e.target.value); setActivePreset('custom');}} className={inputCls} />
@@ -293,12 +294,12 @@ export default function EmployeeAccess() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/[0.03] bg-white/[0.01]">
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Time</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Method</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Confidence</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Device</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Result</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
+                                <th className="hidden sm:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Time</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Method</th>
+                                <th className="hidden lg:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Confidence</th>
+                                <th className="hidden md:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Device</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Result</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/[0.025]">
@@ -317,12 +318,17 @@ export default function EmployeeAccess() {
                                 </tr>
                             ) : logs.map((log) => (
                                 <tr key={log.id} className="group hover:bg-white/[0.02] transition-colors">
-                                    <td className="px-6 py-4"><span className="text-xs font-bold text-slate-300">{fmtDate(log.created_at)}</span></td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-4 md:px-6 py-4">
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="text-xs font-bold text-slate-300">{fmtDate(log.created_at)}</span>
+                                            <span className="sm:hidden text-[10px] font-bold text-slate-500">{fmtTime(log.created_at)}</span>
+                                        </div>
+                                    </td>
+                                    <td className="hidden sm:table-cell px-6 py-4">
                                         <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400"><Clock className="w-3.5 h-3.5 text-slate-600" />{fmtTime(log.created_at)}</div>
                                     </td>
-                                    <td className="px-6 py-4 text-center"><MethodBadge method={log.method} /></td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="px-4 md:px-6 py-4 text-center"><MethodBadge method={log.method} /></td>
+                                    <td className="hidden lg:table-cell px-6 py-4 text-center">
                                         <div className="flex items-center justify-center gap-2">
                                             <div className="w-16 h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
                                                 <div className={`h-full rounded-full ${log.confidence >= 0.8 ? 'bg-emerald-500' : log.confidence >= 0.6 ? 'bg-amber-500' : 'bg-red-500'}`} 
@@ -331,13 +337,13 @@ export default function EmployeeAccess() {
                                             <span className="text-[10px] font-black text-slate-500 w-8">{Math.round((log.confidence || 0) * 100)}%</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center text-xs font-bold text-slate-500 font-mono">
+                                    <td className="hidden md:table-cell px-6 py-4 text-center text-xs font-bold text-slate-500 font-mono">
                                         <div className="flex items-center justify-center gap-1.5">
                                             <Monitor className="w-3 h-3" />
                                             {log.device_id || 'terminal_01'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right"><StatusBadge status={log.status} /></td>
+                                    <td className="px-4 md:px-6 py-4 text-right"><StatusBadge status={log.status} /></td>
                                 </tr>
                             ))}
                         </tbody>

@@ -173,14 +173,14 @@ export default function EmployeeAttendance() {
                     <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05] text-slate-400 hover:text-white transition-all">
                         <ArrowLeft className="w-5 h-5" />
                     </button>
-                    <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <h1 className="text-3xl font-black text-white tracking-tighter">{employee?.name || 'Loading...'}</h1>
-                            <span className="px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 uppercase tracking-widest">
+                    <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
+                            <h1 className="text-xl md:text-3xl font-black text-white tracking-tighter truncate">{employee?.name || 'Loading...'}</h1>
+                            <span className="px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[9px] md:text-[10px] font-bold text-blue-400 uppercase tracking-widest shrink-0">
                                 {employee?.employee_id}
                             </span>
                         </div>
-                        <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">
+                        <p className="text-slate-500 text-[10px] md:text-sm font-medium uppercase tracking-[0.2em] truncate">
                             {employee?.department || 'Registry'} // Attendance History
                         </p>
                     </div>
@@ -218,7 +218,7 @@ export default function EmployeeAttendance() {
             </div>
 
             {/* ── Filters ── */}
-            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="p-4 md:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex flex-col gap-4">
                 <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mr-1">Quick Filters:</span>
                     {[['today', 'Today'], ['week', 'This Week'], ['month', 'This Month']].map(([key, label]) => (
@@ -229,8 +229,8 @@ export default function EmployeeAttendance() {
                         </button>
                     ))}
                 </div>
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                         <select 
                             value={selectedMonth} 
                             onChange={e => {
@@ -244,7 +244,7 @@ export default function EmployeeAttendance() {
                                     setEndDate(format(end, 'yyyy-MM-dd'));
                                 }
                             }} 
-                            className={`${inputCls} !w-auto`}
+                            className={`${inputCls} !w-auto flex-1 md:flex-none`}
                         >
                             {Array.from({ length: 12 }, (_, i) => (
                                 <option key={i + 1} value={i + 1}>
@@ -265,13 +265,14 @@ export default function EmployeeAttendance() {
                                     setEndDate(format(end, 'yyyy-MM-dd'));
                                 }
                             }} 
-                            className={`${inputCls} !w-auto`}
+                            className={`${inputCls} !w-auto flex-1 md:flex-none`}
                         >
                             {[2024, 2025, 2026].map(year => (
                                 <option key={year} value={year}>{year}</option>
                             ))}
                         </select>
-                        <span className="w-px h-4 bg-white/[0.1] mx-1" />
+                    </div>
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                         <input type="date" value={startDate} onChange={e => {setStartDate(e.target.value); setActivePreset('custom');}} className={inputCls} />
                         <span className="text-slate-700">–</span>
                         <input type="date" value={endDate} onChange={e => {setEndDate(e.target.value); setActivePreset('custom');}} className={inputCls} />
@@ -285,12 +286,12 @@ export default function EmployeeAttendance() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/[0.03] bg-white/[0.01]">
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check In</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check Out</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Work Hours</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Status</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Method</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check In</th>
+                                <th className="hidden sm:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Check Out</th>
+                                <th className="hidden lg:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Work Hours</th>
+                                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Status</th>
+                                <th className="hidden md:table-cell px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Method</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/[0.025]">
@@ -309,22 +310,30 @@ export default function EmployeeAttendance() {
                                 </tr>
                             ) : attendance.map((rec) => (
                                 <tr key={rec.id} className="group hover:bg-white/[0.02] transition-colors">
-                                    <td className="px-6 py-4"><span className="text-xs font-bold text-slate-300">{fmtDate(rec.date)}</span></td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2 text-[11px] font-bold text-emerald-400"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />{fmtTime(rec.check_in)}</div>
+                                    <td className="px-4 md:px-6 py-4"><span className="text-xs font-bold text-slate-300">{fmtDate(rec.date)}</span></td>
+                                    <td className="px-4 md:px-6 py-4">
+                                        <div className="flex flex-col gap-0.5">
+                                            <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-emerald-400">
+                                                <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-emerald-500" />
+                                                {fmtTime(rec.check_in)}
+                                            </div>
+                                            <div className={`sm:hidden flex items-center gap-1 text-[9px] font-bold ${rec.check_out ? 'text-slate-500' : 'text-slate-800'}`}>
+                                                {rec.check_out ? `Out: ${fmtTime(rec.check_out)}` : 'In Session'}
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="hidden sm:table-cell px-6 py-4">
                                         <div className={`flex items-center gap-2 text-[11px] font-bold ${rec.check_out ? 'text-slate-400' : 'text-slate-700'}`}>
                                             <div className={`w-1.5 h-1.5 rounded-full ${rec.check_out ? 'bg-slate-500' : 'bg-slate-800'}`} />{fmtTime(rec.check_out)}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="hidden lg:table-cell px-6 py-4 text-center">
                                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-950 border border-white/[0.05] text-xs font-black text-white">
                                             <Clock className="w-3 h-3 text-slate-600" />{workHoursDisplay(rec)}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center"><StatusBadge status={rec.status} /></td>
-                                    <td className="px-6 py-4 text-center"><MethodBadge method={rec.method} /></td>
+                                    <td className="px-4 md:px-6 py-4 text-center"><StatusBadge status={rec.status} /></td>
+                                    <td className="hidden md:table-cell px-6 py-4 text-center"><MethodBadge method={rec.method} /></td>
                                 </tr>
                             ))}
                         </tbody>
