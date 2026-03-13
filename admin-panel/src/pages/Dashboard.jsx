@@ -238,8 +238,8 @@ export default function Dashboard() {
             {/* ── Analytics Row 1: Daily Trend + Monthly Pulse ── */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Daily Attendance Trend – area chart */}
-                <div className="lg:col-span-2 p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
-                    <div className="flex items-center justify-between mb-6">
+                <div className="lg:col-span-2 p-5 md:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <Activity className="w-4 h-4 text-blue-400" />
@@ -247,7 +247,7 @@ export default function Dashboard() {
                             </div>
                             <p className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Present vs Late // Last 15 Days</p>
                         </div>
-                        <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                        <div className="flex items-center flex-wrap gap-4 text-[9px] font-bold uppercase tracking-widest text-slate-500">
                             <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500" />Present</div>
                             <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-500" />Late</div>
                         </div>
@@ -278,7 +278,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Monthly Pulse card */}
-                <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05] flex flex-col justify-between">
+                <div className="p-5 md:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05] flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <BarChart2 className="w-4 h-4 text-indigo-400" />
@@ -320,8 +320,8 @@ export default function Dashboard() {
             </div>
 
             {/* ── Analytics Row 2: Department Comparison ── */}
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
-                <div className="flex items-center justify-between mb-6">
+            <div className="p-5 md:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Building2 className="w-4 h-4 text-purple-400" />
@@ -329,7 +329,7 @@ export default function Dashboard() {
                         </div>
                         <p className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Present vs Absent // Today's Breakdown</p>
                     </div>
-                    <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                    <div className="flex items-center flex-wrap gap-4 text-[9px] font-bold uppercase tracking-widest text-slate-500">
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500" />Present</div>
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500" />Absent</div>
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-slate-600" />Total</div>
@@ -351,8 +351,8 @@ export default function Dashboard() {
             </div>
 
             {/* ── Monthly Attendance Rate (last 6 months) ── */}
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
-                <div className="flex items-center justify-between mb-6">
+            <div className="p-5 md:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Percent className="w-4 h-4 text-teal-400" />
@@ -396,8 +396,8 @@ export default function Dashboard() {
             </div>
 
             {/* ── 24h Access Distribution ── */}
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
-                <div className="flex items-center justify-between mb-6">
+            <div className="p-5 md:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Shield className="w-4 h-4 text-slate-400" />
@@ -405,7 +405,7 @@ export default function Dashboard() {
                         </div>
                         <p className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Biometric Activity // Last 24 Hours</p>
                     </div>
-                    <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                    <div className="flex items-center flex-wrap gap-4 text-[9px] font-bold uppercase tracking-widest text-slate-500">
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500" />Face</div>
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-purple-500" />Fingerprint</div>
                         <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-500" />RFID</div>

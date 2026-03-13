@@ -10,7 +10,8 @@ import {
     Lock,
     LogOut,
     Shield,
-    Key
+    Key,
+    X
 } from 'lucide-react';
 
 const menuItems = [
@@ -23,13 +24,13 @@ const menuItems = [
     { name: 'Settings', icon: Settings, path: '/admin/settings' },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
     const user = JSON.parse(localStorage.getItem('aura_user') || '{}');
 
     return (
-        <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#111827] border-r border-white/5 flex flex-col z-50">
+        <aside className={`fixed left-0 top-0 bottom-0 w-[240px] bg-[#111827] border-r border-white/5 flex flex-col z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
             {/* Logo Section */}
-            <div className="p-6 mb-2">
+            <div className="p-6 mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
                         <Lock className="w-5 h-5 text-white" />
@@ -38,14 +39,18 @@ export default function Sidebar() {
                         Aura<span className="text-blue-500">Lock</span>
                     </h1>
                 </div>
+                <button onClick={onClose} className="md:hidden p-1 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 active:scale-95 transition-transform">
+                    <X className="w-5 h-5" />
+                </button>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-3 space-y-1">
+            <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
                 {menuItems.map((item) => (
                     <NavLink
                         key={item.path}
                         to={item.path}
+                        onClick={onClose}
                         className={({ isActive }) => `
                             flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group
                             ${isActive
