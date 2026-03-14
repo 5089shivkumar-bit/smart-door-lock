@@ -17,6 +17,8 @@ const doorService = require('./doorService');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+const PYTHON_ENGINE_URL = process.env.PYTHON_ENGINE_URL || 'http://localhost:8001';
+
 console.log('🚀 [Config] ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
 console.log('🚀 [Config] ADMIN_PASSWORD:', process.env.ADMIN_PASSWORD ? 'SET' : 'MISSING');
 console.log('🚀 [Config] JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'MISSING');
@@ -1813,7 +1815,7 @@ app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
         const transformedUsers = (users || []).map(u => ({
             ...u,
             face_registered: u.face_templates && u.face_templates.length > 0,
-            fingerprint_registered: u.fingerprint_templates && u.fingerprint_templates.length > 0,
+            fingerprint_registered: u.fingerprint_templates && u.finger_templates.length > 0,
             // Strip the internal objects to keep frontend data clean
             face_templates: undefined,
             fingerprint_templates: undefined,
@@ -1903,7 +1905,10 @@ app.patch('/api/users/:id', authenticateToken, isAdmin, validateIdentity, async 
         if (old_eid && new_eid !== old_eid) {
             console.log(`🔄 [Cache] Evicting old biometric cache for ID: ${old_eid}`);
             try {
-                await axios.delete(`http://localhost:8001/api/biometrics/face/${encodeURIComponent(old_eid)}`, { timeout: 3000 });
+                await axios.delete(
+                    `${PYTHON_ENGINE_URL}/api/biometrics/face/${encodeURIComponent(old_eid)}`,
+                    { timeout: 3000 }
+                );
             } catch (ce) {
                 console.warn(`⚠️ [Cache] Old ID eviction skipped: ${ce.message}`);
             }
@@ -2063,7 +2068,7 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
         try {
             // 1. Evict specific entry from face_cache.json
             await axios.delete(
-                `http://localhost:8001/api/biometrics/face/${encodeURIComponent(evictionEmployeeId)}`,
+                `${PYTHON_ENGINE_URL}/api/biometrics/face/${encodeURIComponent(evictionEmployeeId)}`,
                 { timeout: 5000 }
             );
             console.log(`✅ Biometric cache evicted for ${evictionEmployeeId}`);
@@ -2073,7 +2078,7 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
 
         try {
             // 2. Trigger full cache rebuild to ensure consistency
-            await axios.post('http://localhost:8001/api/biometrics/cache/rebuild', {}, { timeout: 5000 });
+            await axios.post(`${PYTHON_ENGINE_URL}/api/biometrics/cache/rebuild`, {}, { timeout: 5000 });
             console.log('✅ Biometric cache rebuilt after employee deletion');
         } catch (rebuildErr) {
             console.warn(`⚠️ Cache rebuild skipped (engine offline): ${rebuildErr.message}`);
@@ -2123,7 +2128,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
                 if (req.body.re_enroll) form.append('re_enroll', req.body.re_enroll); // forward re-enroll flag
 
                 console.log("📡 Forwarding to Biometric Engine (Port 8001)...");
-                const response = await axios.post('http://localhost:8001/api/biometrics/face/register', form, {
+                const response = await axios.post(`${PYTHON_ENGINE_URL}/api/biometrics/face/register`, form, {
                     headers: form.getHeaders(),
                     timeout: 30000
                 });
@@ -2164,7 +2169,7 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
 // Biometric Health Proxy
 app.get('/api/biometrics/health', async (req, res) => {
     try {
-        const response = await axios.get('http://localhost:8001/health', { timeout: 2000 });
+        const response = await axios.get(`${PYTHON_ENGINE_URL}/health`, { timeout: 2000 });
         res.json({ status: "online", engine: response.data });
     } catch (err) {
         res.status(503).json({ status: "offline", message: "Biometric Engine unreachable" });
