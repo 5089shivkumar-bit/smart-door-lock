@@ -19,22 +19,20 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 // --- Configuration & Initialization ---
 const RENDER_HOST = process.env.RENDER_SERVICE_NAME || 'smart-door-backend';
-const EDGE_SERVICE_NAME = RENDER_HOST.replace('backend', 'edge');
 
 let PYTHON_ENGINE_URL = process.env.PYTHON_ENGINE_URL;
-if (!PYTHON_ENGINE_URL) {
-    if (process.env.RENDER) {
-        // Render Internal Networking: use the service name directly
-        // Fallback sequence: Dynamic suffix -> Hardcoded suffix -> Standard name
-        const baseName = process.env.RENDER_SERVICE_NAME || 'smart-door-backend';
-        const suffix = baseName.includes('-') ? `-${baseName.split('-').pop()}` : '-957b';
-        const targetName = baseName.includes('-957b') ? baseName.replace('backend', 'edge') : `smart-door-edge${suffix}`;
-        
-        PYTHON_ENGINE_URL = `http://${targetName}:8001`;
-        console.log(`🌐 [Discovery] Render Internal Target: ${PYTHON_ENGINE_URL}`);
-    } else {
-        PYTHON_ENGINE_URL = 'http://localhost:8001';
-    }
+
+// On Render, we force re-calculation if it looks like a standard internal name
+// to ensure we get the correct '-957b' (or other) suffix.
+if (process.env.RENDER) {
+    const baseName = process.env.RENDER_SERVICE_NAME || 'smart-door-backend';
+    const suffix = baseName.includes('-') ? `-${baseName.split('-').pop()}` : '-957b';
+    const targetName = baseName.includes('-957b') ? baseName.replace('backend', 'edge') : `smart-door-edge${suffix}`;
+    
+    PYTHON_ENGINE_URL = `http://${targetName}:8001`;
+    console.log(`🌐 [Discovery] Forced Render Internal Target: ${PYTHON_ENGINE_URL}`);
+} else if (!PYTHON_ENGINE_URL) {
+    PYTHON_ENGINE_URL = 'http://localhost:8001';
 }
 
 // Ensure protocol and port for internal service networking

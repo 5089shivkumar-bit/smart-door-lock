@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Camera, Fingerprint, X, CheckCircle2, LogOut, AlertTriangle, Clock, ShieldAlert, Unlock, UserPlus, Bluetooth, BluetoothConnected, BluetoothOff } from 'lucide-react';
+import { Camera, Fingerprint, X, CheckCircle2, LogOut, AlertTriangle, Clock, ShieldAlert, Unlock, UserPlus, Bluetooth, BluetoothConnected, BluetoothOff, Cpu, RefreshCw, AlertCircle, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { NativeBiometric } from 'capacitor-native-biometric';
@@ -48,6 +48,7 @@ function LiveClock() {
 }
 
 export default function App() {
+    console.log('🚀 [Init] App Starting. API_BASE:', API_BASE);
     // view: 'home' | 'face' | 'fingerprint' | 'checkin' | 'checkout' | 'error'
     const [view, setView] = useState('home');
     const [loading, setLoading] = useState(false);
@@ -108,15 +109,15 @@ export default function App() {
         let statusInterval;
         const checkBle = async () => {
             try {
-                // If we are not currently connecting/unlocking, just check if device is in range
+                // Ensure BLE is initialized
+                try { await BleClient.initialize(); } catch (ie) { /* Already initialized */ }
+
                 const result = await BleClient.isEnabled();
                 if (!result) {
                     setBleStatus('disabled');
                     return;
                 }
                 
-                // Use scanning to determine "Ready" state instead of just "Connected"
-                // Most BLE locks don't stay connected 24/7
                 setBleStatus('searching');
                 const devices = await BleClient.getConnectedDevices([DOOR_SERVICE_UUID]);
                 const isConnected = devices.some(d => d.deviceId === BLE_MAC);
@@ -124,22 +125,27 @@ export default function App() {
                 if (isConnected) {
                     setBleStatus('connected');
                 } else {
-                    // Start a very short scan to see if it's nearby
+                    console.log('📡 [BLE] Scan Started for:', BLE_MAC);
                     await BleClient.requestLEScan(
                         { services: [DOOR_SERVICE_UUID] },
                         (result) => {
-                            if (result.device.deviceId === BLE_MAC) {
+                            console.log('📡 [BLE] Found Device:', result.device.deviceId, result.device.name);
+                            if (result.device.deviceId === BLE_MAC || result.device.name?.includes('SmartDoor')) {
+                                console.log('✅ [BLE] Match Found!');
                                 setBleStatus('ready');
                                 BleClient.stopLEScan();
                             }
                         }
                     );
-                    // Stop scan after 3s if not found
-                    setTimeout(() => BleClient.stopLEScan(), 3000);
+                    // Stop scan after 5s
+                    setTimeout(async () => {
+                        await BleClient.stopLEScan();
+                        setBleStatus(prev => prev === 'ready' || prev === 'connected' ? prev : 'offline');
+                    }, 5000);
                 }
             } catch (e) {
-                console.warn('BLE Status Check error:', e);
-                setBleStatus('disconnected');
+                console.warn('⚠️ [BLE] Status Check error:', e);
+                setBleStatus('offline');
             }
         };
 
