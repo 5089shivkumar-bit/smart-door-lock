@@ -25,10 +25,11 @@ let PYTHON_ENGINE_URL = process.env.PYTHON_ENGINE_URL;
 if (!PYTHON_ENGINE_URL) {
     if (process.env.RENDER) {
         // Render Internal Networking: use the service name directly
-        // Usually, if the backend service name is 'smart-door-backend', 
-        // the edge service name is 'smart-door-edge'
-        PYTHON_ENGINE_URL = 'http://smart-door-edge:8001';
-        console.log('🌐 [Discovery] Running on Render. Target: http://smart-door-edge:8001');
+        // If backend is 'smart-door-backend-957b', edge is 'smart-door-edge-957b'
+        const baseName = process.env.RENDER_SERVICE_NAME || 'smart-door-backend';
+        const targetName = baseName.replace('backend', 'edge');
+        PYTHON_ENGINE_URL = `http://${targetName}:8001`;
+        console.log(`🌐 [Discovery] Auto-detected Render target: ${PYTHON_ENGINE_URL}`);
     } else {
         PYTHON_ENGINE_URL = 'http://localhost:8001';
     }
