@@ -25,11 +25,13 @@ let PYTHON_ENGINE_URL = process.env.PYTHON_ENGINE_URL;
 if (!PYTHON_ENGINE_URL) {
     if (process.env.RENDER) {
         // Render Internal Networking: use the service name directly
-        // If backend is 'smart-door-backend-957b', edge is 'smart-door-edge-957b'
+        // Fallback sequence: Dynamic suffix -> Hardcoded suffix -> Standard name
         const baseName = process.env.RENDER_SERVICE_NAME || 'smart-door-backend';
-        const targetName = baseName.replace('backend', 'edge');
+        const suffix = baseName.includes('-') ? `-${baseName.split('-').pop()}` : '-957b';
+        const targetName = baseName.includes('-957b') ? baseName.replace('backend', 'edge') : `smart-door-edge${suffix}`;
+        
         PYTHON_ENGINE_URL = `http://${targetName}:8001`;
-        console.log(`🌐 [Discovery] Auto-detected Render target: ${PYTHON_ENGINE_URL}`);
+        console.log(`🌐 [Discovery] Render Internal Target: ${PYTHON_ENGINE_URL}`);
     } else {
         PYTHON_ENGINE_URL = 'http://localhost:8001';
     }
