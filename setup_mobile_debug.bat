@@ -14,14 +14,14 @@ echo 🔍 Checking for connected devices...
 adb devices
 
 echo 🔄 Setting up Port Forwarding (ADB Reverse)...
-echo 🌐 Frontend:	5173 -> 5173
-adb reverse tcp:5173 tcp:5173
+echo 🌐 Frontend:	3001 -> 3001
+adb reverse tcp:3001 tcp:3001
 
-echo 🛠️ Admin API:	5000 -> 5000
-adb reverse tcp:5000 tcp:5000
-
-echo 🧬 Biometric API:	8000 -> 8000
+echo 🛠️ Admin API:	8000 -> 8000
 adb reverse tcp:8000 tcp:8000
+
+echo 🧬 Biometric API:	8001 -> 8001
+adb reverse tcp:8001 tcp:8001
 
 echo.
 echo ✅ Setup Complete!
