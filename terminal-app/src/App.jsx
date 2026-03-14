@@ -6,11 +6,8 @@ import { NativeBiometric } from 'capacitor-native-biometric';
 import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { BleClient } from '@capacitor-community/bluetooth-le';
 
-// Firewall Unblocked! We can now beam traffic wirelessly over Wi-Fi without ADB!
-// Update this to your Render URL: e.g. 'https://smart-door-backend.onrender.com'
-const RENDER_URL = 'https://smart-door-backend-957b.onrender.com';
-const LOCAL_URL = 'http://localhost:8000'; // Standard ADB reverse port
-
+// Production API Configuration
+const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'https://smart-door-backend-957b.onrender.com';
 const RESET_DELAY = 5; // seconds
 
 const BLE_MAC = '58:8C:81:CC:65:29';
@@ -61,7 +58,6 @@ export default function App() {
     const [countdown, setCountdown] = useState(RESET_DELAY);
     const [adminPin, setAdminPin] = useState('');
     const [selectedEmp, setSelectedEmp] = useState(null);
-    const [apiBase, setApiBase] = useState(import.meta.env?.VITE_API_BASE_URL || RENDER_URL);
     const videoRef = useRef(null);
     const streamRef = useRef(null);
 
@@ -108,12 +104,12 @@ export default function App() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const res = await axios.get(`${apiBase}/api/terminal/users`);
+                const res = await axios.get(`${API_BASE}/api/terminal/users`);
                 setEmployees(res.data.filter(u => u.status !== 'Deleted'));
             } catch (err) { console.error('Failed to fetch employees:', err); }
         };
         fetchEmployees();
-    }, [apiBase]);
+    }, []);
 
     // ── Auto-reset countdown ──────────────────────────────────────────────────
     useEffect(() => {
@@ -205,7 +201,20 @@ export default function App() {
                 });
 
                 if (res.data.success && view === 'face') {
-                    // ... (rest of success logic)
+                    // Success!
+                    const isCheckout = !!(res.data.check_out || res.data.checkout);
+                    const now = new Date();
+                    setResult({
+                        name: res.data.user?.name || res.data.name || res.data.employee_name || 'Employee',
+                        time: res.data.check_in
+                            ? new Date(res.data.check_in).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+                            : now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+                        checkoutTime: res.data.check_out
+                            ? new Date(res.data.check_out).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+                            : now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+                        workingHours: res.data.working_hours != null ? formatWorkHours(res.data.working_hours) : null,
+                        isCheckout,
+                    });
                     setView(isCheckout ? 'checkout' : 'checkin');
                     triggerDoorUnlock();
                 }
@@ -216,7 +225,7 @@ export default function App() {
                 } else if (err.response?.status === 503) {
                     setMessage('Biometric Engine Offline');
                 } else if (err.code === 'ERR_NETWORK') {
-                    setMessage(`Network error: Cannot reach ${apiBase}`);
+                    setMessage(`Network error: Cannot reach server`);
                     console.error('Network Error Detail:', err);
                 } else {
                     setMessage('System Error');
@@ -246,7 +255,7 @@ export default function App() {
                 form.append('name', selectedEmp.name);
                 form.append('re_enroll', 'true');
 
-                const res = await axios.post(`${apiBase}/api/biometrics/face/register`, form, {
+                const res = await axios.post(`${API_BASE}/api/biometrics/face/register`, form, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
 
@@ -286,7 +295,7 @@ export default function App() {
     const markManualAttendance = async (employee) => {
         setLoading(true);
         try {
-            const res = await axios.post(`${apiBase}/api/attendance/mark`, {
+            const res = await axios.post(`${API_BASE}/api/attendance/mark`, {
                 employee_id: employee.id,
                 method: 'fingerprint',
                 device_id: 'office_terminal',
@@ -400,22 +409,6 @@ export default function App() {
                     <motion.div key="home"
                         initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.04 }}
                         className="flex flex-col items-center gap-14 w-full max-w-3xl">
-
-                        {/* Connection Toggle */}
-                    <div className="absolute top-6 right-6 flex items-center gap-2 bg-white/5 p-1 rounded-lg backdrop-blur-sm border border-white/10">
-                        <button 
-                            onClick={() => setApiBase(RENDER_URL)}
-                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${apiBase === RENDER_URL ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            CLOUD
-                        </button>
-                        <button 
-                            onClick={() => setApiBase(LOCAL_URL)}
-                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${apiBase === LOCAL_URL ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            LOCAL
-                        </button>
-                    </div>
 
                     <LiveClock />
 
