@@ -17,7 +17,7 @@ except ImportError:
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
-from deepface import DeepFace
+import face_recognition
 from supabase_client import supabase
 from datetime import datetime
 import json
@@ -56,7 +56,7 @@ async def startup_event():
 
 CACHE_FILE = "face_cache.json"
 PENDING_LOGS_FILE = "pending_logs.json"
-MODEL_NAME = "Facenet" # 128-dimensional embedding for compatibility
+MODEL_NAME = "face-recognition-default" 
 DETECTOR_BACKEND = "opencv" # Faster for real-time door lock response
 
 def load_face_cache():
@@ -377,22 +377,14 @@ async def register_face(
         image = Image.open(io.BytesIO(contents)).convert("RGB")
         frame = np.array(image)
 
-        # 2. Detect and encode using DeepFace
+        # 2. Detect and encode using face-recognition
         try:
-            objs = DeepFace.represent(
-                img_path = frame,
-                model_name = MODEL_NAME,
-                detector_backend = 'mtcnn',
-                enforce_detection = True,
-                align = True,
-                normalization = 'Facenet'
-            )
-            encoding_list = objs[0]["embedding"]
-            # L2 Normalize before storing
-            encoding_vec = np.array(encoding_list)
-            encoding_list = (encoding_vec / np.linalg.norm(encoding_vec)).tolist()
-        except ValueError as custom_err:
-            return {"success": False, "message": f"No face detected. {str(custom_err)}", "error_code": "NO_FACE"}
+            encodings = face_recognition.face_encodings(frame)
+            if not encodings:
+                return {"success": False, "message": "No face detected.", "error_code": "NO_FACE"}
+            encoding_list = encodings[0].tolist()
+        except Exception as e:
+            return {"success": False, "message": f"Engine Error: {str(e)}", "error_code": "ENGINE_ERROR"}
 
         # 3. Cross-Identity Conflict Guard
         cache = load_face_cache()
@@ -511,8 +503,6 @@ async def register_face(
         print(f"[ERROR] Registration Error: {str(e)}")
         return {"success": False, "message": f"Engine Error: {str(e)}"}
 
-        return {"success": False, "message": f"Engine Error: {str(e)}"}
-
 @app.post("/api/biometrics/face/verify")
 async def verify_face(file: UploadFile = File(...)):
     """
@@ -523,74 +513,58 @@ async def verify_face(file: UploadFile = File(...)):
     t_start = time.time()
     
     try:
-        # 1. Image Preprocessing (Removed fixed 224x224 resize to preserve detector quality)
+        # 1. Image Preprocessing
         contents = await file.read()
         t_read = time.time()
         
         image = Image.open(io.BytesIO(contents)).convert("RGB")
         frame = np.array(image)
-        
-        # Save a debug image to see what the engine is receiving
-        try:
-            image.save("debug_verify.jpg")
-            print(f"[DEBUG] Verification frame saved (Size: {image.size})")
-        except:
-            pass
-            
         t_preprocess = time.time()
 
         # 2. Single Embedding Generation
         try:
-            objs = DeepFace.represent(
-                img_path = frame,
-                model_name = MODEL_NAME,
-                detector_backend = 'mtcnn',
-                enforce_detection = False,
-                align = True,
-                normalization = 'Facenet'
-            )
-            live_encoding = np.array(objs[0]["embedding"], dtype=np.float32)
-            norm = np.linalg.norm(live_encoding)
-            if norm > 0:
-                live_encoding = live_encoding / norm
-        except ValueError:
-            return {"success": False, "message": "No face detected."}
+            live_encodings = face_recognition.face_encodings(frame)
+            if not live_encodings:
+                return {"success": False, "message": "No face detected."}
+            live_encoding = live_encodings[0]
+        except Exception as e:
+            return {"success": False, "message": "Engine Error"}
         
         t_encode = time.time()
 
-        # 3. Vectorized Comparison (Cosine Similarity)
+        # 3. Vectorized Comparison
         global FACE_VECTORS, FACE_METADATA
         if FACE_VECTORS.size == 0:
             return {"success": False, "message": "No registered users found."}
 
-        # Dot product of normalized vectors = Cosine Similarity
-        similarities = np.dot(FACE_VECTORS, live_encoding)
-        best_match_idx = np.argmax(similarities)
-        max_similarity = float(similarities[best_match_idx])
+        # Calculate Euclidean distances
+        distances = face_recognition.face_distance(FACE_VECTORS, live_encoding)
+        best_match_idx = np.argmin(distances)
+        min_distance = float(distances[best_match_idx])
+        
+        # Convert distance to confidence (threshold for face-recognition is usually 0.6 distance)
+        # We'll use 1.0 - distance as a similarity score
+        max_similarity = 1.0 - min_distance
         
         t_compare = time.time()
 
         # 4. Threshold & Ambiguity Logic
-        STRICT_THRESHOLD = 0.65
+        STRICT_THRESHOLD = 0.55 # Typical threshold for face_recognition (1 - 0.45 distance)
         AMBIGUITY_GAP = 0.05
         
-        # Sort similarities to find best and second-best
-        sorted_indices = np.argsort(similarities)[::-1]
-        best_idx = sorted_indices[0]
-        max_similarity = float(similarities[best_idx])
-        matched_emp = FACE_METADATA[best_idx]
+        matched_emp = FACE_METADATA[best_match_idx]
         
         # Ambiguity Detection
         is_ambiguous = False
-        if len(similarities) > 1:
-            second_similarity = float(similarities[sorted_indices[1]])
-            gap = max_similarity - second_similarity
-            if gap < AMBIGUITY_GAP and max_similarity > 0.40:
+        if len(distances) > 1:
+            sorted_distances = np.sort(distances)
+            gap = sorted_distances[1] - min_distance # Bigger gap means less ambiguity
+            if gap < AMBIGUITY_GAP and min_distance < 0.60:
                 is_ambiguous = True
-                print(f"[REJECTED] Ambiguity detected! Gap: {gap:.4f} < {AMBIGUITY_GAP}")
+                print(f"[REJECTED] Ambiguity detected! Distance Gap: {gap:.4f} < {AMBIGUITY_GAP}")
 
-        if max_similarity < STRICT_THRESHOLD:
-            print(f"[DENIED] Low confidence: {matched_emp['employee_id']} | Sim: {max_similarity:.4f} < {STRICT_THRESHOLD}")
+        if min_distance > 0.45: # Standard Face Recognition threshold is 0.6, we use 0.45 for STRICTness
+            print(f"[DENIED] Low confidence: {matched_emp['employee_id']} | Dist: {min_distance:.4f} > 0.45")
             asyncio.create_task(background_log_access(matched_emp["employee_id"], "failed", max_similarity, "terminal_01"))
             return {
                 "success": False, 

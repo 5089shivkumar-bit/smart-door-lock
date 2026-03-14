@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Camera, Fingerprint, X, CheckCircle2, LogOut, AlertTriangle, Clock, ShieldAlert, Unlock, UserPlus } from 'lucide-react';
+import { Camera, Fingerprint, X, CheckCircle2, LogOut, AlertTriangle, Clock, ShieldAlert, Unlock, UserPlus, Bluetooth, BluetoothConnected, BluetoothOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { NativeBiometric } from 'capacitor-native-biometric';
@@ -58,6 +58,7 @@ export default function App() {
     const [countdown, setCountdown] = useState(RESET_DELAY);
     const [adminPin, setAdminPin] = useState('');
     const [selectedEmp, setSelectedEmp] = useState(null);
+    const [bleStatus, setBleStatus] = useState('disconnected'); // 'disconnected' | 'connecting' | 'connected' | 'error'
     const videoRef = useRef(null);
     const streamRef = useRef(null);
 
@@ -100,6 +101,24 @@ export default function App() {
             console.error('BLE Door Error:', err);
         }
     };
+
+    useEffect(() => {
+        let statusInterval;
+        const checkBle = async () => {
+            try {
+                await BleClient.initialize();
+                const devices = await BleClient.getConnectedDevices([DOOR_SERVICE_UUID]);
+                const isConnected = devices.some(d => d.deviceId === BLE_MAC);
+                setBleStatus(isConnected ? 'connected' : 'disconnected');
+            } catch (e) {
+                console.warn('BLE Status Check error:', e);
+            }
+        };
+
+        checkBle();
+        statusInterval = setInterval(checkBle, 10000); // Check status every 10s
+        return () => clearInterval(statusInterval);
+    }, []);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -411,6 +430,17 @@ export default function App() {
                         className="flex flex-col items-center gap-14 w-full max-w-3xl">
 
                     <LiveClock />
+
+                    {/* ── BLE STATUS INDICATOR ── */}
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/[0.08] rounded-full mt-4">
+                        {bleStatus === 'connected' ? (
+                            <><BluetoothConnected size={16} className="text-emerald-400" /><span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Door Link Active</span></>
+                        ) : bleStatus === 'connecting' ? (
+                            <><Bluetooth size={16} className="text-blue-400 animate-pulse" /><span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Linking Door...</span></>
+                        ) : (
+                            <><BluetoothOff size={16} className="text-slate-500" /><span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Door Offline (BLE)</span></>
+                        )}
+                    </div>
 
                         <div className="w-full">
                             <p className="text-center text-slate-500 text-xs font-black uppercase tracking-[0.3em] mb-6">

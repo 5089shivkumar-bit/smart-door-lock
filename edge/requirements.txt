@@ -7,5 +7,3 @@ numpy
 python-dotenv
 httpx
 python-multipart
-deepface==0.0.92
-tf-keras
