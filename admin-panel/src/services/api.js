@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || '/', // Use Env Var for Vercel, else Vite Proxy
+    // VERCEL_PROD_URL or similar environment variables can be set in Vercel dashboard
+    baseURL: import.meta.env.VITE_API_BASE_URL || '/', 
     headers: {
         'Content-Type': 'application/json'
     }

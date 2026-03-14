@@ -7,7 +7,8 @@ import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/
 import { BleClient } from '@capacitor-community/bluetooth-le';
 
 // Firewall Unblocked! We can now beam traffic wirelessly over Wi-Fi without ADB!
-const API_BASE = 'https://emma-reduplicatively-annett.ngrok-free.dev';
+// Update this to your Render URL: e.g. 'https://smart-door-backend.onrender.com'
+const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'https://emma-reduplicatively-annett.ngrok-free.dev';
 const RESET_DELAY = 5; // seconds
 
 const BLE_MAC = '58:8C:81:CC:65:29';

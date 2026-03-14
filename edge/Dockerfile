@@ -15,15 +15,11 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy requirements and install
-COPY requirements.txt .
+COPY edge/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download models to make startup faster if possible
-# (DeepFace will download on first run, which can be slow. 
-# For production, we'd ideally bake them into the image or a volume)
-
 # Copy application code
-COPY . .
+COPY edge/ .
 
 # Expose port
 EXPOSE 8001
