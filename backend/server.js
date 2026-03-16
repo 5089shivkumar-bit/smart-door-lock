@@ -133,7 +133,17 @@ app.get('/api/diag', async (req, res) => {
 
     for (const host of hosts) {
         try {
-            results.lookups[host] = await dns.lookup(host);
+            const lookup = await dns.lookup(host);
+            results.lookups[host] = lookup;
+            try {
+                const axios = require('axios');
+                const testUrl = `http://${lookup.address}:8001/health`;
+                const start = Date.now();
+                await axios.get(testUrl, { timeout: 2000 });
+                results.lookups[host].health = { status: 'OK', latency: Date.now() - start };
+            } catch (err) {
+                results.lookups[host].health = { error: err.message, test_url: `http://${lookup.address}:8001/health` };
+            }
         } catch (e) {
             results.lookups[host] = { error: e.message };
         }
