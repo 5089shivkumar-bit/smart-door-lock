@@ -1857,8 +1857,8 @@ app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
         // Transform results to include simple booleans for the frontend
         const transformedUsers = (users || []).map(u => ({
             ...u,
-            face_registered: u.face_templates && u.face_templates.length > 0,
-            fingerprint_registered: u.fingerprint_templates && u.fingerprint_templates.length > 0,
+            face_registered: !!(u.face_templates?.length > 0),
+            fingerprint_registered: !!(u.fingerprint_templates?.length > 0),
             // Strip the internal objects to keep frontend data clean
             face_templates: undefined,
             fingerprint_templates: undefined,
@@ -2208,14 +2208,35 @@ app.post('/api/biometrics/face/register', upload.single('file'), validateIdentit
     }
 });
 
-// Biometric Health Proxy
+// Biometric Health Proxy with Multi-Fallback Discovery
 app.get('/api/biometrics/health', async (req, res) => {
-    try {
-        const response = await axios.get(`${PYTHON_ENGINE_URL}/health`, { timeout: 2000 });
-        res.json({ status: 'ready', engine: 'face-recognition' });
-    } catch (err) {
-        res.status(503).json({ status: "offline", message: "Biometric Engine unreachable" });
+    const fallbacks = [
+        PYTHON_ENGINE_URL,
+        `http://${RENDER_HOST.replace('backend', 'edge')}:8001`,
+        'http://smart-door-edge:8001',
+        'http://localhost:8001'
+    ].filter(Boolean);
+
+    for (const url of fallbacks) {
+        try {
+            console.log(`🔍 [Health Check] Trying: ${url}/health`);
+            await axios.get(`${url}/health`, { timeout: 3000 });
+            // If success, update the global URL if it was a fallback
+            if (url !== PYTHON_ENGINE_URL) {
+                console.log(`✅ [Discovery] Updating PYTHON_ENGINE_URL to proven fallback: ${url}`);
+                PYTHON_ENGINE_URL = url;
+            }
+            return res.json({ status: 'ready', engine: 'face-recognition', url });
+        } catch (err) {
+            console.warn(`⚠️ [Health Check] Failed for ${url}: ${err.message}`);
+        }
     }
+
+    res.status(503).json({ 
+        status: "offline", 
+        message: "Biometric Engine unreachable across all known internal hostnames",
+        tried_urls: fallbacks
+    });
 });
 
 app.post('/api/biometrics/face/verify', biometricLimiter, upload.single('file'), async (req, res) => {
