@@ -674,7 +674,11 @@ async def cache_status():
     }
 
 
+@app.get("/")
+async def root():
+    return {"status": "online", "service": "Smart Door Biometric API", "version": "v2.6"}
+
 if __name__ == "__main__":
     import uvicorn
-    # PM2 handles process lifecycle.
-    uvicorn.run(app, host="0.0.0.0", port=8001, timeout_graceful_shutdown=5)
+    port = int(os.getenv("PORT", 8001))
+    uvicorn.run(app, host="0.0.0.0", port=port, timeout_graceful_shutdown=5)
