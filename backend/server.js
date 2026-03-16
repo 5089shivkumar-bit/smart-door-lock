@@ -105,8 +105,41 @@ app.get('/', (req, res) => {
         original_env_url: ORIGINAL_URL || 'NONE',
         calculated_engine_url: `http://${RENDER_HOST.replace('backend', 'edge')}:8001`,
         env_available: safeEnv,
-        endpoints: ['/api/stats', '/api/logs', '/api/users', '/auth/login']
+        endpoints: ['/api/stats', '/api/logs', '/api/users', '/auth/login', '/api/diag']
     });
+});
+
+app.get('/api/diag', async (req, res) => {
+    const dns = require('dns').promises;
+    const results = {
+        env: {},
+        lookups: {}
+    };
+
+    // 1. Filtered Env
+    Object.keys(process.env).forEach(k => {
+        if (!k.includes('KEY') && !k.includes('SECRET') && !k.includes('PASSWORD')) {
+            results.env[k] = process.env[k];
+        }
+    });
+
+    // 2. DNS Lookups
+    const hosts = [
+        'smart-door-edge',
+        'smart-door-edge-957b',
+        'localhost',
+        '127.0.0.1'
+    ];
+
+    for (const host of hosts) {
+        try {
+            results.lookups[host] = await dns.lookup(host);
+        } catch (e) {
+            results.lookups[host] = { error: e.message };
+        }
+    }
+
+    res.json(results);
 });
 
 // Request Logger Middleware
