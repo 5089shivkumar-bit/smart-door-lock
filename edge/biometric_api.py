@@ -7,6 +7,7 @@ import socket
 import time
 import os
 import numpy as np
+import google.generativeai as genai
 try:
     from bleak import BleakClient, BleakScanner
     HAS_BLE = True
@@ -40,6 +41,40 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Configure Gemini AI for Liveness Detection
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    liveness_model = genai.GenerativeModel('gemini-1.5-flash')
+else:
+    liveness_model = None
+    print("⚠️ GOOGLE_API_KEY not found. Liveness detection will be disabled.")
+
+async def check_liveness(image_bytes):
+    """Uses Gemini to detect if the subject is a real human or a photo/screen."""
+    if not liveness_model:
+        return True, "Disabled"
+    
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        prompt = (
+            "Analyze this security camera image. Is this a live, 3D physical human being "
+            "standing in front of the camera? Or is it a 2D photograph, a digital screen, "
+            "or a mask being held up to the camera? "
+            "Reply 'READY' if it is a definite live human. "
+            "Reply 'SPOOF' if you detect a screen, photo, or suspicious 2D artifact."
+        )
+        response = liveness_model.generate_content([prompt, img])
+        result = response.text.strip().upper()
+        
+        if "READY" in result:
+            return True, "Live Human Detected"
+        else:
+            return False, "Potential Spoofing Detected"
+    except Exception as e:
+        print(f"❌ Gemini Liveness Error: {e}")
+        return True, "Error-Skipped" # Fail open for reliability, but log error
 
 @app.on_event("startup")
 async def startup_event():
@@ -582,8 +617,20 @@ async def verify_face(file: UploadFile = File(...)):
                 "confidence": max_similarity
             }
 
+        # 5. Gemini Liveness Security Check (Anti-Spoofing)
+        is_live, liveness_msg = await check_liveness(contents)
+        if not is_live:
+            print(f"[SECURITY] REJECTED: {liveness_msg} for {matched_emp['employee_id']}")
+            asyncio.create_task(background_log_access(matched_emp["employee_id"], "spoof_detected", max_similarity, "terminal_01"))
+            return {
+                "success": False,
+                "message": f"Security Alert: {liveness_msg}",
+                "error_code": "SPOOF_DETECTED",
+                "confidence": max_similarity
+            }
+
         # Success: Verified
-        print(f"[VERIFIED] {matched_emp['employee_id']} | Sim: {max_similarity:.4f}")
+        print(f"[VERIFIED] {matched_emp['employee_id']} | Sim: {max_similarity:.4f} | Liveness: {liveness_msg}")
         asyncio.create_task(mark_attendance_async(matched_emp["employee_id"]))
         asyncio.create_task(background_log_access(matched_emp["employee_id"], "success", max_similarity, "terminal_01"))
 
