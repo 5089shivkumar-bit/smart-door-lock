@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = 'c:/Users/SAM/Documents/Antigravity/LockingApp';
+const ROOT = process.cwd();
 const EXPECTED_PROJECT_ID = 'auralock-system-2026';
 const EXPECTED_REGION = 'asia-south1';
 

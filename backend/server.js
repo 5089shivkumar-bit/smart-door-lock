@@ -88,7 +88,6 @@ app.get('/api/diag', async (req, res) => {
     // 2. DNS Lookups
     const hosts = [
         'smart-door-edge',
-        'smart-door-edge-957b',
         'localhost',
         '127.0.0.1'
     ];
