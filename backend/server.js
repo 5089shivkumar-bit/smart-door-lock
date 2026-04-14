@@ -642,7 +642,7 @@ app.get('/api/attendance', authenticateToken, async (req, res) => {
                 .gte('date', fromDate)
                 .lte('date', toDate);
 
-            if (employee_id) q = q.eq('employee_id', employee_id);
+            if (employee_id) q = q.eq('attendance.employee_id', employee_id);
             if (department) q = q.eq('employees.department', department);
             if (search) q = q.ilike('employees.name', `%${search}%`);
             return q;
@@ -2049,80 +2049,63 @@ app.post('/api/users', authenticateToken, validateIdentity, async (req, res) => 
 });
 
 app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
-    let attempts = 0;
-    const cleanedTables = new Set();
-    const maxAttempts = 15;
-
     try {
         const { id } = req.params;
-        console.log(`🗑️ Initializing recursive purge for subject: ${id}`);
+        console.log(`🗑️ Initializing explicit purge for subject: ${id}`);
 
-        // 1. Resolve Employee ID (needed for linked tables)
+        // 1. Resolve Employee IDs
         const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         const isUUID = uuidRegex.test(id);
-        let employee_id = id;
+        
+        let employeeUuid = isUUID ? id : null;
+        let employeeEid = !isUUID ? id : null;
 
         if (isUUID) {
             const { data: emp } = await supabase.from('employees').select('employee_id').eq('id', id).single();
-            if (emp) employee_id = emp.employee_id;
+            if (emp) employeeEid = emp.employee_id;
+        } else {
+            const { data: emp } = await supabase.from('employees').select('id').eq('employee_id', id).single();
+            if (emp) employeeUuid = emp.id;
         }
 
-        // Recursive deletion helper
-        const recursivePurge = async () => {
-            attempts++;
-            if (attempts > maxAttempts) throw new Error("Maximum purge depth reached. Possible circular reference.");
-
-            const { data, error } = await supabase
-                .from('employees')
-                .delete()
-                .match(isUUID ? { id: id } : { employee_id: id })
-                .select()
-                .single();
-
-            if (error) {
-                console.log(`🔍 Purge Attempt ${attempts} Error:`, JSON.stringify(error));
-                // Check if it's Foreign Key Violation (Postgres Code 23503)
-                if (error.code === '23503' || error.message?.includes('foreign key constraint')) {
-                    // Extract the blockng table (usually the last "on table" in the message)
-                    const matches = [...error.message.matchAll(/on table "([^"]+)"/g)];
-                    const tableName = matches.length > 0 ? matches[matches.length - 1][1] : null;
-
-                    console.log(`🔍 Extracted blocking table: ${tableName}`);
-                    if (tableName && !cleanedTables.has(tableName)) {
-                        console.log(`⚠️ Blocked by table [${tableName}]. Attempting manual cleanup...`);
-                        cleanedTables.add(tableName);
-
-                        // Clean up referencing records in the blocking table
-                        // Coverage: employee_id, id, user_id (most common FK columns)
-                        await supabase.from(tableName).delete().eq('employee_id', employee_id);
-                        if (isUUID) {
-                            await supabase.from(tableName).delete().eq('id', id);
-                            await supabase.from(tableName).delete().eq('user_id', id);
-                        }
-
-                        // Retry deletion
-                        return await recursivePurge();
-                    }
-                }
-                throw error; // If not a fixable FK error, or if we already tried that table
-            }
-            return data;
-        };
-
-        const deletedUser = await recursivePurge();
-
-        if (!deletedUser) {
+        if (!employeeUuid && !employeeEid) {
             return res.status(404).json({ error: "Subject not found in primary cluster." });
         }
 
+        const cleanedTables = [
+            'attendance', 'access_logs', 'face_templates', 
+            'fingerprint_templates', 'fingerprints', 'rfid_tags'
+        ];
+
+        // 2. Proactively delete dependencies
+        for (const table of cleanedTables) {
+            console.log(`🧹 Purging dependent data from table [${table}]...`);
+            if (employeeEid) await supabase.from(table).delete().eq('employee_id', employeeEid);
+            if (employeeUuid) {
+                await supabase.from(table).delete().eq('employee_id', employeeUuid);
+                await supabase.from(table).delete().eq('id', employeeUuid);
+                await supabase.from(table).delete().eq('user_id', employeeUuid);
+            }
+        }
+
+        // 3. Delete the employee
+        const { data: deletedUser, error: deleteError } = await supabase
+            .from('employees')
+            .delete()
+            .match(employeeUuid ? { id: employeeUuid } : { employee_id: employeeEid })
+            .select()
+            .single();
+
+        if (deleteError) {
+            console.error("❌ Failed to delete employee record:", deleteError);
+            throw deleteError;
+        }
+
         // ── Biometric Cache Eviction (non-blocking) ──────────────────────────
-        // Remove deleted employee's face from the Python engine's local cache
-        // so the same person can re-enroll without a 'Biometric Conflict' error.
-        const evictionEmployeeId = deletedUser.employee_id || employee_id;
+        const evictionEmployeeId = deletedUser.employee_id || employeeEid;
         console.log(`🧹 Evicting biometric cache for: ${evictionEmployeeId}`);
 
         try {
-            // 1. Evict specific entry from face_cache.json
             await axios.delete(
                 `${PYTHON_ENGINE_URL}/api/biometrics/face/${encodeURIComponent(evictionEmployeeId)}`,
                 { timeout: 5000 }
@@ -2133,22 +2116,21 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
         }
 
         try {
-            // 2. Trigger full cache rebuild to ensure consistency
             await axios.post(`${PYTHON_ENGINE_URL}/api/biometrics/cache/rebuild`, {}, { timeout: 5000 });
             console.log('✅ Biometric cache rebuilt after employee deletion');
         } catch (rebuildErr) {
             console.warn(`⚠️ Cache rebuild skipped (engine offline): ${rebuildErr.message}`);
         }
 
-        console.log(`✅ Success: Subject ${deletedUser.employee_id} and dependencies in [${Array.from(cleanedTables).join(', ')}] purged.`);
+        console.log(`✅ Success: Subject ${evictionEmployeeId} and dependencies purged.`);
         res.json({
             success: true,
             message: "User and all biometric data permanently removed.",
-            purged_subsystems: Array.from(cleanedTables)
+            purged_subsystems: cleanedTables
         });
 
     } catch (error) {
-        console.error("❌ Recursive Purge Error:", error.message);
+        console.error("❌ Explicit Purge Error:", error.message);
         res.status(500).json({
             error: "Database deletion failed",
             details: error.message,
