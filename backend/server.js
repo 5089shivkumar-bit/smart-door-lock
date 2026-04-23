@@ -697,7 +697,8 @@ async function resolveEmployeeEid(idOrEid) {
 // Helper to handle Excel Export (Extracted for reuse)
 async function handleExcelExport(req, res) {
     try {
-        const { month, year, employee_id, department, startDate: sd, endDate: ed } = req.query;
+        const { month, year, department, startDate: sd, endDate: ed } = req.query;
+        const employee_id = req.query.employee_id || req.params.employee_id;
         const now = new Date();
 
         // ── Resolve date range ──
@@ -869,11 +870,14 @@ async function handleExcelExport(req, res) {
 }
 
 app.get('/api/attendance/export/excel', authenticateToken, handleExcelExport);
+app.get('/api/attendance/export/excel/:employee_id', authenticateToken, handleExcelExport);
 
 // ─── PDF Export Helper & Endpoint ───────────────────────────────────────────
 async function handlePdfExport(req, res) {
     try {
-        const { month, year, employee_id, department, startDate: sd, endDate: ed } = req.query;
+        const { month, year, department, startDate: sd, endDate: ed } = req.query;
+        // Check both query and path for employee_id
+        const employee_id = req.query.employee_id || req.params.employee_id;
         const now = new Date();
 
         // ── Date range ──
@@ -1148,6 +1152,7 @@ async function handlePdfExport(req, res) {
 }
 
 app.get('/api/attendance/export/pdf', authenticateToken, handlePdfExport);
+app.get('/api/attendance/export/pdf/:employee_id', authenticateToken, handlePdfExport);
 
 // Attendance Report Endpoint (Last 7 Days)
 app.get('/api/attendance/report', async (req, res) => {
