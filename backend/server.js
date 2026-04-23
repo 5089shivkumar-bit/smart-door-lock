@@ -2051,9 +2051,9 @@ app.post('/api/users', authenticateToken, validateIdentity, async (req, res) => 
 app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(`🗑️ Initializing explicit purge for subject: ${id}`);
+        console.log(`🗑️ Initializing soft delete for subject: ${id}`);
 
-        // 1. Resolve Employee IDs
+        // 1. Resolve Employee UUID and EID (to maintain cache eviction)
         const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         const isUUID = uuidRegex.test(id);
         
@@ -2061,49 +2061,46 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
         let employeeEid = !isUUID ? id : null;
 
         if (isUUID) {
-            const { data: emp } = await supabase.from('employees').select('employee_id').eq('id', id).single();
-            if (emp) employeeEid = emp.employee_id;
+            const { data: emp } = await supabase.from('employees').select('employee_id, name').eq('id', id).single();
+            if (emp) {
+                employeeEid = emp.employee_id;
+            }
         } else {
-            const { data: emp } = await supabase.from('employees').select('id').eq('employee_id', id).single();
-            if (emp) employeeUuid = emp.id;
+            const { data: emp } = await supabase.from('employees').select('id, name').eq('employee_id', id).single();
+            if (emp) {
+                employeeUuid = emp.id;
+            }
         }
 
         if (!employeeUuid && !employeeEid) {
             return res.status(404).json({ error: "Subject not found in primary cluster." });
         }
 
-        const cleanedTables = [
-            'attendance', 'access_logs', 'face_templates', 
-            'fingerprint_templates', 'fingerprints', 'rfid_tags'
-        ];
-
-        // 2. Proactively delete dependencies
-        for (const table of cleanedTables) {
-            console.log(`🧹 Purging dependent data from table [${table}]...`);
-            if (employeeEid) await supabase.from(table).delete().eq('employee_id', employeeEid);
-            if (employeeUuid) {
-                await supabase.from(table).delete().eq('employee_id', employeeUuid);
-                await supabase.from(table).delete().eq('id', employeeUuid);
-                await supabase.from(table).delete().eq('user_id', employeeUuid);
-            }
-        }
-
-        // 3. Delete the employee
-        const { data: deletedUser, error: deleteError } = await supabase
+        // 2. Perform SOFT DELETE
+        // We update the status and is_deleted flag instead of deleting the row.
+        // This preserves foreign key relationships for attendance and access_logs.
+        console.log(`🔒 Marking employee ${employeeEid || id} as Deleted...`);
+        const { data: updatedUser, error: updateError } = await supabase
             .from('employees')
-            .delete()
+            .update({ 
+                status: 'Deleted', 
+                is_deleted: true,
+                updated_at: new Date().toISOString()
+            })
             .match(employeeUuid ? { id: employeeUuid } : { employee_id: employeeEid })
             .select()
             .single();
 
-        if (deleteError) {
-            console.error("❌ Failed to delete employee record:", deleteError);
-            throw deleteError;
+        if (updateError) {
+            console.error("❌ Failed to soft-delete employee record:", updateError);
+            throw updateError;
         }
 
-        // ── Biometric Cache Eviction (non-blocking) ──────────────────────────
-        const evictionEmployeeId = deletedUser.employee_id || employeeEid;
-        console.log(`🧹 Evicting biometric cache for: ${evictionEmployeeId}`);
+        // ── Biometric Cache Eviction (MANDATORY for security) ────────────────
+        // We MUST still remove them from the Python Engine's active RAM cache
+        // otherwise they could still unlock the door until the next restart.
+        const evictionEmployeeId = updatedUser.employee_id || employeeEid;
+        console.log(`🧹 Evicting biometric cache for deleted user: ${evictionEmployeeId}`);
 
         try {
             await axios.delete(
@@ -2112,29 +2109,28 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
             );
             console.log(`✅ Biometric cache evicted for ${evictionEmployeeId}`);
         } catch (cacheErr) {
-            console.warn(`⚠️ Biometric engine offline — cache will sync on next restart: ${cacheErr.message}`);
+            console.warn(`⚠️ Biometric engine offline during eviction: ${cacheErr.message}`);
         }
 
         try {
             await axios.post(`${PYTHON_ENGINE_URL}/api/biometrics/cache/rebuild`, {}, { timeout: 5000 });
-            console.log('✅ Biometric cache rebuilt after employee deletion');
+            console.log('✅ Biometric cache rebuild triggered');
         } catch (rebuildErr) {
             console.warn(`⚠️ Cache rebuild skipped (engine offline): ${rebuildErr.message}`);
         }
 
-        console.log(`✅ Success: Subject ${evictionEmployeeId} and dependencies purged.`);
+        console.log(`✅ Success: Subject ${evictionEmployeeId} soft-deleted. Historical records preserved.`);
         res.json({
             success: true,
-            message: "User and all biometric data permanently removed.",
-            purged_subsystems: cleanedTables
+            message: "User has been deactivated and removed from the dashboard. Historical records are preserved.",
+            employee_id: evictionEmployeeId
         });
 
     } catch (error) {
-        console.error("❌ Explicit Purge Error:", error.message);
+        console.error("❌ Soft Delete Error:", error.message);
         res.status(500).json({
-            error: "Database deletion failed",
-            details: error.message,
-            hint: "Please ensure all associated biometric hardware is online and syncing."
+            error: "Employee deactivation failed",
+            details: error.message
         });
     }
 });
