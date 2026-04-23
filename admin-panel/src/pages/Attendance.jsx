@@ -10,7 +10,6 @@ import {
 import { apiService } from '../services/api';
 import { format, differenceInMinutes, parseISO, startOfWeek, startOfMonth } from 'date-fns';
 
-const DEPARTMENTS = ['Engineering', 'Operations', 'Security', 'Management', 'HR'];
 const PAGE_SIZE = 10;
 
 // ── Debounce hook ─────────────────────────────────────────────────────────────
@@ -103,6 +102,7 @@ export default function Attendance() {
     const [searchInput, setSearchInput] = useState('');   // raw (undelayed)
     const [selectedStatus, setSelectedStatus] = useState('');   // '' | 'ON_TIME' | 'LATE'
     const [activePreset, setActivePreset] = useState('today'); // today|week|month|custom
+    const [departments, setDepartments] = useState([]);
 
     // Debounce the search input — only triggers fetch after 300 ms of no typing
     const searchTerm = useDebounce(searchInput, 300);
@@ -115,7 +115,19 @@ export default function Attendance() {
     const [exporting, setExporting] = useState(false);
     const [exportingPdf, setExportingPdf] = useState(false);
 
-    useEffect(() => { fetchEmployees(); }, []);
+    useEffect(() => { 
+        fetchEmployees();
+        fetchDepartments();
+    }, []);
+
+    const fetchDepartments = async () => {
+        try {
+            const data = await apiService.getDepartments();
+            setDepartments(data || []);
+        } catch (err) {
+            console.error('Failed to fetch departments:', err);
+        }
+    };
 
     // Re-fetch whenever any filter / sort / page changes
     useEffect(() => {
@@ -179,6 +191,8 @@ export default function Attendance() {
                 year: yr,
                 employee_id: selectedEmployee,
                 department: selectedDept,
+                search: searchTerm,
+                status: selectedStatus
             };
             const blob = await apiService.exportAttendanceExcel(params);
             const filename = `attendance_${startDate}_to_${endDate}.xlsx`;
@@ -209,6 +223,8 @@ export default function Attendance() {
                 year: yr,
                 employee_id: selectedEmployee,
                 department: selectedDept,
+                search: searchTerm,
+                status: selectedStatus
             };
             const blob = await apiService.exportAttendancePDF(params);
             const filename = `attendance_${startDate}_to_${endDate}.pdf`;
@@ -362,7 +378,7 @@ export default function Attendance() {
                             onChange={e => { setSelectedDept(e.target.value); setPage(1); }}
                             className={selCls}>
                             <option value="">All Departments</option>
-                            {DEPARTMENTS.map(d => <option key={d}>{d}</option>)}
+                            {departments.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                     </div>
 

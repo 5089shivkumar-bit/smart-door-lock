@@ -721,6 +721,8 @@ async function handleExcelExport(req, res) {
 
         if (employee_id) q = q.eq('employee_id', employee_id);
         if (department) q = q.eq('employees.department', department);
+        if (req.query.search) q = q.ilike('employees.name', `%${req.query.search}%`);
+        if (req.query.status) q = q.eq('status', req.query.status);
 
         const { data: records, error } = await q;
         if (error) throw error;
@@ -895,6 +897,8 @@ async function handlePdfExport(req, res) {
 
         if (employee_id) q = q.eq('employee_id', employee_id);
         if (department) q = q.eq('employees.department', department);
+        if (req.query.search) q = q.ilike('employees.name', `%${req.query.search}%`);
+        if (req.query.status) q = q.eq('status', req.query.status);
 
         const { data: records, error } = await q;
         if (error) throw error;
@@ -1841,6 +1845,26 @@ app.get('/api/terminal/users', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "System error" });
+    }
+});
+
+// Get unique departments from employees table
+app.get('/api/departments', authenticateToken, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('employees')
+            .select('department')
+            .not('department', 'is', null)
+            .eq('is_deleted', false);
+
+        if (error) throw error;
+
+        // Extract unique, trimmed department names
+        const depts = [...new Set(data.map(d => (d.department || 'General').trim()))].sort();
+        res.json(depts);
+    } catch (error) {
+        console.error("❌ Get departments error:", error);
+        res.status(500).json({ error: "Failed to fetch departments" });
     }
 });
 

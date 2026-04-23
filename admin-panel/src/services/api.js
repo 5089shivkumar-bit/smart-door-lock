@@ -72,9 +72,13 @@ export const apiService = {
         return response.data;
     },
 
-    // Users
     getUsers: async () => {
         const response = await api.get('/api/users');
+        return response.data;
+    },
+
+    getDepartments: async () => {
+        const response = await api.get('/api/departments');
         return response.data;
     },
 
