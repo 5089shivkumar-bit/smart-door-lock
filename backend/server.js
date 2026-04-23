@@ -1857,7 +1857,7 @@ app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
         `);
 
         if (includeDeleted !== 'true') {
-            query = query.neq('status', 'Deleted');
+            query = query.eq('is_deleted', false);
         }
 
         const { data: users, error } = await query;
@@ -2079,11 +2079,11 @@ app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
         // 2. Perform SOFT DELETE
         // We update the status and is_deleted flag instead of deleting the row.
         // This preserves foreign key relationships for attendance and access_logs.
-        console.log(`🔒 Marking employee ${employeeEid || id} as Deleted...`);
+        console.log(`🔒 Marking employee ${employeeEid || id} as Deactivated...`);
         const { data: updatedUser, error: updateError } = await supabase
             .from('employees')
             .update({ 
-                status: 'Deleted', 
+                status: 'Disabled', 
                 is_deleted: true,
                 updated_at: new Date().toISOString()
             })
